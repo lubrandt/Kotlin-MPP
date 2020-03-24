@@ -4,7 +4,7 @@ import kotlin.browser.document
 fun main() {
     render(document.getElementById("root")) {
         h1 {
-            +"Hello, React+Kotlin/JS!11"
+            +"Hello, React+Kotlin/JS!"
         }
     }
 }
