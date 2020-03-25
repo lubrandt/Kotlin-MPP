@@ -89,7 +89,7 @@ kotlin {
 
 val run by tasks.creating(JavaExec::class) {
     group = "application"
-    main = "de.innosystec.kuestion.Mainkt"
+    main = "de.innosystec.kuestion.MainKt"
     kotlin {
         val main = targets["jvm"].compilations["main"]
         dependsOn(main.compileAllTaskName)
