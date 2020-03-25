@@ -1,2 +1,3 @@
 # Encountered Problems during Development
-nothing to report yet
+* adding something manual to a generated project causes problems, manual things are not recognized or found (adding a jvmMain with main and application.conf)
+
