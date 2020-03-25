@@ -14,7 +14,7 @@ mit Kotlin zu bewältigen.
 
 Folgende Technologien/Libraries sollten hierbei benutzt werden (Punkte in Klammern sind optional/nice to have):
 
-###UI
+### UI
 + KotlinJS
 + Kotlin React (https://github.com/JetBrains/kotlin-wrappers/tree/master/kotlin-react)
 + kotlinx html (https://github.com/Kotlin/kotlinx.html)
@@ -25,7 +25,7 @@ Folgende Technologien/Libraries sollten hierbei benutzt werden (Punkte in Klamme
 + (Kotlinx Flow) (https://kotlinlang.org/docs/reference/coroutines/flow.html)
 + (Kodein) (https://github.com/Kodein-Framework/Kodein-DI)
 
-###Server
+### Server
 + KotlinJVM
 + KTor (https://github.com/ktorio/ktor)
 + Exposed (https://github.com/JetBrains/Exposed)
@@ -54,5 +54,5 @@ Nachdem ein Nutzer abgestimmt hat soll ihm die Verteilung der abgegebenen Stimme
 Eine Umfrage endet entweder nach einem vom Ersteller vordefinierten Zeitpunkt oder kann manuell vom Ersteller beendet werden. Den Nutzern muss angezeigt werden, wann die Abstimmung endet.
 Ist eine Umfrage beendet soll die Umfrage unbearbeiteitbar aber immernoch sichtbar sein.
 
-##Bonuspoints
+## Bonuspoints
 Wenn Zeit bleibt: Eventuell noch als Android/iOS App?^^
