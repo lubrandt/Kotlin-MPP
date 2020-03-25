@@ -24,6 +24,7 @@ repositories {
     maven("https://dl.bintray.com/kotlin/ktor")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
+    maven("https://plugins.gradle.org/m2/")
     mavenCentral()
 }
 
