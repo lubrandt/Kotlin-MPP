@@ -2,7 +2,7 @@
 /build/
 /gradle/
 /.idea/
-.iml
+*.iml
 
 # Ignore Gradle project-specific cache directory
 .gradle
