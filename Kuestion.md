@@ -44,6 +44,8 @@ Es soll festgestellt werden, wieviel Businesslogik und Datenmodell man hier als 
 + https://play.kotlinlang.org/hands-on/Building%20Web%20Applications%20with%20React%20and%20Kotlin%20JS/01_Introduction
 + https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html
 
+### Tests
++ https://github.com/kotest/kotest
 
 ## Systemfunktionalität
 Das Umfragesystem darf gerne einfach gestrickt sein, der Fokus soll auf den verwendeten Technologien liegen.
