@@ -48,6 +48,8 @@ kotlin {
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
 //                implementation("io.ktor:ktor-html-builder:$ktorVersion")
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
+
+                implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation( "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
             }
         }
