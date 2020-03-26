@@ -6,11 +6,20 @@
  */
 
 //variables
-val ktorVersion = "1.3.2"
-val logbackVersion = "1.2.3"
+val ktorVersion = Versions.ktorVersion
+val logbackVersion = Versions.logback
+val serializationVersion = Versions.serializationVersion
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
 
 plugins {
-    kotlin("multiplatform") version "1.3.71"
+    kotlin("multiplatform") version Versions.Plugins.kotlin
+    kotlin("plugin.serialization") version Versions.Plugins.kotlin
 }
 
 repositories {
@@ -31,6 +40,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
+                implementation ("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
             }
         }
         val commonTest by getting {
