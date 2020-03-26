@@ -10,25 +10,18 @@ val ktorVersion = Versions.ktorVersion
 val logbackVersion = Versions.logback
 val serializationVersion = Versions.serializationVersion
 
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-}
-
 plugins {
     kotlin("multiplatform") version Versions.Plugins.kotlin
     kotlin("plugin.serialization") version Versions.Plugins.kotlin
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven("https://dl.bintray.com/kotlin/ktor")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
     maven("https://plugins.gradle.org/m2/")
-    mavenCentral()
+    jcenter()
 }
 
 kotlin {
@@ -55,6 +48,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
 //                implementation("io.ktor:ktor-html-builder:$ktorVersion")
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
+                implementation( "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
             }
         }
         val jvmTest by getting {
@@ -66,12 +60,13 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
+                implementation ("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serializationVersion")
 
                 //React, React DOM + Wrappers (chapter 3)
-//                implementation("org.jetbrains:kotlin-react:16.9.0-pre.89-kotlin-1.3.60")
-//                implementation("org.jetbrains:kotlin-react-dom:16.9.0-pre.89-kotlin-1.3.60")
-//                implementation(npm("react", "16.12.0"))
-//                implementation(npm("react-dom", "16.12.0"))
+                implementation("org.jetbrains:kotlin-react:16.9.0-pre.89-kotlin-1.3.60")
+                implementation("org.jetbrains:kotlin-react-dom:16.9.0-pre.89-kotlin-1.3.60")
+                implementation(npm("react", "16.12.0"))
+                implementation(npm("react-dom", "16.12.0"))
 //
 //                //Kotlin Styled (chapter 3)
 //                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.90-kotlin-1.3.61")
