@@ -18,7 +18,7 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+//    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
     maven("https://plugins.gradle.org/m2/")
     jcenter()
@@ -34,6 +34,8 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
+
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
             }
         }
         val commonTest by getting {
@@ -70,16 +72,16 @@ kotlin {
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
 
                 //React, React DOM + Wrappers (chapter 3)
-                implementation("org.jetbrains:kotlin-react:16.9.0-pre.89-kotlin-1.3.60")
-                implementation("org.jetbrains:kotlin-react-dom:16.9.0-pre.89-kotlin-1.3.60")
-                implementation(npm("react", "16.12.0"))
-                implementation(npm("react-dom", "16.12.0"))
+                implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
+                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")
+                implementation(npm("react", "16.13.0"))
+                implementation(npm("react-dom", "16.13.0"))
 
                 //Kotlin Styled (chapter 3)
-                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.90-kotlin-1.3.61")
+                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
                 implementation(npm("styled-components", "5.0.1"))
-                implementation(npm("react-is", "16.12.0"))
-                implementation(npm("inline-style-prefixer", "5.1.2"))
+                implementation(npm("react-is", "16.13.0"))
+                implementation(npm("inline-style-prefixer", "6.0.0"))
 
                 //Video Player (chapter 7)
                 implementation(npm("react-player"))
@@ -88,7 +90,7 @@ kotlin {
                 implementation(npm("react-share"))
 
 //                //Coroutines (chapter 8)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.5")
             }
         }
         val jsTest by getting {
