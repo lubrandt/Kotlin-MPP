@@ -33,7 +33,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation ("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
             }
         }
         val commonTest by getting {
@@ -46,11 +46,12 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
-//                implementation("io.ktor:ktor-html-builder:$ktorVersion")
+                implementation("io.ktor:ktor-server-core:$ktorVersion")
+                implementation("io.ktor:ktor-html-builder:$ktorVersion")
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
-                implementation( "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
             }
         }
         val jvmTest by getting {
@@ -62,28 +63,32 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
-                implementation ("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serializationVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serializationVersion")
+
+                // ktor client
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-js:$ktorVersion")
 
                 //React, React DOM + Wrappers (chapter 3)
                 implementation("org.jetbrains:kotlin-react:16.9.0-pre.89-kotlin-1.3.60")
                 implementation("org.jetbrains:kotlin-react-dom:16.9.0-pre.89-kotlin-1.3.60")
                 implementation(npm("react", "16.12.0"))
                 implementation(npm("react-dom", "16.12.0"))
-//
-//                //Kotlin Styled (chapter 3)
-//                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.90-kotlin-1.3.61")
-//                implementation(npm("styled-components", "5.0.1"))
-//                implementation(npm("react-is", "16.12.0"))
-//                implementation(npm("inline-style-prefixer", "5.1.2"))
-//
-//                //Video Player (chapter 7)
-//                implementation(npm("react-player", "1.15.2"))
-//
-//                //Share Buttons (chapter 7)
-//                implementation(npm("react-share", "4.0.1"))
-//
+
+                //Kotlin Styled (chapter 3)
+                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.90-kotlin-1.3.61")
+                implementation(npm("styled-components", "5.0.1"))
+                implementation(npm("react-is", "16.12.0"))
+                implementation(npm("inline-style-prefixer", "5.1.2"))
+
+                //Video Player (chapter 7)
+                implementation(npm("react-player"))
+
+                //Share Buttons (chapter 7)
+                implementation(npm("react-share"))
+
 //                //Coroutines (chapter 8)
-//                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
             }
         }
         val jsTest by getting {
@@ -96,7 +101,7 @@ kotlin {
 
 val run by tasks.creating(JavaExec::class) {
     group = "application"
-    main = "de.innosystec.kuestion.MainKt"
+    main = "de.innosystec.kuestion.JvmMainKt"
     kotlin {
         val main = targets["jvm"].compilations["main"]
         dependsOn(main.compileAllTaskName)
