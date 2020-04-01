@@ -91,6 +91,8 @@ kotlin {
 
 //                //Coroutines (chapter 8)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.5")
+
+                implementation(npm("react-minimal-pie-chart"))
             }
         }
         val jsTest by getting {
