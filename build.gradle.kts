@@ -8,7 +8,7 @@
 //variables
 val ktorVersion = Versions.ktorVersion
 val logbackVersion = Versions.logback
-val serializationVersion = Versions.serializationVersion
+val serializationVersion = Versions.mainLibVersion
 
 plugins {
     kotlin("multiplatform") version Versions.Plugins.kotlin
