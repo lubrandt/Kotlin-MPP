@@ -1,7 +1,7 @@
 @file:JsModule("react-minimal-pie-chart")
 @file:JsNonModule
 
-package de.innosystec.kuestion
+package de.innosystec.kuestion.charts
 
 import react.*
 

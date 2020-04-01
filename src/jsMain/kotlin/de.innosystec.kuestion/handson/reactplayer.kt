@@ -1,7 +1,7 @@
 @file:JsModule("react-player")
 @file:JsNonModule
 
-package de.innosystec.kuestion
+package de.innosystec.kuestion.handson
 
 import react.*
 

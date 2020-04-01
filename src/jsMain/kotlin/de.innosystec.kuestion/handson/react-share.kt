@@ -1,7 +1,7 @@
 @file:JsModule("react-share")
 @file:JsNonModule
 
-package de.innosystec.kuestion
+package de.innosystec.kuestion.handson
 
 import react.RClass
 import react.RProps

@@ -1,12 +1,8 @@
-package de.innosystec.kuestion
+package de.innosystec.kuestion.handson
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.*
-import kotlinx.css.*
 import react.*
 import react.dom.*
-import styled.css
-import styled.styledDiv
 import kotlin.browser.window
 
 class App : RComponent<RProps, AppState>() {

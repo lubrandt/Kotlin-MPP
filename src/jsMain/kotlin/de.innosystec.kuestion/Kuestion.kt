@@ -1,5 +1,6 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.charts.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import kotlinx.coroutines.MainScope

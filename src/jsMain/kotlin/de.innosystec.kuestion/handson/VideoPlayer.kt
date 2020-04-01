@@ -1,10 +1,9 @@
-package de.innosystec.kuestion
+package de.innosystec.kuestion.handson
 
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.h3
-import react.dom.img
 import styled.css
 import styled.styledButton
 import styled.styledDiv

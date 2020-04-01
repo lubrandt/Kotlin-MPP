@@ -1,9 +1,8 @@
-package de.innosystec.kuestion
+package de.innosystec.kuestion.handson
 
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
-import kotlin.browser.window
 
 interface VideoListProps: RProps {
     var videos: List<Video>
