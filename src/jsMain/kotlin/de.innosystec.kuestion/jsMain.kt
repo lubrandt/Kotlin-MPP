@@ -1,13 +1,8 @@
 package de.innosystec.kuestion
 
-import io.ktor.client.HttpClient
-import kotlinx.coroutines.await
-import react.dom.*
-import react.*
+import de.innosystec.kuestion.handson.App
+import react.dom.render
 import kotlin.browser.document
-import kotlinx.css.*
-import styled.*
-import kotlin.browser.window
 
 const val jvmBackend = "http://$jvmHost:$jvmPort"
 

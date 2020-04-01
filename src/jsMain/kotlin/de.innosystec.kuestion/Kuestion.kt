@@ -3,10 +3,11 @@ package de.innosystec.kuestion
 import de.innosystec.kuestion.charts.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.css.*
 import react.*
 import react.dom.*
+import styled.*
 
 class Kuestion : RComponent<RProps, KuestionState>() {
 
@@ -28,7 +29,11 @@ class Kuestion : RComponent<RProps, KuestionState>() {
         div {
             +"You have received: ${state.response}"
         }
-        div {
+        styledDiv {
+            css {
+                height = 150.px
+                width = 150.px
+            }
             PieChart {
                 attrs.data = dataMock
             }
