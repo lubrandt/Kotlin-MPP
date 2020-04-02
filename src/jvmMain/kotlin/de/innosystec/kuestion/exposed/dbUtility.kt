@@ -39,13 +39,27 @@ fun createHash(): String {
     return randomString
 }
 
-fun insertAnswer(survey: Survey, answer: Answer): Boolean {
+fun insertAnswer(answer: Answer) {
     transaction {
         addLogger(StdOutSqlLogger)
-        SchemaUtils.create(AnswerTable, SurveyTable)
-        // what if new survey? assume there is one?
+        SchemaUtils.create(AnswerTable)
+        AnswerTable.insert {
+            it[survey] = answer.surveyHashCode
+            it[text] = answer.text
+        }
     }
-    return true
+}
+
+fun addAnswerCount(answer: Answer) {
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(AnswerTable)
+        AnswerTable.update({AnswerTable.survey eq answer.surveyHashCode}) {
+            with(SqlExpressionBuilder) {
+                it[counts] = counts + 1
+            }
+        }
+    }
 }
 
 fun getAnswers(survey: Survey): List<Answer> {
