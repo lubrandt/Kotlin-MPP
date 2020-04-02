@@ -36,22 +36,15 @@ internal fun Application.module() {
                 call.respond("Good Day Sir")
             }
         }
-        route("/{questionId}") {
-            // create unique id for every question, store in db
+        route("/not_found") {
             get {
-                val hash = call.parameters["questionId"]
-                call.respond("questionID?")
-            }
-        }
-        route("/{questionId}/results") {
-            // fetch results for questionId
-            get {
-                call.respond("questionID/Results?")
+                call.respond("Sorry, this survey does not exist")
             }
         }
         static("/static") {
             resource("prod-dash.js")
         }
+        questions()
     }
 }
 
@@ -65,6 +58,21 @@ internal fun Routing.home() {
 //                }
 //            }
 
+        }
+    }
+}
+
+internal fun Routing.questions() {
+    route("/{questionId}") {
+        // create unique id for every question, store in db
+        get {
+            call.respond("questionID?")
+        }
+    }
+    route("/{questionId}/results") {
+        // fetch results for questionId
+        get {
+            call.respond("questionID/Results?")
         }
     }
 }
