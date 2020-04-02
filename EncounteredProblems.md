@@ -11,3 +11,4 @@ Error while compiling, reload prevented, ktor Version: 1.3.2~~
     * solved by npm dependency of both but text-encoding is deprecated
 
 * Jodatime/java-time (used in exposed) vs klock (internal Int & Double)
+    * time is currently without timezone

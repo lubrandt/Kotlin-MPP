@@ -6,14 +6,43 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 
-data class Survey(val question: String, val hashCode: Int, val expirationTime: LocalDateTime)
+data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
-data class Answer(val surveyHashCode: Int, val text: String, val counts: Int)
+data class Answer(val surveyHashCode: String, val text: String, val counts: Int)
+
+fun createSurvey(question: String, expirationTime: LocalDateTime) {
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(SurveyTable)
+        SurveyTable.insert {
+            it[SurveyTable.question] = question
+            it[hash] = createHash()
+            it[SurveyTable.expirationTime] = expirationTime
+        }
+    }
+}
+
+fun createHash(): String {
+    /**
+     * not really a hash
+     * should be a 6 character string to use with the link and ktor(questionId)
+     * based on: https://www.baeldung.com/kotlin-random-alphanumeric-string
+     * TODO: created hash not checked for unique but in db is unqiueindex, exception handling?
+     */
+    val stringLength = 6
+    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    val randomString =
+        (1..stringLength)
+            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map{x -> charPool[x]}
+            .joinToString("")
+    return randomString
+}
 
 fun insertAnswer(survey: Survey, answer: Answer): Boolean {
     transaction {
         addLogger(StdOutSqlLogger)
-        SchemaUtils.create(AnswerTable,SurveyTable)
+        SchemaUtils.create(AnswerTable, SurveyTable)
         // what if new survey? assume there is one?
     }
     return true
@@ -23,15 +52,15 @@ fun getAnswers(survey: Survey): List<Answer> {
     var retval: List<Answer> = mutableListOf()
     transaction {
         addLogger(StdOutSqlLogger)
-        SchemaUtils.create(AnswerTable,SurveyTable)
-        retval = AnswerTable.select {AnswerTable.survey eq survey.hashCode}.map { mapAnswer(it) }
+        SchemaUtils.create(AnswerTable, SurveyTable)
+        retval = AnswerTable.select { AnswerTable.survey eq survey.hash }.map { mapAnswer(it) }
     }
     return retval
 }
 
 fun mapSurvey(it: ResultRow) = Survey(
     question = it[SurveyTable.question],
-    hashCode = it[SurveyTable.hash],
+    hash = it[SurveyTable.hash],
     expirationTime = it[SurveyTable.expirationTime]
 )
 
