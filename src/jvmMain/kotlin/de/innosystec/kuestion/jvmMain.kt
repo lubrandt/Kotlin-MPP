@@ -41,11 +41,6 @@ internal fun Application.module() {
 
     routing {
         home()
-        route("/blood") {
-            get {
-                call.respond("Good Day Sir")
-            }
-        }
         route("/survey_not_found") {
             get {
                 call.respond("Sorry, this survey does not exist")
@@ -70,7 +65,8 @@ internal fun Routing.questions() {
     route("/{questionId}") {
         // create unique id for every question, store in db
         get {
-            call.respond("questionID?")
+            val hash = call.parameters["questionId"]
+            call.respond("questionID:$hash")
         }
     }
     route("/{questionId}/results") {
