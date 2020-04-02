@@ -39,6 +39,7 @@ internal fun Application.module() {
         route("/{questionId}") {
             // create unique id for every question, store in db
             get {
+                val hash = call.parameters["questionId"]
                 call.respond("questionID?")
             }
         }

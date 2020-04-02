@@ -4,6 +4,7 @@ val logbackVersion = Versions.logback
 val serializationVersion = Versions.mainLibVersion
 val exposedVersion = Versions.kotlinExposedVersion
 val h2Version = Versions.h2Version
+//val klockVersion = Versions.klockVersion
 
 plugins {
     kotlin("multiplatform") version Versions.Plugins.kotlin
@@ -16,6 +17,7 @@ repositories {
 //    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
     maven("https://plugins.gradle.org/m2/")
+//    maven("https://dl.bintray.com/korlibs/korlibs")
     jcenter()
 }
 
@@ -31,6 +33,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
+
+//                implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
             }
         }
         val commonTest by getting {
@@ -52,9 +56,10 @@ kotlin {
 
                 //db things
                 implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-//                compile("org.jetbrains.exposed", "exposed-dao", "0.23.1")
+                implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
                 implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-//                compile("org.jetbrains.exposed", "exposed-jodatime", "0.23.1")
+//                implementation("org.jetbrains.exposed:exposed-jodatime:$exposedVersion")
+                implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
                 implementation("com.h2database:h2:$h2Version")
             }
         }
@@ -91,7 +96,7 @@ kotlin {
                 //Share Buttons (chapter 7)
                 implementation(npm("react-share"))
 
-//                //Coroutines (chapter 8)
+                //Coroutines (chapter 8)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.5")
 
                 //charts
