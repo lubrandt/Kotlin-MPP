@@ -3,8 +3,10 @@ package de.innosystec.kuestion
 import io.ktor.application.*
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
 import io.ktor.html.respondHtml
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -22,11 +24,19 @@ internal fun Application.module() {
     install(ContentNegotiation) {
         json()
     }
+
     install(CORS) {
         method(HttpMethod.Get)
         anyHost()
         allowCredentials = true
     }
+
+    install(StatusPages) {
+        status(HttpStatusCode.NotFound) {
+            call.respond("Sorry, the requested Page was not found")
+        }
+    }
+
     install(Routing)
 
     routing {
@@ -36,7 +46,7 @@ internal fun Application.module() {
                 call.respond("Good Day Sir")
             }
         }
-        route("/not_found") {
+        route("/survey_not_found") {
             get {
                 call.respond("Sorry, this survey does not exist")
             }
@@ -52,12 +62,6 @@ internal fun Routing.home() {
     route("/") {
         get {
             call.respondText("Hello Ktor Home")
-//            call.respondHtml {
-//                body {
-//                    h1 { "Hello from KTOR" }
-//                }
-//            }
-
         }
     }
 }
