@@ -23,6 +23,11 @@ class Kuestion : RComponent<RProps, KuestionState>() {
         }
     }
     override fun RBuilder.render() {
+        //second page with React?
+        //routing in kotlinJs/react?
+        //endpoints of ktor?
+        // ktor serving html?
+        // second page has to be with KotlinJS/React
         h3 {
             +"Kuestion First Blood"
         }

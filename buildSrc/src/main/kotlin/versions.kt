@@ -5,7 +5,7 @@
 
 object Versions {
     // Library versions
-    val kotlinVersion = "1.3.71"
+    val kotlinVersion = "1.3.70"
     val ktorVersion = "1.3.2"
     val logback = "1.2.3"
     val mainLibVersion = "0.20.0"

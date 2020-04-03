@@ -99,8 +99,9 @@ kotlin {
                 //Coroutines (chapter 8)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.5")
 
-                //charts
+                // React packages/modules
                 implementation(npm("react-minimal-pie-chart"))
+                implementation(npm("react-router-dom"))
 
                 // fix abort-controller & text-encoding modules not found
                 implementation(npm("text-encoding", "0.7.0")) // deprecated
