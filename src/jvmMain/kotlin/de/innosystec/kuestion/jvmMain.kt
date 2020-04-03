@@ -4,6 +4,7 @@ import io.ktor.application.*
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
+import io.ktor.features.statusFile
 import io.ktor.html.respondHtml
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -32,9 +33,7 @@ internal fun Application.module() {
     }
 
     install(StatusPages) {
-        status(HttpStatusCode.NotFound) {
-            call.respond("Sorry, the requested Page was not found")
-        }
+        statusFile(HttpStatusCode.NotFound, filePattern = "error#.html")
     }
 
     install(Routing)
