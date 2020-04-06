@@ -101,11 +101,17 @@ kotlin {
 
                 // React packages/modules
                 implementation(npm("react-minimal-pie-chart"))
+
+                implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.94-kotlin-1.3.70")
                 implementation(npm("react-router-dom"))
 
                 // fix abort-controller & text-encoding modules not found
-                implementation(npm("text-encoding", "0.7.0")) // deprecated
-                implementation(npm("abort-controller", "3.0.0"))
+                // weird dependency hell to get rid of warnings
+                implementation(npm("text-encoding")) // deprecated
+                implementation(npm("abort-controller"))
+                implementation(npm("utf-8-validate"))
+                implementation(npm("bufferutil"))
+                implementation(npm("fs"))
             }
         }
         val jsTest by getting {

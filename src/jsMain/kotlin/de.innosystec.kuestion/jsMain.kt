@@ -1,6 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.SPA.AppFrame
+import de.innosystec.kuestion.spa.AppFrame
 import react.dom.render
 import kotlin.browser.document
 
