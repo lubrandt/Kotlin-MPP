@@ -1,15 +1,20 @@
 package de.innosystec.kuestion
 
 import de.innosystec.kuestion.charts.*
+import de.innosystec.kuestion.spa.Home
+import de.innosystec.kuestion.spa.Stuff
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import kotlinx.coroutines.*
 import kotlinx.css.*
 import react.*
 import react.dom.*
+import react.router.dom.hashRouter
+import react.router.dom.navLink
+import react.router.dom.route
 import styled.*
 
-class Kuestion : RComponent<RProps, KuestionState>() {
+class Kuestion : RComponent<IdProps, KuestionState>() {
 
     private val client = HttpClient()
 
@@ -23,16 +28,30 @@ class Kuestion : RComponent<RProps, KuestionState>() {
         }
     }
     override fun RBuilder.render() {
-        //second page with React?
-        //routing in kotlinJs/react?
-        //endpoints of ktor?
-        // ktor serving html?
-        // second page has to be with KotlinJS/React
-        h3 {
-            +"Kuestion First Blood"
-        }
-        div {
-            +"You have received: ${state.response}"
+        hashRouter {
+            div {
+                h3 {
+                    +"Kuestion First Blood"
+                }
+                p {
+                    +"You have received: ${state.response}"
+                }
+                ul("header") {
+                    li {
+                        navLink("/", exact = true) {
+                            +"HomeCreateApp"
+                        }
+                    }
+                }
+                div("content") {
+                    route("/", Creation::class, exact = true)
+                    route<IdProps>("/:questionId") { props ->
+                        child(DisplaySurvey::class) {
+                            attrs.id = props.match.params.id
+                        }
+                    }
+                }
+            }
         }
         styledDiv {
             css {
