@@ -7,11 +7,12 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import kotlinx.coroutines.*
 import kotlinx.css.*
+import kotlinx.html.ButtonFormMethod
+import kotlinx.html.ButtonType
+import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
-import react.router.dom.hashRouter
-import react.router.dom.navLink
-import react.router.dom.route
+import react.router.dom.*
 import styled.*
 
 class Kuestion : RComponent<IdProps, KuestionState>() {
@@ -42,10 +43,11 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
                             +"HomeCreateApp"
                         }
                     }
+
                 }
                 div("content") {
-                    route("/", Creation::class, exact = true)
-                    route<IdProps>("/:questionId") { props ->
+                    route("/", CreateSurvey::class, exact = true)
+                    route<IdProps>("/:id") { props ->
                         child(DisplaySurvey::class) {
                             attrs.id = props.match.params.id
                         }
@@ -53,15 +55,7 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
                 }
             }
         }
-        styledDiv {
-            css {
-                height = 150.px
-                width = 150.px
-            }
-            PieChart {
-                attrs.data = dataMock
-            }
-        }
+
     }
 }
 
