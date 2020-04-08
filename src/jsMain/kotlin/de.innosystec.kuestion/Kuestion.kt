@@ -28,6 +28,7 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
             }
         }
     }
+
     override fun RBuilder.render() {
         hashRouter {
             div {
@@ -43,7 +44,11 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
                             +"HomeCreateApp"
                         }
                     }
-
+                    li {
+                        navLink("/mockSu", exact = true) {
+                            +"mockSurvey"
+                        }
+                    }
                 }
                 div("content") {
                     route("/", CreateSurvey::class, exact = true)
@@ -52,6 +57,7 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
                             attrs.id = props.match.params.id
                         }
                     }
+
                 }
             }
         }
@@ -60,6 +66,6 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
 }
 
 
-interface KuestionState: RState {
-    var response:String?
+interface KuestionState : RState {
+    var response: String?
 }
