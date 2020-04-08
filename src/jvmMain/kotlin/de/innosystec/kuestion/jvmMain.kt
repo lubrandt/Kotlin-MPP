@@ -91,6 +91,13 @@ internal fun Routing.questions() {
             val hash = call.parameters["questionId"]
             val data = mutableListOf<ChartSliceData>()
             var exists: Long = 0
+            if (hash != null) {
+                if (hash.length > 6) {
+                    dataMock.forEach { data.add(it) }
+                    data.add(ChartSliceData("hashIdTooLong", 0, "#f0f0f0"))
+                    call.respond(data)
+                }
+            }
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(SurveyTable, AnswerTable)
