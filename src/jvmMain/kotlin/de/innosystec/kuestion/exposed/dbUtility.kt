@@ -62,12 +62,12 @@ fun addAnswerCount(answer: Answer) {
     }
 }
 
-fun getAnswers(survey: Survey): List<Answer> {
+fun getAnswers(hash: String): List<Answer> {
     var retval: List<Answer> = mutableListOf()
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable, SurveyTable)
-        retval = AnswerTable.select { AnswerTable.survey eq survey.hash }.map { mapAnswer(it) }
+        retval = AnswerTable.select { AnswerTable.survey eq hash }.map { mapAnswer(it) }
     }
     return retval
 }

@@ -34,6 +34,8 @@ kotlin {
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
 
+                implementation("io.ktor:ktor-serialization:$ktorVersion")
+
 //                implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
             }
         }
@@ -51,7 +53,6 @@ kotlin {
                 implementation("io.ktor:ktor-html-builder:$ktorVersion")
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
-                implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
 
                 //db things
