@@ -3,6 +3,7 @@
 
 package de.innosystec.kuestion.charts
 
+import de.innosystec.kuestion.ChartSliceData
 import react.*
 
 @JsName("default")
