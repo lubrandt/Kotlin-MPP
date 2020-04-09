@@ -49,6 +49,11 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
                             +"mockSurvey"
                         }
                     }
+                    li {
+                        navLink("/012345", exact = true) {
+                            +"anotherSurvey"
+                        }
+                    }
                 }
                 div("content") {
                     route("/", CreateSurvey::class, exact = true)

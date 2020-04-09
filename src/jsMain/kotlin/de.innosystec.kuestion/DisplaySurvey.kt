@@ -30,12 +30,12 @@ class DisplaySurvey : RComponent<IdProps, SurveyState>() {
         // if survey not found, redirect to home/404?
 
         styledDiv {
-            p {
-                +"your id is: ${props.id}"
-            }
             css {
                 height = 150.px
                 width = 150.px
+            }
+            p {
+                +"your id is: ${props.id}"
             }
             PieChart {
                attrs.data = state.graphData
