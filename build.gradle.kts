@@ -4,7 +4,7 @@ val logbackVersion = Versions.logback
 val serializationVersion = Versions.mainLibVersion
 val exposedVersion = Versions.kotlinExposedVersion
 val h2Version = Versions.h2Version
-//val klockVersion = Versions.klockVersion
+val coroutineVersion = Versions.coroutineVersion
 
 plugins {
     kotlin("multiplatform") version Versions.Plugins.kotlin
@@ -32,9 +32,10 @@ kotlin {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serializationVersion")
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutineVersion")
 
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
 
 //                implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
             }
@@ -54,6 +55,7 @@ kotlin {
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
+                implementation("io.ktor:ktor-client-serialization-jvm:$ktorVersion")
 
                 //db things
                 implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
@@ -78,12 +80,16 @@ kotlin {
                 // ktor client
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
 
                 //React, React DOM + Wrappers (chapter 3)
                 implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
                 implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")
+                implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.94-kotlin-1.3.70")
                 implementation(npm("react", "16.13.0"))
                 implementation(npm("react-dom", "16.13.0"))
+                implementation(npm("react-router-dom"))
 
                 //Kotlin Styled (chapter 3)
                 implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
@@ -98,13 +104,14 @@ kotlin {
                 implementation(npm("react-share"))
 
                 //Coroutines (chapter 8)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutineVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
 
                 // React packages/modules
                 implementation(npm("react-minimal-pie-chart"))
 
-                implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.94-kotlin-1.3.70")
-                implementation(npm("react-router-dom"))
+
+
 
                 // fix abort-controller & text-encoding modules not found
                 // weird dependency hell to get rid of warnings

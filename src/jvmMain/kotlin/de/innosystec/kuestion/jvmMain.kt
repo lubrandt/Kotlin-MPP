@@ -92,9 +92,9 @@ internal fun Routing.questions() {
             val data = mutableListOf<ChartSliceData>()
             var exists: Long = 0
             if (hash != null) {
-                if (hash.length > 6) {
+                if (hash.length != 6) {
                     dataMock.forEach { data.add(it) }
-                    data.add(ChartSliceData("hashIdTooLong", 0, "#f0f0f0"))
+                    data.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#6EA4B8"))
                     call.respond(data)
                 }
             }
@@ -105,8 +105,9 @@ internal fun Routing.questions() {
             }
             if (exists == 0L) {
 //                call.respondRedirect("/survey_not_found") // Error Handling in Frontend?
+                // what if no results?
                 dataMock.forEach { data.add(it) }
-                data.add(ChartSliceData("notfound", 0, "#ffffff"))
+                data.add(ChartSliceData("notfound", 15, "#6EA4B8"))
                 call.respond(data)
             } else {
                 var answerList: List<Answer> = mutableListOf()
@@ -121,7 +122,7 @@ internal fun Routing.questions() {
                     data + ChartSliceData(it.text, it.counts, randHexColor())
                 }
                 dataMock.forEach { data + it }
-                data.add(ChartSliceData("found", 100, "#000000"))
+                data.add(ChartSliceData("found", 10, "#6EA4B8"))
                 call.respond(data)
             }
         }

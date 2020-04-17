@@ -11,7 +11,7 @@ object Versions {
     val mainLibVersion = "0.20.0"
     val kotlinExposedVersion = "0.23.1"
     val h2Version = "1.4.200"
-//    val klockVersion = "1.10.3"
+    val coroutineVersion = "1.3.5"
 
     // Plugin versions
     object Plugins {
