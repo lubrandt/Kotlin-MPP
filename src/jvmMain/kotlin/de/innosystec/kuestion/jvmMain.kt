@@ -94,7 +94,7 @@ internal fun Routing.questions() {
             if (hash != null) {
                 if (hash.length != 6) {
                     dataMock.forEach { data.add(it) }
-                    data.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#6EA4B8"))
+                    data.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#6444B8"))
                     call.respond(data)
                 }
             }
@@ -107,7 +107,7 @@ internal fun Routing.questions() {
 //                call.respondRedirect("/survey_not_found") // Error Handling in Frontend?
                 // what if no results?
                 dataMock.forEach { data.add(it) }
-                data.add(ChartSliceData("notfound", 15, "#6EA4B8"))
+                data.add(ChartSliceData("notfound", 15, "#6334B8"))
                 call.respond(data)
             } else {
                 var answerList: List<Answer> = mutableListOf()
@@ -122,7 +122,7 @@ internal fun Routing.questions() {
                     data + ChartSliceData(it.text, it.counts, randHexColor())
                 }
                 dataMock.forEach { data + it }
-                data.add(ChartSliceData("found", 10, "#6EA4B8"))
+                data.add(ChartSliceData("found", 10, "#6224B8"))
                 call.respond(data)
             }
         }

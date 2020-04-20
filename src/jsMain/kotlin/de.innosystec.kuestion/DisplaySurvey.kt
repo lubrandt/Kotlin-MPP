@@ -1,102 +1,89 @@
 package de.innosystec.kuestion
 
 import de.innosystec.kuestion.charts.PieChart
-import io.ktor.client.HttpClient
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.get
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.css.*
-import kotlinx.html.DIV
-import kotlinx.html.id
 import react.*
-import react.dom.p
-import styled.StyledDOMBuilder
-import styled.css
-import styled.styledDiv
+import react.dom.*
+import styled.*
 
 class DisplaySurvey : RComponent<IdProps, SurveyState>() {
-
-    init {
-//        var response = arrayOf<ChartSliceData>()
-//        val coScope = GlobalScope.launch {
-//            response = client.get<Array<ChartSliceData>>("${jvmBackend}/${props.id}")
-//            setState {
-//                isLoaded = true
-//                dataGraph = response
-//            }
-//        }
-        println("DisplayInit")
-    }
-
-    private val client = HttpClient {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer()
+    companion object : RStatics<IdProps, SurveyState, DisplaySurvey, Nothing>(DisplaySurvey::class) {
+        init {
+            var result = arrayOf<ChartSliceData>()
+            getDerivedStateFromProps = { nextProps, prevState ->
+                if (nextProps.id !== prevState.prevID) {
+                    println("if")
+                    CoroutineScope(Dispatchers.Default).launch {
+                        result = getResultFromApi(nextProps.id)
+                    }
+                    SurveyState(result, nextProps.id)
+                } else {
+                    println("else")
+                    // return null to indicate no change
+                    null
+                }
+            }
         }
     }
 
-//    override fun SurveyState.init() {
-//        var response = arrayOf<ChartSliceData>()
-//        val coScope = GlobalScope.launch {
-//            response = client.get<Array<ChartSliceData>>("${jvmBackend}/${props.id}")
-//            setState {
-////                isLoaded = true
-//                dataGraph = response
-//            }
-//        }
-//
-//    }
+    override fun componentDidMount() {
+        CoroutineScope(Dispatchers.Default).launch {
+            val response = getResultFromApi(props.id)
+            setState {
+                dataGraph = response
+            }
+        }
+    }
 
     override fun RBuilder.render() {
-        // if survey not found, redirect to home/404?
-
-
+        p {
+            +"Hello Chart!"
+        }
+        p {
+            +"your id is: ${props.id}"
+            +"Your GraphData is: ${state.dataGraph}"
+        }
         styledDiv {
             css {
                 height = 150.px
                 width = 150.px
             }
-            if (!state.isLoaded) {
-                p {
-                    +"loading..."
-                }
-            }
-
-            p {
-                +"your id is: ${props.id}\n"
-                +"Your GraphData is: ${state.dataGraph}"
-            }
-            chart {
-                attrs.id = props.id
-            }
-            p {
-                +"below chart"
+            PieChart {
+                attrs.data = state.dataGraph
             }
         }
-
-
-//            p {
-//                +"MockPieChart:"
-//            }
-//            PieChart {
-//                attrs.data = dataMock.toTypedArray()
-//            }
     }
 }
 
-
-interface IdProps : RProps {
-    var id: String
-//    var onIdChange: (String) -> Unit
-
+suspend fun getResultFromApi(id: String): Array<ChartSliceData> {
+    return client.get("${jvmBackend}/${id}")
 }
 
-interface SurveyState : RState {
-    var dataGraph: Array<ChartSliceData>
-    var isLoaded: Boolean
+data class SurveyState(var dataGraph: Array<ChartSliceData>, var prevID: String) : RState {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class.js != other::class.js) return false
+
+        other as SurveyState
+
+        if (!dataGraph.contentEquals(other.dataGraph)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return dataGraph.contentHashCode()
+    }
 }
 
-
-
+/**
+ * this method is used to call this Component like a usual ReactComponent ( p { } )
+ */
+fun RBuilder.displaySurvey(handler: IdProps.() -> Unit): ReactElement {
+    return child(DisplaySurvey::class) {
+        this.attrs(handler)
+    }
+}
 
