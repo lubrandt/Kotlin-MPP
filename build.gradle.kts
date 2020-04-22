@@ -85,15 +85,19 @@ kotlin {
 
                 //React, React DOM + Wrappers
                 implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
+//                implementation("org.jetbrains:kotlin-react:16.13.0-pre.99-kotlin-1.3.72")
                 implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")
+//                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.99-kotlin-1.3.72")
                 implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.94-kotlin-1.3.70")
+//                implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.99-kotlin-1.3.72")
                 implementation(npm("react", "16.13.0"))
                 implementation(npm("react-dom", "16.13.0"))
                 implementation(npm("react-router-dom"))
 
                 //Kotlin Styled, sometimes not found?
                 implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
-                implementation(npm("styled-components", "5.0.1"))
+//                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.99-kotlin-1.3.72")
+                implementation(npm("styled-components", "5.1.0"))
                 implementation(npm("react-is", "16.13.0"))
                 implementation(npm("inline-style-prefixer", "6.0.0"))
 
@@ -106,6 +110,7 @@ kotlin {
 
                 // fix abort-controller & text-encoding modules not found
                 // weird dependency hell to get rid of warnings
+                // even the official handson from kotlin has these
                 implementation(npm("text-encoding")) // deprecated
                 implementation(npm("abort-controller"))
                 implementation(npm("utf-8-validate"))

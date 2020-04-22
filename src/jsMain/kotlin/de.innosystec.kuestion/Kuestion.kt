@@ -21,11 +21,11 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
     override fun RBuilder.render() {
         hashRouter {
             div {
-                h3 {
+                h1 {
                     +"Kuestion First Blood"
                 }
                 p {
-                    +"You have received: ${state.response}"
+                    +"You have received the test response: ${state.response}"
                 }
                 ul("header") {
                     li {
@@ -50,6 +50,7 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
                         displaySurvey {
                             id = props.match.params.id
                         }
+//                        child(functionalComponent = DisplaySurveyFunctional, props = props.match.params)
                     }
                 }
             }

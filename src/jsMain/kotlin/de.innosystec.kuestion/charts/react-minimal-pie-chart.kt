@@ -7,9 +7,9 @@ import de.innosystec.kuestion.ChartSliceData
 import react.*
 
 @JsName("default")
-external val PieChart: RClass<PieChartProps>
+external val ReactPieChart: RClass<ReactPieChartProps>
 
-external interface PieChartProps: RProps {
+external interface ReactPieChartProps: RProps {
     var data: Array<ChartSliceData>
 }
 
