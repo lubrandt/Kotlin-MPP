@@ -8,6 +8,7 @@ ktor Version: 1.3.2~~
     * ~~Can't resolve 'text-encoding' in ktor-io~~ 
     * [GitHub issue](https://github.com/ktorio/ktor/issues/961)
     * solved by npm dependency of both but text-encoding is deprecated
+    * still isn't wokring correctly?
 
 * Jodatime/java-time (used in exposed) vs klock (internal Int & Double)
     * time is currently without timezone

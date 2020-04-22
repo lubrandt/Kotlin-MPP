@@ -62,6 +62,7 @@ fun addAnswerCount(answer: Answer) {
     }
 }
 
+// fulltext search for survey Name?
 fun getAnswers(hash: String): List<Answer> {
     var retval: List<Answer> = mutableListOf()
     transaction {

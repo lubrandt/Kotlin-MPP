@@ -5,6 +5,8 @@ import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.get
 
+const val jvmBackend = "http://$jvmHost:$jvmPort"
+
 val client = HttpClient {
     install(JsonFeature) {
         serializer = KotlinxSerializer()
@@ -14,3 +16,5 @@ val client = HttpClient {
 suspend fun getResultFromApi(id: String): Array<ChartSliceData> {
     return client.get("${jvmBackend}/${id}")
 }
+
+suspend fun sendSurveyToApi() {}

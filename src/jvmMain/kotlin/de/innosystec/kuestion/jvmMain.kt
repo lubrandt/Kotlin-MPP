@@ -6,10 +6,7 @@ import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
 import de.innosystec.kuestion.exposed.getAnswers
 import io.ktor.application.*
-import io.ktor.features.CORS
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
-import io.ktor.features.statusFile
+import io.ktor.features.*
 import io.ktor.html.respondHtml
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
@@ -36,19 +33,25 @@ internal fun Application.module() {
 //    val config = environment.config
     install(ContentNegotiation) {
         json(
-            contentType = ContentType.Application.Json,
-            json = Json(
-                DefaultJsonConfiguration.copy(
-                    prettyPrint = true
-                )
-            )
+//            contentType = ContentType.Application.Json,
+//            json = Json(
+//                DefaultJsonConfiguration.copy(
+//                    prettyPrint = true
+//                )
+//            )
         )
     }
 
     install(CORS) {
         method(HttpMethod.Get)
+        method(HttpMethod.Post)
+        method(HttpMethod.Delete)
         anyHost()
-        allowCredentials = true
+//        allowCredentials = true
+    }
+
+    install(Compression) {
+        gzip()
     }
 
     install(StatusPages) {
@@ -67,10 +70,7 @@ internal fun Application.module() {
                 call.respond("Sorry, this survey does not exist")
             }
         }
-        static("/static") {
-            resource("prod-dash.js")
-        }
-        questions()
+        fetchSurvey()
     }
 }
 
@@ -83,18 +83,22 @@ internal fun Routing.home() {
             // create survey here
         }
     }
+    // is this needed?
+    static("/static") {
+        resource("prod-dash.js")
+    }
 }
 
-internal fun Routing.questions() {
+internal fun Routing.fetchSurvey() {
     route("/{questionId}") {
         get {
             val hash = call.parameters["questionId"]
             val data = mutableListOf<ChartSliceData>()
-            var exists: Long = 0
+            var exists = 0L
             if (hash != null) {
                 if (hash.length != 6) {
                     dataMock.forEach { data.add(it) }
-                    data.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#6444B8"))
+                    data.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#77bcbd"))
                     call.respond(data)
                 }
             }
@@ -107,7 +111,7 @@ internal fun Routing.questions() {
 //                call.respondRedirect("/survey_not_found") // Error Handling in Frontend?
                 // what if no results?
                 dataMock.forEach { data.add(it) }
-                data.add(ChartSliceData("notfound", 15, "#6334B8"))
+                data.add(ChartSliceData("notfound", 15, "##006400"))
                 call.respond(data)
             } else {
                 var answerList: List<Answer> = mutableListOf()
@@ -125,9 +129,6 @@ internal fun Routing.questions() {
                 data.add(ChartSliceData("found", 10, "#6224B8"))
                 call.respond(data)
             }
-        }
-        post {
-            val hash = call.parameters["questionId"]
         }
     }
 }
