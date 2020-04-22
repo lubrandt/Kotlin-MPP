@@ -10,8 +10,11 @@ class DisplaySurvey : RComponent<IdProps, RState>() {
     override fun RBuilder.render() {
         h3 {
             +"Displaying Survey for ID [${props.id}] :"
-            +""
-            +"Might take some time load"
+        }
+        div {
+            p {
+                +"Might take some time to load"
+            }
         }
         styledDiv {
             css {

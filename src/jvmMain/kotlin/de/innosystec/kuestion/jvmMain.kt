@@ -111,7 +111,7 @@ internal fun Routing.fetchSurvey() {
 //                call.respondRedirect("/survey_not_found") // Error Handling in Frontend?
                 // what if no results?
                 dataMock.forEach { data.add(it) }
-                data.add(ChartSliceData("notfound", 15, "##006400"))
+                data.add(ChartSliceData("notfound", 15, "#006400"))
                 call.respond(data)
             } else {
                 var answerList: List<Answer> = mutableListOf()
