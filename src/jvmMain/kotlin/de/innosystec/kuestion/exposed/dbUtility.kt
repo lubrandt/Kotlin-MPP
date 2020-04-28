@@ -8,18 +8,20 @@ import java.time.LocalDateTime
 
 data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
-data class Answer(val surveyHashCode: String, val text: String, val counts: Int)
+data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0)
 
-fun createSurvey(question: String, expirationTime: LocalDateTime) {
+fun createSurveyQuestion(question: String, expirationTime: LocalDateTime): String {
+    val tmpHash = createHash()
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable)
         SurveyTable.insert {
             it[SurveyTable.question] = question
-            it[hash] = createHash()
+            it[hash] = tmpHash
             it[SurveyTable.expirationTime] = expirationTime
         }
     }
+    return tmpHash
 }
 
 fun createHash(): String {
@@ -39,7 +41,8 @@ fun createHash(): String {
     return randomString
 }
 
-fun insertAnswer(answer: Answer) {
+fun insertAnswer(tmpSurvey: String, tmpAnswer: String) {
+    val answer = Answer(tmpSurvey, tmpAnswer)
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)

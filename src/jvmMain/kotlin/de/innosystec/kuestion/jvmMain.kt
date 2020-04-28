@@ -1,17 +1,15 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.exposed.Answer
-import de.innosystec.kuestion.exposed.Survey
+import de.innosystec.kuestion.exposed.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
-import de.innosystec.kuestion.exposed.getAnswers
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.html.respondHtml
 import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.request.receive
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.DefaultJsonConfiguration
@@ -25,6 +23,7 @@ import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.json
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDateTime
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
@@ -70,77 +69,13 @@ internal fun Application.module() {
                 call.respond("Sorry, this survey does not exist")
             }
         }
-        fetchSurvey()
-    }
-}
-
-internal fun Routing.home() {
-    route("/") {
-        get {
-            call.respondText("Hello Ktor Home")
-        }
-        post {
-            // create survey here
-        }
-    }
-    // is this needed?
-    static("/static") {
-        resource("prod-dash.js")
-    }
-}
-
-internal fun Routing.fetchSurvey() {
-    route("/{questionId}") {
-        get {
-            val hash = call.parameters["questionId"]
-            val data = mutableListOf<ChartSliceData>()
-            var exists = 0L
-            if (hash != null) {
-                if (hash.length != 6) {
-                    dataMock.forEach { data.add(it) }
-                    data.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#77bcbd"))
-                    call.respond(data)
-                }
-            }
-            transaction {
-                addLogger(StdOutSqlLogger)
-                SchemaUtils.create(SurveyTable, AnswerTable)
-                exists = SurveyTable.select { SurveyTable.hash eq hash.toString() }.count()
-            }
-            if (exists == 0L) {
-//                call.respondRedirect("/survey_not_found") // Error Handling in Frontend?
-                // what if no results?
-                dataMock.forEach { data.add(it) }
-                data.add(ChartSliceData("notfound", 15, "#006400"))
-                call.respond(data)
-            } else {
-                var answerList: List<Answer> = mutableListOf()
-                transaction {
-                    addLogger(StdOutSqlLogger)
-                    SchemaUtils.create(SurveyTable, AnswerTable)
-                    if (hash != null) {
-                        answerList = getAnswers(hash)
-                    }
-                }
-                answerList.forEach {
-                    data + ChartSliceData(it.text, it.counts, randHexColor())
-                }
-                dataMock.forEach { data + it }
-                data.add(ChartSliceData("found", 10, "#6224B8"))
-                call.respond(data)
-            }
-        }
+        getSurvey()
+        postSurvey()
     }
 }
 
 
-internal fun randHexColor(): String {
-    val stringLength = 6
-    val charPool: List<Char> = ('a'..'f') + ('0'..'9')
-    val randomString =
-        (1..stringLength)
-            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-            .map { x -> charPool[x] }
-            .joinToString("")
-    return "#${randomString}"
-}
+
+
+
+

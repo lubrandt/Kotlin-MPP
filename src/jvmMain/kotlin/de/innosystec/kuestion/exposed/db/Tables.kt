@@ -7,6 +7,7 @@ object SurveyTable : IntIdTable() {
     val question = varchar("question", 25)
     val hash = varchar("hash", 6).uniqueIndex()
     val expirationTime = datetime("expirationTime")
+    //Anzahl an Antworten? Oder query
 }
 
 object AnswerTable: IntIdTable() {

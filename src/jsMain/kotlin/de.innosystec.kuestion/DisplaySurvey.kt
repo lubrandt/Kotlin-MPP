@@ -13,7 +13,7 @@ class DisplaySurvey : RComponent<IdProps, RState>() {
         }
         div {
             p {
-                +"Might take some time to load"
+                +"Might take some time to load, indicator pending"
             }
         }
         styledDiv {

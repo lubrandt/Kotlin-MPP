@@ -17,3 +17,9 @@ val dataMock: List<ChartSliceData> = mutableListOf(
     ChartSliceData("Two", 15, "#C13C37"),
     ChartSliceData("Three", 20, "#6A2135")
 )
+
+@Serializable
+class CompleteSurvey(
+    var question: String = "",
+    var answers: MutableList<String> = mutableListOf<String>()
+)
