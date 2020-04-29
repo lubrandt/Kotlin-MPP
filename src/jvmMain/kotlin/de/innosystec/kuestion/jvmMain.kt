@@ -46,7 +46,8 @@ internal fun Application.module() {
         method(HttpMethod.Post)
         method(HttpMethod.Delete)
         anyHost()
-//        allowCredentials = true
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
     }
 
     install(Compression) {

@@ -4,6 +4,10 @@ import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
 const val jvmBackend = "http://$jvmHost:$jvmPort"
 
@@ -17,4 +21,9 @@ suspend fun getResultFromApi(id: String): Array<ChartSliceData> {
     return client.get("${jvmBackend}/${id}")
 }
 
-suspend fun sendSurveyToApi() {}
+suspend fun sendSurveyToApi(survey: CompleteSurvey): String {
+    return client.post<String>("$jvmBackend/postSurvey") {
+        contentType(ContentType.Application.Json)
+        body = survey
+    }
+}

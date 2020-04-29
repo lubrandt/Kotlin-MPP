@@ -49,9 +49,11 @@ internal fun Routing.getSurvey() {
                     }
                 }
                 answerList.forEach {
-                    data + ChartSliceData(it.text, it.counts, randHexColor())
+                    val count = it.counts +10
+                    println("added: $it with $count")
+                    data.add(ChartSliceData(it.text, count, randHexColor()))
                 }
-                dataMock.forEach { data + it }
+//                dataMock.forEach { data.add(it) }
                 data.add(ChartSliceData("found", 10, "#6224B8"))
                 call.respond(data)
             }

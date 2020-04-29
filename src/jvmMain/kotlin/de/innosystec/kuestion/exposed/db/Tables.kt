@@ -12,7 +12,7 @@ object SurveyTable : IntIdTable() {
 
 object AnswerTable: IntIdTable() {
     val survey = (varchar("survey", 6) references SurveyTable.hash)
-    val text = varchar("text", 50).uniqueIndex()
+    val text = varchar("text", 50)
     val counts = integer("counts").default(0)
 }
 
