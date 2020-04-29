@@ -94,11 +94,8 @@ class CreateSurvey : RComponent<RProps, SurveyState>() {
         }
 
 
-        button(
-            formEncType = ButtonFormEncType.applicationXWwwFormUrlEncoded,
-            formMethod = ButtonFormMethod.post,
-            type = ButtonType.submit
-        ) {
+        button(type = ButtonType.button) {
+            +"Submit Survey"
             attrs.onClickFunction = {
                 if (state.complSurvey.question != "" && state.complSurvey.answers.size > 0) {
                     scope.launch {
@@ -109,7 +106,17 @@ class CreateSurvey : RComponent<RProps, SurveyState>() {
                     }
                 }
             }
-            +"Submit Survey"
+        }
+
+
+        button(type = ButtonType.button) {
+            +"Reset/New Survey"
+            attrs.onClickFunction = {
+                setState {
+                    complSurvey = CompleteSurvey()
+                    surveyHash = ""
+                }
+            }
         }
 
         if (state.surveyHash != "") {
