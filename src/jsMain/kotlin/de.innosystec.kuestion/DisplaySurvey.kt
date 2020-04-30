@@ -1,15 +1,22 @@
 package de.innosystec.kuestion
 
 import de.innosystec.kuestion.charts.PieChart
+import kotlinx.coroutines.launch
 import react.*
 import react.dom.*
 import styled.*
 
-class DisplaySurvey : RComponent<IdProps, RState>() {
+class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
+
+    override fun DisplaySurveyState.init() {
+        scope.launch {
+            receivedSurvey = getResultFromApi(props.id)
+        }
+    }
 
     override fun RBuilder.render() {
         h3 {
-            +"Displaying Survey for ID [${props.id}] :"
+            +"Displaying Survey for ID [${props.id}]:"
         }
         div {
             p {
@@ -25,8 +32,13 @@ class DisplaySurvey : RComponent<IdProps, RState>() {
     }
 }
 
+interface DisplaySurveyState:RState {
+    var receivedSurvey: SurveyReceiving
+    var changedSurvey: SurveyCreation // send updated survey
+}
+
 /**
- * this method is used to call this Component like a usual ReactComponent ( p { } )
+ * this method is used to call this Component like a usual Component ( displaySurvey { } )
  */
 fun RBuilder.displaySurvey(handler: IdProps.() -> Unit): ReactElement {
     return child(DisplaySurvey::class) {

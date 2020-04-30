@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 internal fun Routing.postSurvey() {
     route("/postSurvey") {
         post {
-            val survey = call.receive<CompleteSurvey>()
+            val survey = call.receive<SurveyCreation>()
             var hash = ""
             transaction {
                 addLogger(StdOutSqlLogger)
@@ -29,7 +29,6 @@ internal fun Routing.postSurvey() {
                     insertAnswer(hash, it)
                 }
             }
-            assert(hash != "")
             call.respond(hash)
         }
     }

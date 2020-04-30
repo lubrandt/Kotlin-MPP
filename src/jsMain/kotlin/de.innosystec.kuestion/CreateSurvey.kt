@@ -19,10 +19,10 @@ import react.*
 import react.dom.*
 
 
-class CreateSurvey : RComponent<RProps, SurveyState>() {
+class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
-    override fun SurveyState.init() {
-        complSurvey = CompleteSurvey()
+    override fun CreateSurveyState.init() {
+        complSurvey = SurveyCreation()
         surveyHash = ""
     }
 
@@ -97,7 +97,7 @@ class CreateSurvey : RComponent<RProps, SurveyState>() {
         button(type = ButtonType.button) {
             +"Submit Survey"
             attrs.onClickFunction = {
-                if (state.complSurvey.question != "" && state.complSurvey.answers.size > 0) {
+                if (state.complSurvey.question != "" && state.complSurvey.answers.size >= 2) {
                     scope.launch {
                         val resp = sendSurveyToApi(state.complSurvey)
                         setState {
@@ -113,7 +113,7 @@ class CreateSurvey : RComponent<RProps, SurveyState>() {
             +"Reset/New Survey"
             attrs.onClickFunction = {
                 setState {
-                    complSurvey = CompleteSurvey()
+                    complSurvey = SurveyCreation()
                     surveyHash = ""
                 }
             }
@@ -122,10 +122,16 @@ class CreateSurvey : RComponent<RProps, SurveyState>() {
         if (state.surveyHash != "") {
             p {
                 +"your hash/id is: ${state.surveyHash}"
+                br {}
+                +"click the link below to go to your survey, share this link with future participants"
             }
             a("/#/${state.surveyHash}", target = "_blank") {
                 attrs.rel = "noopener noreferrer"
-                +"click here to go to your survey, share this link with participants"
+                +"localhost:8080/#/${state.surveyHash}"
+            }
+        } else {
+            p{
+                +"Please enter a question and at least two answers."
             }
         }
 
@@ -135,8 +141,8 @@ class CreateSurvey : RComponent<RProps, SurveyState>() {
 
 }
 
-interface SurveyState : RState {
-    var complSurvey: CompleteSurvey
+interface CreateSurveyState : RState {
+    var complSurvey: SurveyCreation
     var surveyHash: String
 }
 
