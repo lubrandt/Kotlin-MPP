@@ -21,6 +21,9 @@ internal fun Routing.getSurvey() {
             val hash = call.parameters["questionId"]
             val data = SurveyReceiving()
             var exists = 0L
+
+            data.question = "MockQuestion?"
+
             if (hash != null) {
                 if (hash.length != 6) {
                     dataMock.forEach { data.answers.add(it) }
@@ -28,11 +31,13 @@ internal fun Routing.getSurvey() {
                     call.respond(data)
                 }
             }
+
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(SurveyTable, AnswerTable)
                 exists = SurveyTable.select { SurveyTable.hash eq hash.toString() }.count()
             }
+
             if (exists == 0L) {
 //                call.respondRedirect("/survey_not_found") // Error Handling in Frontend?
                 // what if no results?
