@@ -2,7 +2,11 @@ package de.innosystec.kuestion
 
 import de.innosystec.kuestion.charts.PieChart
 import de.innosystec.kuestion.charts.ReactPieChart
+import io.ktor.client.request.post
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.launch
+import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import styled.*
@@ -13,22 +17,24 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
         receivedSurvey = SurveyReceiving()
     }
 
-    override fun componentDidMount() {
-        scope.launch {
-            val response = getResultFromApi(props.id)
-            setState {
-                receivedSurvey = response
-            }
+    private suspend fun updateSurvey() {
+        val response = getResultFromApi(props.id)
+        setState {
+            receivedSurvey = response
         }
     }
+
+    override fun componentDidMount() {
+        scope.launch {
+            updateSurvey()
+        }
+    }
+
 
     override fun componentDidUpdate(prevProps: IdProps, prevState: DisplaySurveyState, snapshot: Any) {
         if (props.id != prevProps.id) {
             scope.launch {
-                val response = getResultFromApi(props.id)
-                setState {
-                    receivedSurvey = response
-                }
+                updateSurvey()
             }
         }
     }
@@ -56,9 +62,21 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                 attrs.data = state.receivedSurvey.answers.toTypedArray()
             }
         }
+        ul {
+            state.receivedSurvey.answers.forEach { item ->
+                li {
+                    +"[${item.value} Stimme(n)] ${item.title}"
+                    attrs.onClickFunction = {
+                        scope.launch {
+                            sendClickedAnswerToApi(clickedAnswer(props.id, item.title))
+                            updateSurvey()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
-
 
 interface DisplaySurveyState : RState {
     var receivedSurvey: SurveyReceiving
@@ -73,4 +91,5 @@ fun RBuilder.displaySurvey(handler: IdProps.() -> Unit): ReactElement {
         this.attrs(handler)
     }
 }
+
 

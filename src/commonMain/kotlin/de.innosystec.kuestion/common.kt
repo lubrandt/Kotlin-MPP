@@ -29,3 +29,13 @@ data class SurveyReceiving(
     var question: String = "",
     var answers: MutableList<ChartSliceData> = mutableListOf<ChartSliceData>()
 )
+
+@Serializable
+data class clickedAnswer(
+    var surveyHash: String,
+    var answer: String
+)
+
+// serialize Pair
+// modularität
+//data class SurveyAnswerPair(val a: String, val b:String): Pair<String, String>()

@@ -26,3 +26,10 @@ suspend fun sendSurveyToApi(survey: SurveyCreation): String {
         body = survey
     }
 }
+
+suspend fun sendClickedAnswerToApi(pair: clickedAnswer): String {
+    return client.post("$jvmBackend/inc") {
+        contentType(ContentType.Application.Json)
+        body = pair
+    }
+}

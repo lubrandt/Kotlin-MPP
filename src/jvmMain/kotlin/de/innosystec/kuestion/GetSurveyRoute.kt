@@ -4,6 +4,7 @@ import de.innosystec.kuestion.exposed.Answer
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
 import de.innosystec.kuestion.exposed.getAnswers
+import de.innosystec.kuestion.exposed.mapSurvey
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -21,13 +22,14 @@ internal fun Routing.getSurvey() {
             val hash = call.parameters["questionId"]
             val data = SurveyReceiving()
             var exists = 0L
+            println(hash)
 
-            data.question = "MockQuestion?"
+//            data.question = "MockQuestion?"
 
             if (hash != null) {
                 if (hash.length != 6) {
-                    dataMock.forEach { data.answers.add(it) }
-                    data.answers.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#77bcbd"))
+//                    dataMock.forEach { data.answers.add(it) }
+//                    data.answers.add(ChartSliceData("hashIdTooLongOrTooShort", 5, "#77bcbd"))
                     call.respond(data)
                 }
             }
@@ -41,26 +43,26 @@ internal fun Routing.getSurvey() {
             if (exists == 0L) {
 //                call.respondRedirect("/survey_not_found") // Error Handling in Frontend?
                 // what if no results?
-                dataMock.forEach { data.answers.add(it) }
-                data.answers.add(ChartSliceData("notfound", 15, "#006400"))
+//                dataMock.forEach { data.answers.add(it) }
+//                data.answers.add(ChartSliceData("notfound", 15, "#006400"))
                 call.respond(data)
             } else {
                 var answerList: List<Answer> = mutableListOf()
-                transaction {
-                    addLogger(StdOutSqlLogger)
-                    SchemaUtils.create(SurveyTable, AnswerTable)
-                    if (hash != null) {
-                        answerList = getAnswers(hash)
-                    }
+                if (hash != null) {
+                    answerList = getAnswers(hash)
                 }
                 answerList.forEach {
-                    val count = it.counts +10
-                    println("added: $it with $count")
-                    data.answers.add(ChartSliceData(it.text, count, randHexColor()))
+                    println(it)
+//                    val count = it.counts //+ 10
+//                    println("added: $it with $count")
+                    data.answers.add(ChartSliceData(it.text, it.counts, randHexColor()))
+                }
+                transaction {
+                    data.question = SurveyTable.select{ SurveyTable.hash eq hash.toString()}.map { mapSurvey(it) }.first().question
                 }
                 // uncomment both below to have at least some result
-                dataMock.forEach { data.answers.add(it) }
-                data.answers.add(ChartSliceData("found", 10, "#6224B8"))
+//                dataMock.forEach { data.answers.add(it) }
+//                data.answers.add(ChartSliceData("found", 10, "#6224B8"))
                 call.respond(data)
             }
         }

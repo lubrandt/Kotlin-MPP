@@ -1,5 +1,6 @@
 package de.innosystec.kuestion.exposed
 
+import de.innosystec.kuestion.clickedAnswer
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
 import org.jetbrains.exposed.sql.*
@@ -36,7 +37,7 @@ fun createHash(): String {
     val randomString =
         (1..stringLength)
             .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-            .map{x -> charPool[x]}
+            .map { x -> charPool[x] }
             .joinToString("")
     return randomString
 }
@@ -53,11 +54,11 @@ fun insertAnswer(tmpSurvey: String, tmpAnswer: String) {
     }
 }
 
-fun addAnswerCount(answer: Answer) {
+fun addAnswerCount(answer: clickedAnswer) {
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)
-        AnswerTable.update({AnswerTable.survey eq answer.surveyHashCode}) {
+        AnswerTable.update({ (AnswerTable.survey eq answer.surveyHash) and (AnswerTable.text eq answer.answer) }) {
             with(SqlExpressionBuilder) {
                 it[counts] = counts + 1
             }

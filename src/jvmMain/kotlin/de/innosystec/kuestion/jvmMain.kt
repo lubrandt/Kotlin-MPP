@@ -70,8 +70,9 @@ internal fun Application.module() {
                 call.respond("Sorry, this survey does not exist")
             }
         }
-        getSurvey()
+        counter()
         postSurvey()
+        getSurvey()
     }
 }
 
