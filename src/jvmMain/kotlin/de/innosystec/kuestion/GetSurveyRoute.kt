@@ -55,7 +55,7 @@ internal fun Routing.getSurvey() {
                     println(it)
 //                    val count = it.counts //+ 10
 //                    println("added: $it with $count")
-                    data.answers.add(ChartSliceData(it.text, it.counts, randHexColor()))
+                    data.answers.add(ChartSliceData(it.text, it.counts, it.color))
                 }
                 transaction {
                     data.question = SurveyTable.select{ SurveyTable.hash eq hash.toString()}.map { mapSurvey(it) }.first().question
@@ -69,13 +69,3 @@ internal fun Routing.getSurvey() {
     }
 }
 
-internal fun randHexColor(): String {
-    val stringLength = 6
-    val charPool: List<Char> = ('a'..'f') + ('0'..'9')
-    val randomString =
-        (1..stringLength)
-            .map { kotlin.random.Random.nextInt(0, charPool.size) }
-            .map { x -> charPool[x] }
-            .joinToString("")
-    return "#${randomString}"
-}

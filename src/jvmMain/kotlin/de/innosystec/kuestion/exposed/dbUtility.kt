@@ -6,10 +6,11 @@ import de.innosystec.kuestion.exposed.db.SurveyTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
-data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0)
+data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0, val color:String)
 
 fun createSurveyQuestion(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
@@ -34,22 +35,20 @@ fun createHash(): String {
      */
     val stringLength = 6
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-    val randomString =
-        (1..stringLength)
-            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-            .map { x -> charPool[x] }
-            .joinToString("")
-    return randomString
+    return (1..stringLength)
+        .map { Random.nextInt(0, charPool.size) }
+        .map { x -> charPool[x] }
+        .joinToString("")
 }
 
 fun insertAnswer(tmpSurvey: String, tmpAnswer: String) {
-    val answer = Answer(tmpSurvey, tmpAnswer)
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)
         AnswerTable.insert {
-            it[survey] = answer.surveyHashCode
-            it[text] = answer.text
+            it[survey] = tmpSurvey
+            it[text] = tmpAnswer
+            it[color] = randHexColor()
         }
     }
 }
@@ -86,5 +85,17 @@ fun mapSurvey(it: ResultRow) = Survey(
 fun mapAnswer(it: ResultRow) = Answer(
     surveyHashCode = it[AnswerTable.survey],
     text = it[AnswerTable.text],
-    counts = it[AnswerTable.counts]
+    counts = it[AnswerTable.counts],
+color = it[AnswerTable.color]
 )
+
+internal fun randHexColor(): String {
+    val stringLength = 6
+    val charPool: List<Char> = ('a'..'f') + ('0'..'9')
+    val randomString =
+        (1..stringLength)
+            .map { Random.nextInt(0, charPool.size) }
+            .map { x -> charPool[x] }
+            .joinToString("")
+    return "#${randomString}"
+}

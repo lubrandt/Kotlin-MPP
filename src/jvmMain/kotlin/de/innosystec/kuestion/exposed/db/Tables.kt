@@ -14,5 +14,6 @@ object AnswerTable: IntIdTable() {
     val survey = (varchar("survey", 6) references SurveyTable.hash)
     val text = varchar("text", 50)
     val counts = integer("counts").default(0)
+    val color = varchar("color", 7)
 }
 
