@@ -1,10 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.charts.PieChart
 import de.innosystec.kuestion.charts.ReactPieChart
-import io.ktor.client.request.post
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.coroutines.launch
 import kotlinx.html.js.onClickFunction
 import react.*
@@ -68,7 +64,7 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                     +"[${item.value} Stimme(n)] ${item.title}"
                     attrs.onClickFunction = {
                         scope.launch {
-                            sendClickedAnswerToApi(clickedAnswer(props.id, item.title))
+                            sendClickedAnswerToApi(ClickedAnswer(props.id, item.title))
                             updateSurvey()
                         }
                     }
@@ -80,7 +76,6 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 
 interface DisplaySurveyState : RState {
     var receivedSurvey: SurveyReceiving
-    var changedSurvey: SurveyCreation // send updated survey
 }
 
 /**

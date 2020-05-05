@@ -27,9 +27,13 @@ suspend fun sendSurveyToApi(survey: SurveyCreation): String {
     }
 }
 
-suspend fun sendClickedAnswerToApi(pair: clickedAnswer): String {
+suspend fun sendClickedAnswerToApi(pair: ClickedAnswer): String {
     return client.post("$jvmBackend/inc") {
         contentType(ContentType.Application.Json)
         body = pair
     }
+}
+
+suspend fun getAllSurveys(): List<FrontSurvey> {
+    return client.get("$jvmBackend/allSurveys")
 }

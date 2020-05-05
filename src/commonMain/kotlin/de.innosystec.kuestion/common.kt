@@ -31,11 +31,10 @@ data class SurveyReceiving(
 )
 
 @Serializable
-data class clickedAnswer(
+data class ClickedAnswer(
     var surveyHash: String,
     var answer: String
 )
 
-// serialize Pair
-// modularität
-//data class SurveyAnswerPair(val a: String, val b:String): Pair<String, String>()
+@Serializable
+data class FrontSurvey(val question: String, val hash: String)

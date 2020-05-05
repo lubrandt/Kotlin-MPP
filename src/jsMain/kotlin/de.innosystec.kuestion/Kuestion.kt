@@ -6,7 +6,7 @@ import react.*
 import react.dom.*
 import react.router.dom.*
 
-class Kuestion : RComponent<IdProps, KuestionState>() {
+class Kuestion : RComponent<RProps, KuestionState>() {
 
     override fun KuestionState.init() {
         val mainScope = MainScope()
@@ -34,23 +34,19 @@ class Kuestion : RComponent<IdProps, KuestionState>() {
                         }
                     }
                     li {
-                        navLink("/mockSu", exact = true) {
-                            +"mockSurvey"
-                        }
-                    }
-                    li {
-                        navLink("/0123456", exact = true) {
-                            +"tooLongSurvey"
+                        navLink("/allSurveys", exact = true) {
+                            +"Display all Created surveys"
                         }
                     }
                 }
+
                 div("content") {
                     route("/", CreateSurvey::class, exact = true)
-                    route<IdProps>("/:id") { props ->
+                    route("/allSurveys", SurveysList::class, exact = true)
+                    route<IdProps>("/:id/r") { props ->
                         displaySurvey {
                             id = props.match.params.id
                         }
-//                        child(functionalComponent = DisplaySurveyFunctional, props = props.match.params)
                     }
                 }
             }

@@ -71,6 +71,7 @@ internal fun Application.module() {
             }
         }
         counter()
+        allSurveys()
         postSurvey()
         getSurvey()
     }

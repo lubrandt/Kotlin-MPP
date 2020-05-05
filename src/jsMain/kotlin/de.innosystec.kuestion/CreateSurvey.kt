@@ -125,9 +125,9 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                 br {}
                 +"click the link below to go to your survey, share this link with future participants"
             }
-            a("/#/${state.surveyHash}", target = "_blank") {
+            a("/#/${state.surveyHash}/r", target = "_blank") {
                 attrs.rel = "noopener noreferrer"
-                +"localhost:8080/#/${state.surveyHash}"
+                +"localhost:8080/#/${state.surveyHash}/r"
             }
         } else {
             p{

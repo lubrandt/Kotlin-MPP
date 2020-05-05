@@ -1,6 +1,6 @@
 package de.innosystec.kuestion.exposed
 
-import de.innosystec.kuestion.clickedAnswer
+import de.innosystec.kuestion.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
 import org.jetbrains.exposed.sql.*
@@ -10,7 +10,7 @@ import kotlin.random.Random
 
 data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
-data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0, val color:String)
+data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0, val color: String)
 
 fun createSurveyQuestion(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
@@ -53,7 +53,7 @@ fun insertAnswer(tmpSurvey: String, tmpAnswer: String) {
     }
 }
 
-fun addAnswerCount(answer: clickedAnswer) {
+fun addAnswerCount(answer: ClickedAnswer) {
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)
@@ -86,7 +86,7 @@ fun mapAnswer(it: ResultRow) = Answer(
     surveyHashCode = it[AnswerTable.survey],
     text = it[AnswerTable.text],
     counts = it[AnswerTable.counts],
-color = it[AnswerTable.color]
+    color = it[AnswerTable.color]
 )
 
 internal fun randHexColor(): String {
