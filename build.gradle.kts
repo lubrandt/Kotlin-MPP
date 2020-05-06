@@ -56,6 +56,7 @@ kotlin {
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serializationVersion")
                 implementation("io.ktor:ktor-client-serialization-jvm:$ktorVersion")
+                implementation("io.ktor:ktor-auth:$ktorVersion")
 
                 //db things
                 implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")

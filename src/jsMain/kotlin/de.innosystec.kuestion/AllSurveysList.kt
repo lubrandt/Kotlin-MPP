@@ -56,7 +56,7 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
                             +item.question
                         }
                         button {
-                            +"delete me?"
+                            +"Delete Survey"
                             attrs.onClickFunction = {
                                 scope.launch {
                                     deleteSurvey(item.hash)
@@ -65,7 +65,12 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
                             }
                         }
                         button {
-                            +"end me with basic-auth user erstellen?"
+                            +"Edit Survey"
+                        }
+                        button {
+                            +"End Survey"
+                            //todo: actual expected time with common code(color beispiel)??
+                            //todo: basic-auth with name == pw
                         }
                     }
                 }

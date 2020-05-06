@@ -37,4 +37,9 @@ data class ClickedAnswer(
 )
 
 @Serializable
-data class FrontSurvey(val question: String, val hash: String)
+data class FrontSurvey(
+    val question: String,
+    val hash: String
+)
+
+expect class Time

@@ -4,6 +4,9 @@ import de.innosystec.kuestion.exposed.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
 import io.ktor.application.*
+import io.ktor.auth.Authentication
+import io.ktor.auth.UserIdPrincipal
+import io.ktor.auth.basic
 import io.ktor.features.*
 import io.ktor.html.respondHtml
 import io.ktor.http.ContentType
@@ -58,6 +61,14 @@ internal fun Application.module() {
         statusFile(HttpStatusCode.NotFound, filePattern = "error#.html")
     }
 
+    install(Authentication) {
+        basic("basicAuth") {
+            validate {credentials ->
+                if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
+            }
+        }
+    }
+
     install(Routing)
 
 //    Database.connect("jdbc:h2:file:C:/data/sample;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
@@ -73,6 +84,7 @@ internal fun Application.module() {
         counter()
         allSurveys()
         postSurvey()
+        updateSurvey()
         getSurvey()
     }
 }

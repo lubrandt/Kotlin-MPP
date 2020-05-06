@@ -24,7 +24,7 @@ internal fun Routing.postSurvey() {
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(SurveyTable, AnswerTable)
-                hash = createSurveyQuestion(survey.question, LocalDateTime.now())
+                hash = createSurveyQuestion(survey.question, Time.now()) //Survey is over NOW?! xD
                 survey.answers.forEach {
                     insertAnswer(hash, it)
                 }

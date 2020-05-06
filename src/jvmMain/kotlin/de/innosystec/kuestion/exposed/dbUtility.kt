@@ -8,11 +8,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
+data class Survey(val question: String, val hash: String, val expirationTime: Time)
 
 data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0, val color: String)
 
-fun createSurveyQuestion(question: String, expirationTime: LocalDateTime): String {
+fun createSurveyQuestion(question: String, expirationTime: Time): String {
     val tmpHash = createHash()
     transaction {
         addLogger(StdOutSqlLogger)
