@@ -1,6 +1,7 @@
 package de.innosystec.kuestion
 
 import kotlinx.coroutines.launch
+import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import react.router.dom.navLink
@@ -11,42 +12,66 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
         surveys = emptyList()
     }
 
+    private suspend fun updateListOfSurveys() {
+        val resp = getAllSurveys()
+        setState{
+            surveys = resp
+        }
+    }
+
     override fun componentDidMount() {
         scope.launch {
-            val resp = getAllSurveys()
-            setState{
-                surveys = resp
-            }
+           updateListOfSurveys()
         }
     }
 
     override fun RBuilder.render() {
 
-        h3 {
-            +"List of all Surveys"
-        }
-        ul("header") {
-
-            li {
-                navLink("/mockSu/r", exact = true) {
-                    +"mockSurvey"
-                }
+        div {
+            h3 {
+                +"List of Mock Surveys"
             }
-            li {
-                navLink("/0123456/r", exact = true) {
-                    +"tooLongSurvey"
-                }
-            }
-            state.surveys.forEach {
+            ul {
                 li {
-                    navLink("/${it.hash}/r", exact = true) {
-                        +it.question
+                    navLink("/mockSu/r", exact = true) {
+                        +"mockSurvey"
+                    }
+                }
+                li {
+                    navLink("/0123456/r", exact = true) {
+                        +"tooLongSurvey"
+                    }
+                }
+            }
+        }
+
+        div {
+            h3 {
+                +"List of all created Surveys"
+            }
+            ul {
+                state.surveys.forEach {item ->
+                    li {
+                        navLink("/${item.hash}/r", exact = true) {
+                            +item.question
+                        }
+                        button {
+                            +"delete me?"
+                            attrs.onClickFunction = {
+                                scope.launch {
+                                    deleteSurvey(item.hash)
+                                    updateListOfSurveys()
+                                }
+                            }
+                        }
+                        button {
+                            +"end me with basic-auth user erstellen?"
+                        }
                     }
                 }
             }
         }
     }
-
 }
 
 interface SurveysListState : RState {

@@ -97,7 +97,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
         button(type = ButtonType.button) {
             +"Submit Survey"
             attrs.onClickFunction = {
-                if (state.complSurvey.question != "" && state.complSurvey.answers.size >= 2) {
+                if (state.complSurvey.question.length > 3 && state.complSurvey.answers.size >= 2) {
                     scope.launch {
                         val resp = sendSurveyToApi(state.complSurvey)
                         setState {

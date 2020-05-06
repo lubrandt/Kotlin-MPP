@@ -3,6 +3,7 @@ package de.innosystec.kuestion
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
@@ -36,4 +37,8 @@ suspend fun sendClickedAnswerToApi(pair: ClickedAnswer): String {
 
 suspend fun getAllSurveys(): List<FrontSurvey> {
     return client.get("$jvmBackend/allSurveys")
+}
+
+suspend fun deleteSurvey(id: String) {
+    return client.delete("$jvmBackend/$id")
 }

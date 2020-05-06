@@ -6,14 +6,13 @@ import de.innosystec.kuestion.exposed.db.SurveyTable
 import de.innosystec.kuestion.exposed.getAnswers
 import de.innosystec.kuestion.exposed.mapSurvey
 import io.ktor.application.call
+import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Routing
+import io.ktor.routing.delete
 import io.ktor.routing.get
 import io.ktor.routing.route
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 internal fun Routing.getSurvey() {
@@ -65,6 +64,16 @@ internal fun Routing.getSurvey() {
 //                data.answers.add(ChartSliceData("found", 10, "#6224B8"))
                 call.respond(data)
             }
+        }
+        delete {
+            val hash = call.parameters["questionId"]
+            transaction {
+                addLogger(StdOutSqlLogger)
+                SchemaUtils.create(SurveyTable, AnswerTable)
+                AnswerTable.deleteWhere { AnswerTable.survey eq hash.toString() }
+                SurveyTable.deleteWhere { SurveyTable.hash eq hash.toString() }
+            }
+            call.respond(HttpStatusCode.OK)
         }
     }
 }
