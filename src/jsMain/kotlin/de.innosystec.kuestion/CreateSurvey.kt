@@ -60,6 +60,11 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                     }
                 }
             }
+            p {
+                +"ExpirationDate:"
+                br {}
+                +state.complSurvey.expirationTime
+            }
         }
 
 
@@ -87,6 +92,19 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                             if (!complSurvey.answers.contains(input)) {
                                 complSurvey.answers.add(input)
                             }
+                        }
+                    }
+                }
+            )
+        }
+
+        // Date
+        div {
+            child(functionalComponent = dateComponent,
+                props = jsObject {
+                    onSubmit = { input ->
+                        setState {
+                            complSurvey.expirationTime = input
                         }
                     }
                 }
@@ -130,12 +148,12 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                 +"localhost:8080/#/${state.surveyHash}/r"
             }
         } else {
-            p{
+            p {
                 +"Please enter a question and at least two answers."
             }
         }
 
-        println("Survey is: \nQuestion: " + state.complSurvey.question + "\nAnswers: " + state.complSurvey.answers)
+        println("Survey is: \nQuestion: " + state.complSurvey.question + "\nAnswers: " + state.complSurvey.answers + "\nExpirationDate: ${state.complSurvey.expirationTime}")
     }
 
 

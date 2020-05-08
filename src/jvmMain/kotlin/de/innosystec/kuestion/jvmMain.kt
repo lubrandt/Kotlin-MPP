@@ -1,32 +1,23 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.exposed.*
-import de.innosystec.kuestion.exposed.db.AnswerTable
-import de.innosystec.kuestion.exposed.db.SurveyTable
-import io.ktor.application.*
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.UserIdPrincipal
 import io.ktor.auth.basic
 import io.ktor.features.*
-import io.ktor.html.respondHtml
-import io.ktor.http.ContentType
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.request.receive
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.serialization.DefaultJsonConfiguration
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.response.respond
+import io.ktor.routing.Routing
+import io.ktor.routing.get
+import io.ktor.routing.route
+import io.ktor.routing.routing
 import io.ktor.serialization.json
-import io.ktor.serialization.serialization
 import io.ktor.server.netty.EngineMain
-import kotlinx.html.body
-import kotlinx.html.h1
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.json
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
+import org.jetbrains.exposed.sql.Database
+import java.util.*
 
 fun main(args: Array<String>) = EngineMain.main(args)
 

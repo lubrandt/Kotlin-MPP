@@ -1,5 +1,6 @@
 package de.innosystec.kuestion
 
+import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
 
 const val jvmHost = "127.0.0.1"
@@ -21,13 +22,15 @@ val dataMock: List<ChartSliceData> = mutableListOf(
 @Serializable
 data class SurveyCreation(
     var question: String = "",
-    var answers: MutableList<String> = mutableListOf<String>()
+    var answers: MutableList<String> = mutableListOf<String>(),
+    var expirationTime: String = ""
 )
 
 @Serializable
 data class SurveyReceiving(
     var question: String = "",
-    var answers: MutableList<ChartSliceData> = mutableListOf<ChartSliceData>()
+    var answers: MutableList<ChartSliceData> = mutableListOf<ChartSliceData>(),
+    var expirationTime: String = ""
 )
 
 @Serializable
@@ -41,5 +44,3 @@ data class FrontSurvey(
     val question: String,
     val hash: String
 )
-
-expect class Time

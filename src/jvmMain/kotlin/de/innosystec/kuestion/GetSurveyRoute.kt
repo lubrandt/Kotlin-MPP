@@ -19,7 +19,7 @@ internal fun Routing.getSurvey() {
     route("/{questionId}") {
         get {
             val hash = call.parameters["questionId"]
-            val data = SurveyReceiving()
+            val data = SurveyReceiving() //default value for time???
             var exists = 0L
             println(hash)
 
@@ -58,6 +58,9 @@ internal fun Routing.getSurvey() {
                 }
                 transaction {
                     data.question = SurveyTable.select{ SurveyTable.hash eq hash.toString()}.map { mapSurvey(it) }.first().question
+                    data.expirationTime = SurveyTable.select{ SurveyTable.hash eq hash.toString()}.map { mapSurvey(it) }.first().expirationTime.toString()
+                    // todo: Beware the Genauigkeitsfehler! 6 statt 9 Stellen aus der Datenbank
+                    println("sendTime: ${data.expirationTime}")
                 }
                 // uncomment both below to have at least some result
 //                dataMock.forEach { data.answers.add(it) }

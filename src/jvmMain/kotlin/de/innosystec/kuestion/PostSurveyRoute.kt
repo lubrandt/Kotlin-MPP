@@ -14,6 +14,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal fun Routing.postSurvey() {
@@ -22,9 +23,9 @@ internal fun Routing.postSurvey() {
             val survey = call.receive<SurveyCreation>()
             var hash = ""
             transaction {
-                addLogger(StdOutSqlLogger)
                 SchemaUtils.create(SurveyTable, AnswerTable)
-                hash = createSurveyQuestion(survey.question, Time.now()) //Survey is over NOW?! xD
+                hash = createSurveyQuestion(survey.question, parseStringToLocalDateTime(survey.expirationTime))
+//                hash = createSurveyQuestion(survey.question, parseStringToLocalDateTime(LocalDateTime.now().toString()))
                 survey.answers.forEach {
                     insertAnswer(hash, it)
                 }

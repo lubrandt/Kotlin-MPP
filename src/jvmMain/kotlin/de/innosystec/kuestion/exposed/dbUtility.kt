@@ -3,16 +3,18 @@ package de.innosystec.kuestion.exposed
 import de.innosystec.kuestion.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
+import io.ktor.util.toLocalDateTime
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.sql.Date
 import java.time.LocalDateTime
 import kotlin.random.Random
 
-data class Survey(val question: String, val hash: String, val expirationTime: Time)
+data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
 data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0, val color: String)
 
-fun createSurveyQuestion(question: String, expirationTime: Time): String {
+fun createSurveyQuestion(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
     transaction {
         addLogger(StdOutSqlLogger)

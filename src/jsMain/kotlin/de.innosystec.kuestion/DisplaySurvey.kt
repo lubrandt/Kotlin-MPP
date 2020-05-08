@@ -43,11 +43,11 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
             p {
                 +"Might take some time to load (indicator pending)"
                 br {}
-                +"received Survey: "
+                +"Question: ${state.receivedSurvey.question}"
                 br {}
-                +state.receivedSurvey.question
+                +"List of Answers: ${state.receivedSurvey.answers}"
                 br {}
-                +"${state.receivedSurvey.answers}"
+                +"ExpirationDate: ${state.receivedSurvey.expirationTime}"
             }
         }
         styledDiv {
