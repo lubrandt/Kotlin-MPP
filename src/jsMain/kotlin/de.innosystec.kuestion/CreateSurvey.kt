@@ -1,20 +1,9 @@
 package de.innosystec.kuestion
 
-import io.ktor.client.request.post
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import kotlinext.js.JsObject
 import kotlinext.js.jsObject
 import kotlinx.coroutines.launch
-import kotlinx.html.ButtonFormEncType
-import kotlinx.html.ButtonFormMethod
 import kotlinx.html.ButtonType
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onSubmitFunction
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
 
@@ -22,8 +11,10 @@ import react.dom.*
 class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
     override fun CreateSurveyState.init() {
-        complSurvey = SurveyCreation()
+        question = ""
+        answers = mutableListOf<String>()
         surveyHash = ""
+        expirationDate = ExpirationDate()
     }
 
     override fun RBuilder.render() {
@@ -34,13 +25,12 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             +"Landingpage & Creation of Survey"
         }
 
-//        child(functionalComponent = completeSurveyList)
 
         div {
             p {
                 +"Question:"
                 br {}
-                +state.complSurvey.question
+                +state.question
 
             }
             p {
@@ -48,12 +38,12 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 //                +state.complSurvey.answers.size.toString()
             }
             ul {
-                state.complSurvey.answers.forEach { item ->
+                state.answers.forEach { item ->
                     li {
                         key = item
                         attrs.onClickFunction = {
                             setState {
-                                state.complSurvey.answers.remove(item)
+                                state.answers.remove(item)
                             }
                         }
                         +item
@@ -63,7 +53,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             p {
                 +"ExpirationDate:"
                 br {}
-                +state.complSurvey.expirationTime
+                +state.expirationDate.toString()
             }
         }
 
@@ -71,13 +61,14 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
         // Question
         div {
             child(
-                functionalComponent = questionComponent,
+                functionalComponent = inputComponent,
                 props = jsObject {
                     onSubmit = { input ->
                         setState {
-                            complSurvey.question = input
+                            question = input
                         }
                     }
+                    inputPart = "Question?"
                 }
             )
         }
@@ -85,39 +76,104 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
         // Answers
         div {
-            child(functionalComponent = answerComponent,
+            child(functionalComponent = inputComponent,
                 props = jsObject {
                     onSubmit = { input ->
                         setState {
-                            if (!complSurvey.answers.contains(input)) {
-                                complSurvey.answers.add(input)
+                            if (!answers.contains(input)) {
+                                answers.add(input)
                             }
                         }
                     }
+                    inputPart = "Answer?"
                 }
             )
         }
 
         // Date
         div {
-            child(functionalComponent = dateComponent,
+            child(functionalComponent = inputComponent,
                 props = jsObject {
                     onSubmit = { input ->
                         setState {
-                            complSurvey.expirationTime = input
+                            expirationDate.year = input
                         }
                     }
+                    inputPart = "Year"
+                }
+            )
+            child(functionalComponent = inputComponent,
+                props = jsObject {
+                    onSubmit = { input ->
+                        var tmp = input
+                        if (input.length < 2) {tmp = "0$input"}
+                        setState {
+                            expirationDate.month = tmp
+                        }
+                    }
+                    inputPart = "Month"
+                }
+            )
+            child(functionalComponent = inputComponent,
+                props = jsObject {
+                    onSubmit = { input ->
+                        var tmp = input
+                        if (input.length < 2) {tmp = "0$input"}
+                        setState {
+                            expirationDate.day = tmp
+                        }
+                    }
+                    inputPart = "Day"
+                }
+            )
+            child(functionalComponent = inputComponent,
+                props = jsObject {
+                    onSubmit = { input ->
+                        var tmp = input
+                        if (input.length < 2) {tmp = "0$input"}
+                        setState {
+                            expirationDate.hour = tmp
+                        }
+                    }
+                    inputPart = "Hour"
+                }
+            )
+            child(functionalComponent = inputComponent,
+                props = jsObject {
+                    onSubmit = { input ->
+                        var tmp = input
+                        if (input.length < 2) {tmp = "0$input"}
+                        setState {
+                            expirationDate.minute = tmp
+                        }
+                    }
+                    inputPart = "Minute"
                 }
             )
         }
 
 
+
+
         button(type = ButtonType.button) {
             +"Submit Survey"
             attrs.onClickFunction = {
-                if (state.complSurvey.question.length > 3 && state.complSurvey.answers.size >= 2) {
+                if (state.question.length > 3
+                    && state.answers.size >= 2
+                    && state.expirationDate.year != ""
+                    && state.expirationDate.month != ""
+                    && state.expirationDate.day != ""
+                    && state.expirationDate.hour != ""
+                    && state.expirationDate.minute != ""
+                ) {
                     scope.launch {
-                        val resp = sendSurveyToApi(state.complSurvey)
+                        val resp = sendSurveyToApi(
+                            SurveyCreation(
+                                state.question,
+                                state.answers,
+                                "${state.expirationDate.year}-${state.expirationDate.month}-${state.expirationDate.day}T${state.expirationDate.hour}:${state.expirationDate.minute}"
+                            )
+                        )
                         setState {
                             surveyHash = resp
                         }
@@ -131,8 +187,10 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             +"Reset/New Survey"
             attrs.onClickFunction = {
                 setState {
-                    complSurvey = SurveyCreation()
+                    question = ""
+                    answers = mutableListOf<String>()
                     surveyHash = ""
+                    expirationDate = ExpirationDate()
                 }
             }
         }
@@ -149,21 +207,24 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             }
         } else {
             p {
-                +"Please enter a question and at least two answers."
+                +"Please enter a question, at least two answers and a complete Expiration Date."
             }
         }
 
-        println("Survey is: \nQuestion: " + state.complSurvey.question + "\nAnswers: " + state.complSurvey.answers + "\nExpirationDate: ${state.complSurvey.expirationTime}")
+        println("Survey is: \nQuestion: " + state.question + "\nAnswers: " + state.answers + "\nExpirationDate: ${state.expirationDate}")
     }
 
 
 }
 
 interface CreateSurveyState : RState {
-    var complSurvey: SurveyCreation
+    var question: String
+    var answers: MutableList<String>
     var surveyHash: String
+    var expirationDate: ExpirationDate
 }
 
 interface InputProps : RProps {
     var onSubmit: (String) -> Unit
+    var inputPart: String
 }

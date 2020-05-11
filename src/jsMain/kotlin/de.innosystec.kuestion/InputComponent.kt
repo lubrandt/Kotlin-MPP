@@ -9,31 +9,27 @@ import react.dom.form
 import react.dom.input
 import react.functionalComponent
 import react.useState
-import kotlin.js.Date
 
-val dateComponent = functionalComponent<InputProps> {props ->
-    val (dateTime, setDateTime) = useState("")
+val inputComponent = functionalComponent<InputProps> {props ->
+    val (input, setInput) = useState("")
 
     val submitDateHandler: (Event) -> Unit = {
         it.preventDefault()
-        setDateTime("")
-        val date = Date(dateTime)
-//        println(dateTime)
-//        println(date)
-        props.onSubmit(date.toString())
+        setInput("")
+        props.onSubmit(input)
     }
 
     val changeDateHandler: (Event) -> Unit = {
         val value = (it.target as HTMLInputElement).value
-        setDateTime(value)
+        setInput(value)
     }
 
     form {
         attrs.onSubmitFunction = submitDateHandler
         input(InputType.text) {
             attrs.onChangeFunction = changeDateHandler
-            attrs.value = dateTime
-            attrs.placeholder = "YYYY-MM-DDTHH:MM"
+            attrs.value = input
+            attrs.placeholder = props.inputPart
         }
     }
 }

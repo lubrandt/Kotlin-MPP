@@ -14,8 +14,10 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.sql.Date
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 internal fun Routing.postSurvey() {
     route("/postSurvey") {
@@ -24,7 +26,7 @@ internal fun Routing.postSurvey() {
             var hash = ""
             transaction {
                 SchemaUtils.create(SurveyTable, AnswerTable)
-                hash = createSurveyQuestion(survey.question, parseStringToLocalDateTime(survey.expirationTime))
+                hash = createSurveyQuestion(survey.question, createDate(survey.expirationTime))
 //                hash = createSurveyQuestion(survey.question, parseStringToLocalDateTime(LocalDateTime.now().toString()))
                 survey.answers.forEach {
                     insertAnswer(hash, it)
@@ -34,3 +36,5 @@ internal fun Routing.postSurvey() {
         }
     }
 }
+
+

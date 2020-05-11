@@ -34,6 +34,15 @@ data class SurveyReceiving(
 )
 
 @Serializable
+data class ExpirationDate(
+    var year: String = "",
+    var month: String = "",
+    var day: String = "",
+    var hour: String = "",
+    var minute: String = ""
+)
+
+@Serializable
 data class ClickedAnswer(
     var surveyHash: String,
     var answer: String
