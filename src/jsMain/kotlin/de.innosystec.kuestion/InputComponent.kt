@@ -10,26 +10,31 @@ import react.dom.input
 import react.functionalComponent
 import react.useState
 
-val inputComponent = functionalComponent<InputProps> {props ->
+val inputComponent = functionalComponent<InputProps> { props ->
     val (input, setInput) = useState("")
 
-    val submitDateHandler: (Event) -> Unit = {
+    val submitHandler: (Event) -> Unit = {
         it.preventDefault()
         setInput("")
-        props.onSubmit(input)
+        if (props.inputType == InputType.text || props.inputType == InputType.text) {
+            props.onSubmit(input)
+        }
     }
 
-    val changeDateHandler: (Event) -> Unit = {
+    val changeHandler: (Event) -> Unit = {
         val value = (it.target as HTMLInputElement).value
         setInput(value)
+        if (props.inputType == InputType.date || props.inputType == InputType.time) {
+            props.onChange(value)
+        }
     }
 
     form {
-        attrs.onSubmitFunction = submitDateHandler
-        input(InputType.text) {
-            attrs.onChangeFunction = changeDateHandler
+        attrs.onSubmitFunction = submitHandler
+        input(props.inputType) {
+            attrs.onChangeFunction = changeHandler
             attrs.value = input
-            attrs.placeholder = props.inputPart
+            attrs.placeholder = props.inputPlaceholder
         }
     }
 }

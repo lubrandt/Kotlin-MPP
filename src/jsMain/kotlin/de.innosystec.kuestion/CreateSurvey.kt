@@ -3,6 +3,7 @@ package de.innosystec.kuestion
 import kotlinext.js.jsObject
 import kotlinx.coroutines.launch
 import kotlinx.html.ButtonType
+import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
@@ -14,7 +15,8 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
         question = ""
         answers = mutableListOf<String>()
         surveyHash = ""
-        expirationDate = ExpirationDate()
+        date = ""
+        time = ""
     }
 
     override fun RBuilder.render() {
@@ -53,7 +55,9 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             p {
                 +"ExpirationDate:"
                 br {}
-                +state.expirationDate.toString()
+                +state.date
+                +" | "
+                +state.time
             }
         }
 
@@ -68,7 +72,8 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                             question = input
                         }
                     }
-                    inputPart = "Question?"
+                    inputType = InputType.text
+                    inputPlaceholder = "Question?"
                 }
             )
         }
@@ -85,69 +90,39 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                             }
                         }
                     }
-                    inputPart = "Answer?"
+                    inputType = InputType.text
+                    inputPlaceholder = "Answer?"
                 }
             )
         }
 
         // Date
         div {
+            //todo: no submit on both
+            //Datum
             child(functionalComponent = inputComponent,
                 props = jsObject {
-                    onSubmit = { input ->
+                    onChange = { input ->
                         setState {
-                            expirationDate.year = input
+                            date = input
                         }
                     }
-                    inputPart = "Year"
+                    inputPlaceholder = ""
+                    inputType = InputType.date
                 }
+
             )
+
+            //Zeit
             child(functionalComponent = inputComponent,
                 props = jsObject {
-                    onSubmit = { input ->
-                        var tmp = input
-                        if (input.length < 2) {tmp = "0$input"}
+                    onChange = { input ->
                         setState {
-                            expirationDate.month = tmp
+                            time = input
                         }
                     }
-                    inputPart = "Month"
-                }
-            )
-            child(functionalComponent = inputComponent,
-                props = jsObject {
-                    onSubmit = { input ->
-                        var tmp = input
-                        if (input.length < 2) {tmp = "0$input"}
-                        setState {
-                            expirationDate.day = tmp
-                        }
-                    }
-                    inputPart = "Day"
-                }
-            )
-            child(functionalComponent = inputComponent,
-                props = jsObject {
-                    onSubmit = { input ->
-                        var tmp = input
-                        if (input.length < 2) {tmp = "0$input"}
-                        setState {
-                            expirationDate.hour = tmp
-                        }
-                    }
-                    inputPart = "Hour"
-                }
-            )
-            child(functionalComponent = inputComponent,
-                props = jsObject {
-                    onSubmit = { input ->
-                        var tmp = input
-                        if (input.length < 2) {tmp = "0$input"}
-                        setState {
-                            expirationDate.minute = tmp
-                        }
-                    }
-                    inputPart = "Minute"
+                    inputPlaceholder = ""
+                    inputType = InputType.time
                 }
             )
         }
@@ -160,18 +135,15 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             attrs.onClickFunction = {
                 if (state.question.length > 3
                     && state.answers.size >= 2
-                    && state.expirationDate.year != ""
-                    && state.expirationDate.month != ""
-                    && state.expirationDate.day != ""
-                    && state.expirationDate.hour != ""
-                    && state.expirationDate.minute != ""
+                    && state.date != ""
+                    && state.time != ""
                 ) {
                     scope.launch {
                         val resp = sendSurveyToApi(
                             SurveyCreation(
                                 state.question,
                                 state.answers,
-                                "${state.expirationDate.year}-${state.expirationDate.month}-${state.expirationDate.day}T${state.expirationDate.hour}:${state.expirationDate.minute}"
+                                "${state.date}T${state.time}"
                             )
                         )
                         setState {
@@ -190,7 +162,8 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                     question = ""
                     answers = mutableListOf<String>()
                     surveyHash = ""
-                    expirationDate = ExpirationDate()
+                    date = ""
+                    time = ""
                 }
             }
         }
@@ -211,7 +184,9 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             }
         }
 
-        println("Survey is: \nQuestion: " + state.question + "\nAnswers: " + state.answers + "\nExpirationDate: ${state.expirationDate}")
+        println("Survey is: \nQuestion: " + state.question
+                + "\nAnswers: " + state.answers
+                + "\nDate and Time: ${state.date} | ${state.time}")
     }
 
 
@@ -221,10 +196,13 @@ interface CreateSurveyState : RState {
     var question: String
     var answers: MutableList<String>
     var surveyHash: String
-    var expirationDate: ExpirationDate
+    var date: String
+    var time: String
 }
 
 interface InputProps : RProps {
     var onSubmit: (String) -> Unit
-    var inputPart: String
+    var onChange: (String) -> Unit
+    var inputPlaceholder: String
+    var inputType: InputType
 }

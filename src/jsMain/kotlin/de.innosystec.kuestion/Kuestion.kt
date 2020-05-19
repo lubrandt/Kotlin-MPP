@@ -43,6 +43,11 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                 div("content") {
                     route("/", CreateSurvey::class, exact = true)
                     route("/allSurveys", SurveysList::class, exact = true)
+                    route<IdProps>("/:id/edit") { props ->
+                        updateSurvey {
+                            id = props.match.params.id
+                        }
+                    }
                     route<IdProps>("/:id/r") { props ->
                         displaySurvey {
                             id = props.match.params.id

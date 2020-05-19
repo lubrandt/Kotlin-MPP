@@ -107,7 +107,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
 
                 // React packages/modules
-                implementation(npm("react-minimal-pie-chart"))
+                // nimmt ohne versionsangabe die aktuellste
+                implementation(npm("react-minimal-pie-chart", "7.3.1")) // piechart, 8.0.0 doesn't work
 
                 // fix abort-controller & text-encoding modules not found
                 // weird dependency hell to get rid of warnings

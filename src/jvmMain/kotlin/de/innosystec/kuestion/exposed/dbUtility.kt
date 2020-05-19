@@ -58,14 +58,24 @@ fun insertAnswer(tmpSurvey: String, tmpAnswer: String) {
 fun addAnswerCount(answer: ClickedAnswer) {
     transaction {
         addLogger(StdOutSqlLogger)
-        SchemaUtils.create(SurveyTable,AnswerTable)
-        // checking expiration date
-        val date = SurveyTable.select{SurveyTable.hash eq answer.surveyHash}.map { mapSurvey(it) }.first().expirationTime
+        SchemaUtils.create(SurveyTable, AnswerTable)
+        val date =
+            SurveyTable.select { SurveyTable.hash eq answer.surveyHash }.map { mapSurvey(it) }.first().expirationTime
         if (LocalDateTime.now() > date) return@transaction
         AnswerTable.update({ (AnswerTable.survey eq answer.surveyHash) and (AnswerTable.text eq answer.answer) }) {
             with(SqlExpressionBuilder) {
                 it[counts] = counts + 1
             }
+        }
+    }
+}
+
+fun endSurvey(id: String) {
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(SurveyTable)
+        SurveyTable.update({ SurveyTable.hash eq id }) {
+            it[expirationTime] = LocalDateTime.now()
         }
     }
 }

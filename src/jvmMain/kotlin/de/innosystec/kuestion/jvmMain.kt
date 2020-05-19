@@ -3,13 +3,13 @@ package de.innosystec.kuestion
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.UserIdPrincipal
-import io.ktor.auth.basic
+import io.ktor.auth.*
 import io.ktor.features.*
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
+import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.route
@@ -54,9 +54,16 @@ internal fun Application.module() {
 
     install(Authentication) {
         basic("basicAuth") {
-            validate {credentials ->
+            validate { credentials ->
                 if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
             }
+        }
+        form(name = "myauth2") {
+            userParamName = "user"
+            passwordParamName = "password"
+            challenge {}
+
+            validate { credentials -> if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null }
         }
     }
 
@@ -72,10 +79,11 @@ internal fun Application.module() {
                 call.respond("Sorry, this survey does not exist")
             }
         }
+        endSurvey()
         counter()
+        updateSurvey()
         allSurveys()
         postSurvey()
-        updateSurvey()
         getSurvey()
     }
 }

@@ -42,3 +42,10 @@ suspend fun getAllSurveys(): List<FrontSurvey> {
 suspend fun deleteSurvey(id: String) {
     return client.delete("$jvmBackend/$id")
 }
+
+suspend fun endSurvey(id:String) {
+    return client.post("$jvmBackend/endSurvey") {
+        contentType(ContentType.Application.Json)
+        body = id
+    }
+}

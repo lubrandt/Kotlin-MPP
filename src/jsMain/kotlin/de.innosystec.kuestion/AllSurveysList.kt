@@ -14,14 +14,14 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
 
     private suspend fun updateListOfSurveys() {
         val resp = getAllSurveys()
-        setState{
+        setState {
             surveys = resp
         }
     }
 
     override fun componentDidMount() {
         scope.launch {
-           updateListOfSurveys()
+            updateListOfSurveys()
         }
     }
 
@@ -50,27 +50,13 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
                 +"List of all created Surveys"
             }
             ul {
-                state.surveys.forEach {item ->
+                state.surveys.forEach { item ->
                     li {
                         navLink("/${item.hash}/r", exact = true) {
                             +item.question
                         }
-                        button {
-                            +"Delete Survey"
-                            attrs.onClickFunction = {
-                                scope.launch {
-                                    deleteSurvey(item.hash)
-                                    updateListOfSurveys()
-                                }
-                            }
-                        }
-                        button {
-                            +"Edit Survey"
-                        }
-                        button {
-                            +"End Survey"
-                            //todo: actual expected time with common code(color beispiel)??
-                            //todo: basic-auth with name == pw
+                        navLink("/${item.hash}/edit") {
+                            +"EditSurvey"
                         }
                     }
                 }
