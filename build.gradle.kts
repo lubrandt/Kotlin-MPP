@@ -83,6 +83,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-json-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-auth-js:$ktorVersion")
 
                 //React, React DOM + Wrappers
                 implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")

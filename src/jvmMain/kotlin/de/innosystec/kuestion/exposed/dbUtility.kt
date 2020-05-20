@@ -3,16 +3,22 @@ package de.innosystec.kuestion.exposed
 import de.innosystec.kuestion.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
+import de.innosystec.kuestion.exposed.db.UserTable
 import io.ktor.util.toLocalDateTime
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.lang.StringBuilder
 import java.sql.Date
 import java.time.LocalDateTime
 import kotlin.random.Random
+import java.security.MessageDigest
+import java.security.SecureRandom
 
 data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
 data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0, val color: String)
+
+data class User(val username: String, val password: String, val identifier: String)
 
 fun createSurveyQuestion(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
@@ -104,6 +110,12 @@ fun mapAnswer(it: ResultRow) = Answer(
     color = it[AnswerTable.color]
 )
 
+fun mapUser(it:ResultRow) = User(
+    it[UserTable.username],
+    it[UserTable.password],
+    it[UserTable.identifier]
+)
+
 internal fun randHexColor(): String {
     val stringLength = 6
     val charPool: List<Char> = ('a'..'f') + ('0'..'9')
@@ -113,4 +125,29 @@ internal fun randHexColor(): String {
             .map { x -> charPool[x] }
             .joinToString("")
     return "#${randomString}"
+}
+
+/**
+ * https://www.samclarke.com/kotlin-hash-strings/
+ * 19.05.2020 15:15
+ * without the secureRandom things
+ */
+object HashUtils {
+    fun ownsha1(username: String) = hashString("SHA1", username)
+
+    private fun hashString(algorithm: String, input: String): String {
+        val HEX_CHARS = "0123456789ABCDEF"
+        val secureRandom = SecureRandom()
+        val salt = secureRandom.nextInt(100) //is this really a salt?
+        val bytes = MessageDigest.getInstance(algorithm).digest((input + salt).toByteArray())
+        val result = StringBuilder(bytes.size * 2)
+
+        bytes.forEach {
+            val i = it.toInt()
+            result.append(HEX_CHARS[i shr 4 and 0x0f])
+            result.append(HEX_CHARS[i and 0x0f])
+        }
+
+        return result.toString()
+    }
 }

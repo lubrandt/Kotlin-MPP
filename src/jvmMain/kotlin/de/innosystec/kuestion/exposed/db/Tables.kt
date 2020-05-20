@@ -17,3 +17,9 @@ object AnswerTable: IntIdTable() {
     val color = varchar("color", 7)
 }
 
+object UserTable: IntIdTable() {
+    val username = varchar("username", 15)
+    val password = varchar("password", 30)
+    val identifier = varchar("identifier", 40)
+}
+

@@ -1,5 +1,7 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.exposed.HashUtils.ownsha1
+import de.innosystec.kuestion.exposed.db.UserTable
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -16,12 +18,16 @@ import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.serialization.json
 import io.ktor.server.netty.EngineMain
-import org.jetbrains.exposed.sql.Database
+import io.ktor.util.KtorExperimentalAPI
+import io.ktor.util.sha1
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
 
+@KtorExperimentalAPI
 internal fun Application.module() {
 //    val config = environment.config
     install(ContentNegotiation) {
@@ -71,6 +77,17 @@ internal fun Application.module() {
 
 //    Database.connect("jdbc:h2:file:C:/data/sample;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
     Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(UserTable)
+        val tmpUsername = "TestUser"
+        val sha1 = ownsha1(tmpUsername).toString()
+        UserTable.insert {
+            it[username] = tmpUsername
+            it[password] = "1234"
+            it[identifier] = sha1
+        }
+    }
 
     routing {
         home()
