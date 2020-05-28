@@ -13,8 +13,6 @@ class UpdateSurvey :RComponent<IdProps,RState>() {
         div {
             button {
                 +"End Survey"
-                //todo: actual expected time with common code(color beispiel)??
-                //todo: basic-auth with name == pw
                 attrs.onClickFunction =  {
                     scope.launch {
                         endSurvey(props.id)
@@ -28,6 +26,15 @@ class UpdateSurvey :RComponent<IdProps,RState>() {
                         deleteSurvey(props.id)
                         //todo: automatic redirect?
                     }
+                }
+            }
+            button {
+                +"Change Survey"
+                attrs.onClickFunction = {
+                    scope.launch {
+
+                    }
+                    println("change Survey clicked")
                 }
             }
         }

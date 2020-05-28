@@ -4,11 +4,9 @@ import de.innosystec.kuestion.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
 import de.innosystec.kuestion.exposed.db.UserTable
-import io.ktor.util.toLocalDateTime
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.lang.StringBuilder
-import java.sql.Date
 import java.time.LocalDateTime
 import kotlin.random.Random
 import java.security.MessageDigest
@@ -66,7 +64,7 @@ fun addAnswerCount(answer: ClickedAnswer) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable, AnswerTable)
         val date =
-            SurveyTable.select { SurveyTable.hash eq answer.surveyHash }.map { mapSurvey(it) }.first().expirationTime
+            SurveyTable.select { SurveyTable.hash eq answer.surveyHash }.map { mapToSurvey(it) }.first().expirationTime
         if (LocalDateTime.now() > date) return@transaction
         AnswerTable.update({ (AnswerTable.survey eq answer.surveyHash) and (AnswerTable.text eq answer.answer) }) {
             with(SqlExpressionBuilder) {
@@ -86,31 +84,30 @@ fun endSurvey(id: String) {
     }
 }
 
-// fulltext search for survey Name?
 fun getAnswers(hash: String): List<Answer> {
     var retval: List<Answer> = mutableListOf()
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable, SurveyTable)
-        retval = AnswerTable.select { AnswerTable.survey eq hash }.map { mapAnswer(it) }
+        retval = AnswerTable.select { AnswerTable.survey eq hash }.map { mapToAnswer(it) }
     }
     return retval
 }
 
-fun mapSurvey(it: ResultRow) = Survey(
+fun mapToSurvey(it: ResultRow) = Survey(
     question = it[SurveyTable.question],
     hash = it[SurveyTable.hash],
     expirationTime = it[SurveyTable.expirationTime]
 )
 
-fun mapAnswer(it: ResultRow) = Answer(
+fun mapToAnswer(it: ResultRow) = Answer(
     surveyHashCode = it[AnswerTable.survey],
     text = it[AnswerTable.text],
     counts = it[AnswerTable.counts],
     color = it[AnswerTable.color]
 )
 
-fun mapUser(it:ResultRow) = User(
+fun mapUser(it: ResultRow) = User(
     it[UserTable.username],
     it[UserTable.password],
     it[UserTable.identifier]

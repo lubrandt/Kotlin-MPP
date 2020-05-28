@@ -65,6 +65,9 @@ kotlin {
 //                implementation("org.jetbrains.exposed:exposed-jodatime:$exposedVersion")
                 implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
                 implementation("com.h2database:h2:$h2Version")
+
+                //client logging
+                implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
             }
         }
         val jvmTest by getting {
@@ -84,6 +87,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-json-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-auth-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-logging-js:$ktorVersion")
 
                 //React, React DOM + Wrappers
                 implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")

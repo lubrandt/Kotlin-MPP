@@ -9,6 +9,7 @@ import react.dom.form
 import react.dom.input
 import react.functionalComponent
 import react.useState
+import kotlin.js.Date
 
 val inputComponent = functionalComponent<InputProps> { props ->
     val (input, setInput) = useState("")
@@ -35,6 +36,9 @@ val inputComponent = functionalComponent<InputProps> { props ->
             attrs.onChangeFunction = changeHandler
             attrs.value = input
             attrs.placeholder = props.inputPlaceholder
+            if (props.inputType == InputType.date) {
+                attrs.min = dateOfToday
+            }
         }
     }
 }

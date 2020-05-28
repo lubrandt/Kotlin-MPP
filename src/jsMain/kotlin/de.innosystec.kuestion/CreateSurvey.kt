@@ -7,6 +7,7 @@ import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
+import kotlin.js.Date
 
 
 class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
@@ -55,9 +56,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             p {
                 +"ExpirationDate:"
                 br {}
-                +state.date
-                +" | "
-                +state.time
+                +"${state.date} | ${state.time}"
             }
         }
 
@@ -186,7 +185,8 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
         println("Survey is: \nQuestion: " + state.question
                 + "\nAnswers: " + state.answers
-                + "\nDate and Time: ${state.date} | ${state.time}")
+                + "\nDate and Time: ${state.date} | ${state.time}"
+        )
     }
 
 

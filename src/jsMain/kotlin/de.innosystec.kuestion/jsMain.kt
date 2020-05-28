@@ -1,15 +1,14 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.handson.App
-import de.innosystec.kuestion.spa.AppFrame
 import react.dom.render
 import kotlin.browser.document
+import kotlin.js.Date
 
 fun main() {
     render(document.getElementById("root")) {
-//        child(App::class) {}
-//        child(AppFrame::class) {}
         child(Kuestion::class) {}
     }
 }
+
+val dateOfToday = Date().toISOString().substring(0, 10)
 

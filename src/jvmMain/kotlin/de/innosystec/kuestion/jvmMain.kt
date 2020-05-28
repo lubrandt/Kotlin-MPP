@@ -8,6 +8,7 @@ import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
@@ -41,13 +42,19 @@ internal fun Application.module() {
         )
     }
 
+    install(DefaultHeaders)
+    install(CallLogging)
+
     install(CORS) {
         method(HttpMethod.Get)
         method(HttpMethod.Post)
         method(HttpMethod.Delete)
+        header(HttpHeaders.AccessControlAllowOrigin)
+        header(HttpHeaders.AccessControlAllowHeaders)
         anyHost()
         allowCredentials = true
         allowNonSimpleContentTypes = true
+        allowSameOrigin = true
     }
 
     install(Compression) {
@@ -60,16 +67,11 @@ internal fun Application.module() {
 
     install(Authentication) {
         basic("basicAuth") {
+            realm = "Ktor Server"
             validate { credentials ->
-                if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
+//                if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
+                UserIdPrincipal("DukeNukem")
             }
-        }
-        form(name = "myauth2") {
-            userParamName = "user"
-            passwordParamName = "password"
-            challenge {}
-
-            validate { credentials -> if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null }
         }
     }
 
@@ -77,25 +79,20 @@ internal fun Application.module() {
 
 //    Database.connect("jdbc:h2:file:C:/data/sample;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
     Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
-    transaction {
-        addLogger(StdOutSqlLogger)
-        SchemaUtils.create(UserTable)
-        val tmpUsername = "TestUser"
-        val sha1 = ownsha1(tmpUsername).toString()
-        UserTable.insert {
-            it[username] = tmpUsername
-            it[password] = "1234"
-            it[identifier] = sha1
-        }
-    }
+//    transaction {
+//        addLogger(StdOutSqlLogger)
+//        SchemaUtils.create(UserTable)
+//        val tmpUsername = "TestUser"
+//        val sha1 = ownsha1(tmpUsername).toString()
+//        UserTable.insert {
+//            it[username] = tmpUsername
+//            it[password] = "1234"
+//            it[identifier] = sha1
+//        }
+//    }
 
     routing {
         home()
-        route("/survey_not_found") {
-            get {
-                call.respond("Sorry, this survey does not exist")
-            }
-        }
         endSurvey()
         counter()
         updateSurvey()

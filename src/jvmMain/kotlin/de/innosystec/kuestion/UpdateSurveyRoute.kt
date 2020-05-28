@@ -11,17 +11,13 @@ import io.ktor.routing.*
  * Update Survey, eg Edits, stop Survey
  */
 internal fun Routing.updateSurvey() {
-    authenticate("basicAuth") {
+//    authenticate("basicAuth") {
         route("/{questionId}/update") {
             post {
                 val changes = call.receive<SurveyCreation>()
                 val hash = call.parameters["questionId"]
                 call.respond(HttpStatusCode.OK)
             }
-            get {
-                //todo: todo what?
-                call.respond(HttpStatusCode.OK)
-            }
         }
-    }
+//    }
 }

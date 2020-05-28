@@ -13,14 +13,17 @@ import io.ktor.response.respondText
 import io.ktor.routing.*
 
 internal fun Routing.endSurvey() {
-    authenticate("basicAuth") {
+//    authenticate("basicAuth") {
         route("/endSurvey") {
             post {
-                endSurvey(call.receive())
-                call.respond(HttpStatusCode.OK)
+                val survey = call.receive<String>().drop(1).dropLast(1) // remove the " from start and end
+                if (survey.length != 6) {
+                    call.respond(HttpStatusCode.BadRequest)
+                } else {
+                    endSurvey(survey)
+                    call.respond(HttpStatusCode.OK)
+                }
             }
         }
-    }
-
-
+//    }
 }
