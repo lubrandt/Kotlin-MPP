@@ -1,7 +1,7 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.exposed.includeSurveyChanges
 import io.ktor.application.call
-import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -14,9 +14,15 @@ internal fun Routing.updateSurvey() {
 //    authenticate("basicAuth") {
         route("/{questionId}/update") {
             post {
-                val changes = call.receive<SurveyCreation>()
+                val changes = call.receive<SurveyCreation>() // modified version of survey
                 val hash = call.parameters["questionId"]
-                call.respond(HttpStatusCode.OK)
+//                println("THIS IS WHAT I GOT: $hash, $changes")
+                if (hash == null)  {
+                    call.respond(HttpStatusCode.BadRequest)
+                } else {
+                    includeSurveyChanges(hash, changes)
+                    call.respond(HttpStatusCode.OK)
+                }
             }
         }
 //    }

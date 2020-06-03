@@ -17,7 +17,7 @@ val inputComponent = functionalComponent<InputProps> { props ->
     val submitHandler: (Event) -> Unit = {
         it.preventDefault()
         setInput("")
-        if (props.inputType == InputType.text || props.inputType == InputType.text) {
+        if (props.inputType == InputType.text) {
             props.onSubmit(input)
         }
     }

@@ -8,7 +8,7 @@ const val jvmPort = 8081
 
 @Serializable
 data class ChartSliceData(
-    val title: String,
+    val title: String, //standard init
     val value: Int,
     val color: String
 )

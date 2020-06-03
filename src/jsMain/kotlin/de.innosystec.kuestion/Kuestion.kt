@@ -1,5 +1,7 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.network.client
+import de.innosystec.kuestion.network.jvmBackend
 import io.ktor.client.request.get
 import kotlinx.coroutines.*
 import react.*
@@ -11,7 +13,7 @@ class Kuestion : RComponent<RProps, KuestionState>() {
     override fun KuestionState.init() {
         val mainScope = MainScope()
         mainScope.launch {
-            val getResponse = client.get<String>("${jvmBackend}/")
+            val getResponse = client.get<String>("$jvmBackend/")
             setState {
                 response = getResponse
             }
@@ -41,6 +43,7 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                 }
 
                 div("content") {
+                    //login //autoredirect
                     route("/", CreateSurvey::class, exact = true)
                     route("/allSurveys", SurveysList::class, exact = true)
                     route<IdProps>("/:id/edit") { props ->
@@ -53,6 +56,7 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                             id = props.match.params.id
                         }
                     }
+                    //redirect("","") todo: prio: auth, editierung todo: Antwort hat ja schon survey hash, kein survey hash schicken, chartslicedata umbauen
                 }
             }
         }

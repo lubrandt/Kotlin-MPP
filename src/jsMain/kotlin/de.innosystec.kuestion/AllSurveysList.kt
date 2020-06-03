@@ -1,7 +1,7 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.network.getAllSurveys
 import kotlinx.coroutines.launch
-import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import react.router.dom.navLink

@@ -3,6 +3,7 @@ package de.innosystec.kuestion
 import de.innosystec.kuestion.exposed.Answer
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
+import de.innosystec.kuestion.exposed.deleteSurvey
 import de.innosystec.kuestion.exposed.getAnswers
 import de.innosystec.kuestion.exposed.mapToSurvey
 import io.ktor.application.call
@@ -50,6 +51,8 @@ internal fun Routing.getSurvey() {
                 var answerList: List<Answer> = mutableListOf()
                 if (hash != null) {
                     answerList = getAnswers(hash)
+                } else {
+                    call.respond(HttpStatusCode.BadRequest)
                 }
                 answerList.forEach {
 //                    println(it)
@@ -71,13 +74,12 @@ internal fun Routing.getSurvey() {
         }
         delete {
             val hash = call.parameters["questionId"]
-            transaction {
-                addLogger(StdOutSqlLogger)
-                SchemaUtils.create(SurveyTable, AnswerTable)
-                AnswerTable.deleteWhere { AnswerTable.survey eq hash.toString() }
-                SurveyTable.deleteWhere { SurveyTable.hash eq hash.toString() }
+            if (hash == null) {
+                call.respond(HttpStatusCode.BadRequest)
+            } else {
+                deleteSurvey(hash)
+                call.respond(HttpStatusCode.OK)
             }
-            call.respond(HttpStatusCode.OK)
         }
     }
 }

@@ -1,5 +1,7 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.network.getResultFromApi
+import de.innosystec.kuestion.network.sendClickedAnswerToApi
 import de.innosystec.kuestion.charts.ReactPieChart
 import kotlinx.coroutines.launch
 import kotlinx.html.js.onClickFunction
@@ -64,7 +66,12 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                     +"[${item.value} Stimme(n)] ${item.title}"
                     attrs.onClickFunction = {
                         scope.launch {
-                            sendClickedAnswerToApi(ClickedAnswer(props.id, item.title))
+                            sendClickedAnswerToApi(
+                                ClickedAnswer(
+                                    props.id,
+                                    item.title
+                                )
+                            )
                             updateSurvey()
                         }
                     }

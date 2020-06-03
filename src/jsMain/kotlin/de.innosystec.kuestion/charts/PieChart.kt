@@ -1,6 +1,7 @@
 package de.innosystec.kuestion.charts
 
 import de.innosystec.kuestion.*
+import de.innosystec.kuestion.network.getResultFromApi
 import kotlinx.coroutines.launch
 import react.functionalComponent
 import react.useEffect

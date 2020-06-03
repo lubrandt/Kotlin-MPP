@@ -18,7 +18,7 @@ data class Answer(val surveyHashCode: String, val text: String, val counts: Int 
 
 data class User(val username: String, val password: String, val identifier: String)
 
-fun createSurveyQuestion(question: String, expirationTime: LocalDateTime): String {
+fun createSurvey(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
     transaction {
         addLogger(StdOutSqlLogger)
@@ -47,7 +47,7 @@ fun createHash(): String {
         .joinToString("")
 }
 
-fun insertAnswer(tmpSurvey: String, tmpAnswer: String) {
+fun insertNewAnswer(tmpSurvey: String, tmpAnswer: String) {
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)
@@ -55,6 +55,19 @@ fun insertAnswer(tmpSurvey: String, tmpAnswer: String) {
             it[survey] = tmpSurvey
             it[text] = tmpAnswer
             it[color] = randHexColor()
+        }
+    }
+}
+
+fun insertChangedAnswer(tmpSurvey: String, tmpAnswer: String, tmpCount: Int, tmpColor: String) {
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(AnswerTable)
+        AnswerTable.insert {
+            it[survey] = tmpSurvey
+            it[text] = tmpAnswer
+            it[counts] = tmpCount
+            it[color] = tmpColor
         }
     }
 }
@@ -84,6 +97,15 @@ fun endSurvey(id: String) {
     }
 }
 
+fun deleteSurvey(hash: String) {
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(SurveyTable, AnswerTable)
+        AnswerTable.deleteWhere { AnswerTable.survey eq hash }
+        SurveyTable.deleteWhere { SurveyTable.hash eq hash }
+    }
+}
+
 fun getAnswers(hash: String): List<Answer> {
     var retval: List<Answer> = mutableListOf()
     transaction {
@@ -92,6 +114,71 @@ fun getAnswers(hash: String): List<Answer> {
         retval = AnswerTable.select { AnswerTable.survey eq hash }.map { mapToAnswer(it) }
     }
     return retval
+}
+
+fun includeSurveyChanges(hash: String, changes: SurveyCreation) {
+    val oldAnswers = mutableListOf<ChartSliceData>()
+    val changedAnswers = mutableListOf<ChartSliceData>()
+    val nextAnswers = mutableListOf<ChartSliceData>()
+
+    println("FIRST")
+    println("oldAnswers: $oldAnswers")
+    println("changedAnswers: $changedAnswers")
+    println("nextAnswers: $nextAnswers")
+
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(AnswerTable, SurveyTable)
+        SurveyTable.update({ SurveyTable.hash eq hash }) {
+            it[question] = changes.question
+            it[expirationTime] = createDate(changes.expirationTime)
+        }
+
+        getAnswers(hash).forEach { oldAnswers.add(ChartSliceData(it.text, it.counts, it.color)) }
+
+        AnswerTable.deleteWhere { AnswerTable.survey eq hash }
+    }
+    println("SECOND")
+    println("oldAnswers: $oldAnswers")
+    println("changedAnswers: $changedAnswers")
+    println("nextAnswers: $nextAnswers")
+
+    changes.answers.forEach {
+        changedAnswers.add(ChartSliceData(it,0, randHexColor()))
+    }
+    println("THIRD")
+    println("oldAnswers: $oldAnswers")
+    println("changedAnswers: $changedAnswers")
+    println("nextAnswers: $nextAnswers")
+
+    // what if typos changed? currently it is a completly new answer and all counts are lost
+    oldAnswers.forEach { old ->
+        changedAnswers.forEach { changed ->
+            if (old.title == changed.title) {
+                nextAnswers.add(old)
+            }
+        }
+    }
+    println("FOURTH")
+    println("oldAnswers: $oldAnswers")
+    println("changedAnswers: $changedAnswers")
+    println("nextAnswers: $nextAnswers")
+    changedAnswers.forEach { changed ->
+        nextAnswers.forEach { next ->
+            if (changed == next) {
+                nextAnswers.remove(next)
+                nextAnswers.add(changed)
+            }
+        }
+    }
+    println("FIFTH")
+    println("oldAnswers: $oldAnswers")
+    println("changedAnswers: $changedAnswers")
+    println("nextAnswers: $nextAnswers")
+
+    nextAnswers.forEach {
+        insertChangedAnswer(hash, it.title, it.value, it.color)
+    }
 }
 
 fun mapToSurvey(it: ResultRow) = Survey(

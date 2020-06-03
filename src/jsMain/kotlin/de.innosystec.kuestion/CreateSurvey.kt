@@ -1,5 +1,6 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.network.sendSurveyToApi
 import kotlinext.js.jsObject
 import kotlinx.coroutines.launch
 import kotlinx.html.ButtonType
@@ -7,7 +8,6 @@ import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
-import kotlin.js.Date
 
 
 class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
@@ -86,7 +86,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                         setState {
                             if (!answers.contains(input)) {
                                 answers.add(input)
-                            }
+                            } //todo: farben?
                         }
                     }
                     inputType = InputType.text

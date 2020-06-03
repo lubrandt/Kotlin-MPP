@@ -6,7 +6,8 @@ import java.time.format.DateTimeFormatter
 
 
 internal fun createDate(receivedDate: String): LocalDateTime {
+//    println("receivedString: $receivedDate")
     val parsedTime = LocalDateTime.parse(receivedDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-    println("createdDateTime: $parsedTime")
+//    println("createdDateTime: $parsedTime")
     return parsedTime
 }
