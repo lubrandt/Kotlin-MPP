@@ -1,5 +1,6 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.utility.dateOfToday
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onSubmitFunction

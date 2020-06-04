@@ -1,4 +1,4 @@
-package de.innosystec.kuestion
+package de.innosystec.kuestion.utility
 
 import kotlinx.coroutines.MainScope
 

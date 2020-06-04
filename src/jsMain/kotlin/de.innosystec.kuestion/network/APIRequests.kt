@@ -5,25 +5,25 @@ import io.ktor.client.request.*
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-suspend fun getResultFromApi(id: String): SurveyReceiving {
+suspend fun getResultFromApi(id: String): SurveyPackage {
     return client.get("$jvmBackend/${id}")
 }
 
-suspend fun sendSurveyToApi(survey: SurveyCreation): String {
+suspend fun sendSurveyToApi(survey: SurveyPackage): String {
     return client.post("$jvmBackend/postSurvey") {
         contentType(ContentType.Application.Json)
         body = survey
     }
 }
 
-suspend fun sendClickedAnswerToApi(pair: ClickedAnswer): String {
+suspend fun sendClickedAnswerToApi(pair: StringPair): String {
     return client.post("$jvmBackend/inc") {
         contentType(ContentType.Application.Json)
         body = pair
     }
 }
 //todo: api in common, android app, sevrer to server, aufschreiben obs funktioniert
-suspend fun getAllSurveys(): List<FrontSurvey> {
+suspend fun getAllSurveys(): List<StringPair> {
     return client.get("$jvmBackend/allSurveys")
 }
 
@@ -39,7 +39,7 @@ suspend fun endSurvey(id:String) {
     }
 }
 
-suspend fun changedSurvey(id: String, survey: SurveyCreation) {
+suspend fun changedSurvey(id: String, survey: SurveyPackage) {
     return client.post("$jvmBackend/$id/update") {
         contentType(ContentType.Application.Json)
         body = survey

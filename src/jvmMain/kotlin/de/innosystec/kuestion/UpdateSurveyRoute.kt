@@ -14,7 +14,7 @@ internal fun Routing.updateSurvey() {
 //    authenticate("basicAuth") {
         route("/{questionId}/update") {
             post {
-                val changes = call.receive<SurveyCreation>() // modified version of survey
+                val changes = call.receive<SurveyPackage>() // modified version of survey
                 val hash = call.parameters["questionId"]
 //                println("THIS IS WHAT I GOT: $hash, $changes")
                 if (hash == null)  {

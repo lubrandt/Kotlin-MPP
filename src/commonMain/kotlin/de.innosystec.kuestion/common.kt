@@ -1,55 +1,26 @@
 package de.innosystec.kuestion
 
-import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Serializable
 
 const val jvmHost = "127.0.0.1"
 const val jvmPort = 8081
 
 @Serializable
-data class ChartSliceData(
-    val title: String, //standard init
-    val value: Int,
-    val color: String
-)
-
-val dataMock: List<ChartSliceData> = mutableListOf(
-    ChartSliceData("One", 10, "#E38627"),
-    ChartSliceData("Two", 15, "#C13C37"),
-    ChartSliceData("Three", 20, "#6A2135")
+data class Answer(
+    val survey: String = "",
+    val text: String = "",
+    val counts: Int = 0
 )
 
 @Serializable
-data class SurveyCreation(
+data class SurveyPackage(
     var question: String = "",
-    var answers: MutableList<String> = mutableListOf<String>(),
+    var answers: MutableList<Answer> = mutableListOf(),
     var expirationTime: String = ""
 )
 
 @Serializable
-data class SurveyReceiving(
-    var question: String = "",
-    var answers: MutableList<ChartSliceData> = mutableListOf<ChartSliceData>(),
-    var expirationTime: String = ""
-)
-
-@Serializable
-data class ExpirationDate(
-    var year: String = "",
-    var month: String = "",
-    var day: String = "",
-    var hour: String = "",
-    var minute: String = ""
-)
-
-@Serializable
-data class ClickedAnswer(
-    var surveyHash: String,
-    var answer: String
-)
-
-@Serializable
-data class FrontSurvey(
-    val question: String,
-    val hash: String
+data class StringPair(
+    val first: String, //survey, question
+    val second: String //answer, hash
 )

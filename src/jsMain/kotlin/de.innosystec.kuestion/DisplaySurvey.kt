@@ -2,7 +2,10 @@ package de.innosystec.kuestion
 
 import de.innosystec.kuestion.network.getResultFromApi
 import de.innosystec.kuestion.network.sendClickedAnswerToApi
-import de.innosystec.kuestion.charts.ReactPieChart
+import de.innosystec.kuestion.utility.ReactPieChart
+import de.innosystec.kuestion.utility.ComponentStyles
+import de.innosystec.kuestion.utility.createChartSliceArray
+import de.innosystec.kuestion.utility.scope
 import kotlinx.coroutines.launch
 import kotlinx.html.js.onClickFunction
 import react.*
@@ -12,7 +15,7 @@ import styled.*
 class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 
     override fun DisplaySurveyState.init() {
-        receivedSurvey = SurveyReceiving()
+        receivedSurvey = SurveyPackage()
     }
 
     private suspend fun updateSurvey() {
@@ -57,19 +60,19 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                 +ComponentStyles.chartStyle
             }
             ReactPieChart {
-                attrs.data = state.receivedSurvey.answers.toTypedArray()
+                attrs.data = createChartSliceArray(state.receivedSurvey.answers)
             }
         }
         ul {
             state.receivedSurvey.answers.forEach { item ->
                 li {
-                    +"[${item.value} Stimme(n)] ${item.title}"
+                    +"[${item.counts} Stimme(n)] ${item.text}"
                     attrs.onClickFunction = {
                         scope.launch {
                             sendClickedAnswerToApi(
-                                ClickedAnswer(
+                                StringPair(
                                     props.id,
-                                    item.title
+                                    item.text
                                 )
                             )
                             updateSurvey()
@@ -82,7 +85,7 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 }
 
 interface DisplaySurveyState : RState {
-    var receivedSurvey: SurveyReceiving
+    var receivedSurvey: SurveyPackage
 }
 
 /**

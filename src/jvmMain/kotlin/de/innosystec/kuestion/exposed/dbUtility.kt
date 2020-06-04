@@ -14,8 +14,6 @@ import java.security.SecureRandom
 
 data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
-data class Answer(val surveyHashCode: String, val text: String, val counts: Int = 0, val color: String)
-
 data class User(val username: String, val password: String, val identifier: String)
 
 fun createSurvey(question: String, expirationTime: LocalDateTime): String {
@@ -54,12 +52,11 @@ fun insertNewAnswer(tmpSurvey: String, tmpAnswer: String) {
         AnswerTable.insert {
             it[survey] = tmpSurvey
             it[text] = tmpAnswer
-            it[color] = randHexColor()
         }
     }
 }
 
-fun insertChangedAnswer(tmpSurvey: String, tmpAnswer: String, tmpCount: Int, tmpColor: String) {
+fun insertChangedAnswer(tmpSurvey: String, tmpAnswer: String, tmpCount: Int) {
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)
@@ -67,19 +64,18 @@ fun insertChangedAnswer(tmpSurvey: String, tmpAnswer: String, tmpCount: Int, tmp
             it[survey] = tmpSurvey
             it[text] = tmpAnswer
             it[counts] = tmpCount
-            it[color] = tmpColor
         }
     }
 }
 
-fun addAnswerCount(answer: ClickedAnswer) {
+fun addAnswerCount(answer: StringPair) {
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable, AnswerTable)
         val date =
-            SurveyTable.select { SurveyTable.hash eq answer.surveyHash }.map { mapToSurvey(it) }.first().expirationTime
+            SurveyTable.select { SurveyTable.hash eq answer.first }.map { mapToSurvey(it) }.first().expirationTime
         if (LocalDateTime.now() > date) return@transaction
-        AnswerTable.update({ (AnswerTable.survey eq answer.surveyHash) and (AnswerTable.text eq answer.answer) }) {
+        AnswerTable.update({ (AnswerTable.survey eq answer.first) and (AnswerTable.text eq answer.second) }) {
             with(SqlExpressionBuilder) {
                 it[counts] = counts + 1
             }
@@ -95,6 +91,16 @@ fun endSurvey(id: String) {
             it[expirationTime] = LocalDateTime.now()
         }
     }
+}
+
+fun surveyExists(hash: String): Boolean {
+    var exists = 0L
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(SurveyTable, AnswerTable)
+        exists = SurveyTable.select { SurveyTable.hash eq hash }.count()
+    }
+    return exists != 0L
 }
 
 fun deleteSurvey(hash: String) {
@@ -116,10 +122,28 @@ fun getAnswers(hash: String): List<Answer> {
     return retval
 }
 
-fun includeSurveyChanges(hash: String, changes: SurveyCreation) {
-    val oldAnswers = mutableListOf<ChartSliceData>()
-    val changedAnswers = mutableListOf<ChartSliceData>()
-    val nextAnswers = mutableListOf<ChartSliceData>()
+fun getQuestion(hash: String): String {
+    var question: String = ""
+    transaction {
+        question = SurveyTable.select { SurveyTable.hash eq hash }.map { mapToSurvey(it) }.first().question
+    }
+    return question
+}
+
+fun getExpirationTime(hash: String): String {
+    var time = ""
+    transaction {
+        time = SurveyTable.select { SurveyTable.hash eq hash.toString() }
+            .map { mapToSurvey(it) }
+            .first().expirationTime.toString()
+    }
+    return time
+}
+
+fun includeSurveyChanges(hash: String, changes: SurveyPackage) {
+    val oldAnswers = mutableListOf<Answer>()
+    val changedAnswers = mutableListOf<Answer>()
+    val nextAnswers = mutableListOf<Answer>()
 
     println("FIRST")
     println("oldAnswers: $oldAnswers")
@@ -134,7 +158,7 @@ fun includeSurveyChanges(hash: String, changes: SurveyCreation) {
             it[expirationTime] = createDate(changes.expirationTime)
         }
 
-        getAnswers(hash).forEach { oldAnswers.add(ChartSliceData(it.text, it.counts, it.color)) }
+        getAnswers(hash)
 
         AnswerTable.deleteWhere { AnswerTable.survey eq hash }
     }
@@ -144,7 +168,7 @@ fun includeSurveyChanges(hash: String, changes: SurveyCreation) {
     println("nextAnswers: $nextAnswers")
 
     changes.answers.forEach {
-        changedAnswers.add(ChartSliceData(it,0, randHexColor()))
+//        changedAnswers.add(ChartSliceData(it,0, randHexColor()))
     }
     println("THIRD")
     println("oldAnswers: $oldAnswers")
@@ -152,13 +176,13 @@ fun includeSurveyChanges(hash: String, changes: SurveyCreation) {
     println("nextAnswers: $nextAnswers")
 
     // what if typos changed? currently it is a completly new answer and all counts are lost
-    oldAnswers.forEach { old ->
-        changedAnswers.forEach { changed ->
-            if (old.title == changed.title) {
-                nextAnswers.add(old)
-            }
-        }
-    }
+//    oldAnswers.forEach { old ->
+//        changedAnswers.forEach { changed ->
+//            if (old.title == changed.title) {
+//                nextAnswers.add(old)
+//            }
+//        }
+//    }
     println("FOURTH")
     println("oldAnswers: $oldAnswers")
     println("changedAnswers: $changedAnswers")
@@ -177,7 +201,7 @@ fun includeSurveyChanges(hash: String, changes: SurveyCreation) {
     println("nextAnswers: $nextAnswers")
 
     nextAnswers.forEach {
-        insertChangedAnswer(hash, it.title, it.value, it.color)
+//        insertChangedAnswer(hash, it.title, it.value, it.color)
     }
 }
 
@@ -188,28 +212,16 @@ fun mapToSurvey(it: ResultRow) = Survey(
 )
 
 fun mapToAnswer(it: ResultRow) = Answer(
-    surveyHashCode = it[AnswerTable.survey],
+    survey = it[AnswerTable.survey],
     text = it[AnswerTable.text],
-    counts = it[AnswerTable.counts],
-    color = it[AnswerTable.color]
+    counts = it[AnswerTable.counts]
 )
 
-fun mapUser(it: ResultRow) = User(
-    it[UserTable.username],
-    it[UserTable.password],
-    it[UserTable.identifier]
-)
-
-internal fun randHexColor(): String {
-    val stringLength = 6
-    val charPool: List<Char> = ('a'..'f') + ('0'..'9')
-    val randomString =
-        (1..stringLength)
-            .map { Random.nextInt(0, charPool.size) }
-            .map { x -> charPool[x] }
-            .joinToString("")
-    return "#${randomString}"
-}
+//fun mapUser(it: ResultRow) = User(
+//    it[UserTable.username],
+//    it[UserTable.password],
+//    it[UserTable.identifier]
+//)
 
 /**
  * https://www.samclarke.com/kotlin-hash-strings/

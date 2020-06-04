@@ -12,10 +12,11 @@ import io.ktor.routing.route
 internal fun Routing.home() {
     route("/") {
         get {
-            call.respondText("Hello Ktor Home")
+            call.respondText("Hello Ktor GET Home")
         }
         post {
             // create survey here
+            call.respondText("Hello Ktor POST Home")
         }
     }
     // is this needed?

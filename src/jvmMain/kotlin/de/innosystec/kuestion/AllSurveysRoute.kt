@@ -14,13 +14,13 @@ import org.jetbrains.exposed.sql.transactions.transaction
 internal  fun Routing.allSurveys() {
     route("/allSurveys") {
         get {
-            val listOfSurveys = mutableListOf<FrontSurvey>()
+            val listOfSurveys = mutableListOf<StringPair>()
             transaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(SurveyTable)
                 SurveyTable.selectAll()
                     .map { mapToSurvey(it) }
-                    .forEach { listOfSurveys.add(FrontSurvey(it.question, it.hash)) }
+                    .forEach { listOfSurveys.add(StringPair(it.question, it.hash)) }
             }
             call.respond(listOfSurveys)
         }

@@ -16,14 +16,14 @@ import org.jetbrains.exposed.sql.transactions.transaction
 internal fun Routing.postSurvey() {
     route("/postSurvey") {
         post {
-            val survey = call.receive<SurveyCreation>()
+            val survey = call.receive<SurveyPackage>()
             var hash = ""
             transaction {
                 SchemaUtils.create(SurveyTable, AnswerTable)
                 hash = createSurvey(survey.question, createDate(survey.expirationTime))
 //                hash = createSurveyQuestion(survey.question, parseStringToLocalDateTime(LocalDateTime.now().toString()))
                 survey.answers.forEach {
-                    insertNewAnswer(hash, it)
+                    insertNewAnswer(hash, it.text)
                 }
             }
             call.respond(hash)

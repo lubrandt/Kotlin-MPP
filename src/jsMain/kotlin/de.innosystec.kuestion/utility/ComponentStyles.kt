@@ -1,4 +1,4 @@
-package de.innosystec.kuestion
+package de.innosystec.kuestion.utility
 
 import kotlinx.css.*
 import styled.StyleSheet

@@ -1,6 +1,7 @@
 package de.innosystec.kuestion
 
 import de.innosystec.kuestion.network.getAllSurveys
+import de.innosystec.kuestion.utility.scope
 import kotlinx.coroutines.launch
 import react.*
 import react.dom.*
@@ -52,10 +53,10 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
             ul {
                 state.surveys.forEach { item ->
                     li {
-                        navLink("/${item.hash}/r", exact = true) {
-                            +item.question
+                        navLink("/${item.second}/r", exact = true) {
+                            +item.first
                         }
-                        navLink("/${item.hash}/edit") {
+                        navLink("/${item.second}/edit") {
                             +"EditSurvey"
                         }
                     }
@@ -66,5 +67,5 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
 }
 
 interface SurveysListState : RState {
-    var surveys: List<FrontSurvey>
+    var surveys: List<StringPair>
 }

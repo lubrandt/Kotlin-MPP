@@ -4,6 +4,7 @@ import de.innosystec.kuestion.network.changedSurvey
 import de.innosystec.kuestion.network.deleteSurvey
 import de.innosystec.kuestion.network.endSurvey
 import de.innosystec.kuestion.network.getResultFromApi
+import de.innosystec.kuestion.utility.scope
 import kotlinext.js.jsObject
 import kotlinx.coroutines.launch
 import kotlinx.html.InputType
@@ -14,21 +15,21 @@ import react.dom.*
 class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
 
     override fun UpdateSurveyState.init() {
-//        receivedSurvey = SurveyReceiving()
+        receivedSurvey = SurveyPackage()
 //        question = ""
-        answers = mutableListOf<String>()
+        answers = mutableListOf()
 //        surveyHash = ""
 //        date = ""
 //        time = ""
     }
 
-    fun updateSurvey() {
+    private fun updateSurvey() {
         scope.launch {
             val response = getResultFromApi(props.id)
             setState {
                 receivedSurvey = response
                 question = receivedSurvey.question
-                receivedSurvey.answers.forEach { answers.add(it.title) }
+                answers = receivedSurvey.answers
                 surveyHash = props.id
                 date = receivedSurvey.expirationTime.substring(0,10)
                 time = receivedSurvey.expirationTime.substring(11)
@@ -59,13 +60,13 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
             ul {
                 state.answers.forEach { item ->
                     li {
-                        key = item
+                        key = item.text
                         attrs.onClickFunction = {
                             setState {
                                 state.answers.remove(item)
                             }
                         }
-                        +item
+                        +item.text
                     }
                 }
             }
@@ -98,9 +99,10 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
             child(functionalComponent = inputComponent,
                 props = jsObject {
                     onSubmit = { input ->
+                        val newAnswer = Answer(text = input)
                         setState {
-                            if (!answers.contains(input)) {
-                                answers.add(input)
+                            if (!answers.contains(newAnswer)) {
+                                answers.add(newAnswer)
                             }
                         }
                     }
@@ -148,6 +150,7 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                     scope.launch {
                         endSurvey(props.id)
                     }
+                    updateSurvey()
                 }
             }
             button {
@@ -156,6 +159,7 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                     scope.launch {
                         deleteSurvey(props.id)
                     }
+                    updateSurvey()
                 }
             }
             button {
@@ -164,7 +168,7 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                 attrs.onClickFunction = {
                     scope.launch {
                         changedSurvey(
-                            props.id, SurveyCreation(
+                            props.id, SurveyPackage(
                                 state.question,
                                 state.answers,
                                 "${state.date}T${state.time}"
@@ -194,9 +198,9 @@ fun RBuilder.updateSurvey(handler: IdProps.() -> Unit): ReactElement {
 }
 
 interface UpdateSurveyState: RState {
-    var receivedSurvey: SurveyReceiving
+    var receivedSurvey: SurveyPackage
     var question: String
-    var answers: MutableList<String>
+    var answers: MutableList<Answer>
     var surveyHash: String
     var date: String
     var time: String

@@ -10,7 +10,7 @@ import io.ktor.routing.*
 internal fun Routing.counter() {
     route("/inc") {
         post {
-            val incAnswer = call.receive<ClickedAnswer>()
+            val incAnswer = call.receive<StringPair>()
             addAnswerCount(incAnswer)
             call.respond(HttpStatusCode.OK)
         }

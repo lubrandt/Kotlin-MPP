@@ -1,6 +1,7 @@
 package de.innosystec.kuestion
 
 import de.innosystec.kuestion.network.sendSurveyToApi
+import de.innosystec.kuestion.utility.scope
 import kotlinext.js.jsObject
 import kotlinx.coroutines.launch
 import kotlinx.html.ButtonType
@@ -14,7 +15,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
     override fun CreateSurveyState.init() {
         question = ""
-        answers = mutableListOf<String>()
+        answers = mutableListOf()
         surveyHash = ""
         date = ""
         time = ""
@@ -43,13 +44,13 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             ul {
                 state.answers.forEach { item ->
                     li {
-                        key = item
+                        key = item.text
                         attrs.onClickFunction = {
                             setState {
                                 state.answers.remove(item)
                             }
                         }
-                        +item
+                        +item.text
                     }
                 }
             }
@@ -83,10 +84,11 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             child(functionalComponent = inputComponent,
                 props = jsObject {
                     onSubmit = { input ->
+                        val newAnswer = Answer(text = input)
                         setState {
-                            if (!answers.contains(input)) {
-                                answers.add(input)
-                            } //todo: farben?
+                            if (!answers.contains(newAnswer)) {
+                                answers.add(newAnswer)
+                            }
                         }
                     }
                     inputType = InputType.text
@@ -139,7 +141,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
                 ) {
                     scope.launch {
                         val resp = sendSurveyToApi(
-                            SurveyCreation(
+                            SurveyPackage(
                                 state.question,
                                 state.answers,
                                 "${state.date}T${state.time}"
@@ -159,7 +161,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
             attrs.onClickFunction = {
                 setState {
                     question = ""
-                    answers = mutableListOf<String>()
+                    answers = mutableListOf()
                     surveyHash = ""
                     date = ""
                     time = ""
@@ -194,7 +196,7 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
 interface CreateSurveyState : RState {
     var question: String
-    var answers: MutableList<String>
+    var answers: MutableList<Answer>
     var surveyHash: String
     var date: String
     var time: String
