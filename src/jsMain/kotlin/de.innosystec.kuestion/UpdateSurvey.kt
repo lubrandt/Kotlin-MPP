@@ -174,8 +174,16 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                                 "${state.date}T${state.time}"
                             )
                         )
+                        val response = getResultFromApi(props.id)
+                        setState {
+                            receivedSurvey = response
+                            question = receivedSurvey.question
+                            answers = receivedSurvey.answers
+                            surveyHash = props.id
+                            date = receivedSurvey.expirationTime.substring(0,10)
+                            time = receivedSurvey.expirationTime.substring(11)
+                        }
                     }
-                    updateSurvey()
                 }
             }
         }

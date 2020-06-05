@@ -141,14 +141,6 @@ fun getExpirationTime(hash: String): String {
 }
 
 fun includeSurveyChanges(hash: String, changes: SurveyPackage) {
-    val oldAnswers = mutableListOf<Answer>()
-    val changedAnswers = mutableListOf<Answer>()
-    val nextAnswers = mutableListOf<Answer>()
-
-    println("FIRST")
-    println("oldAnswers: $oldAnswers")
-    println("changedAnswers: $changedAnswers")
-    println("nextAnswers: $nextAnswers")
 
     transaction {
         addLogger(StdOutSqlLogger)
@@ -157,52 +149,13 @@ fun includeSurveyChanges(hash: String, changes: SurveyPackage) {
             it[question] = changes.question
             it[expirationTime] = createDate(changes.expirationTime)
         }
-
-        getAnswers(hash)
-
         AnswerTable.deleteWhere { AnswerTable.survey eq hash }
     }
-    println("SECOND")
-    println("oldAnswers: $oldAnswers")
-    println("changedAnswers: $changedAnswers")
-    println("nextAnswers: $nextAnswers")
 
     changes.answers.forEach {
-//        changedAnswers.add(ChartSliceData(it,0, randHexColor()))
+        insertChangedAnswer(hash, it.text, it.counts)
     }
-    println("THIRD")
-    println("oldAnswers: $oldAnswers")
-    println("changedAnswers: $changedAnswers")
-    println("nextAnswers: $nextAnswers")
 
-    // what if typos changed? currently it is a completly new answer and all counts are lost
-//    oldAnswers.forEach { old ->
-//        changedAnswers.forEach { changed ->
-//            if (old.title == changed.title) {
-//                nextAnswers.add(old)
-//            }
-//        }
-//    }
-    println("FOURTH")
-    println("oldAnswers: $oldAnswers")
-    println("changedAnswers: $changedAnswers")
-    println("nextAnswers: $nextAnswers")
-    changedAnswers.forEach { changed ->
-        nextAnswers.forEach { next ->
-            if (changed == next) {
-                nextAnswers.remove(next)
-                nextAnswers.add(changed)
-            }
-        }
-    }
-    println("FIFTH")
-    println("oldAnswers: $oldAnswers")
-    println("changedAnswers: $changedAnswers")
-    println("nextAnswers: $nextAnswers")
-
-    nextAnswers.forEach {
-//        insertChangedAnswer(hash, it.title, it.value, it.color)
-    }
 }
 
 fun mapToSurvey(it: ResultRow) = Survey(
