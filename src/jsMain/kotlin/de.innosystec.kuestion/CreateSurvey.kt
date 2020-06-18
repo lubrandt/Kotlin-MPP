@@ -11,7 +11,7 @@ import react.*
 import react.dom.*
 
 
-class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
+class CreateSurvey : RComponent<MainProps, CreateSurveyState>() {
 
     override fun CreateSurveyState.init() {
         question = ""
@@ -22,13 +22,9 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
     }
 
     override fun RBuilder.render() {
-
-
-        //Home (show list of surveys?) & Create in one place
         h3 {
-            +"Landingpage & Creation of Survey"
+            +"Creation of Surveys"
         }
-
 
         div {
             p {
@@ -99,7 +95,6 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
         // Date
         div {
-            //todo: no submit on both
             //Datum
             child(functionalComponent = inputComponent,
                 props = jsObject {
@@ -130,68 +125,74 @@ class CreateSurvey : RComponent<RProps, CreateSurveyState>() {
 
 
 
-
-        button(type = ButtonType.button) {
-            +"Submit Survey"
-            attrs.onClickFunction = {
-                if (state.question.length > 3
-                    && state.answers.size >= 2
-                    && state.date != ""
-                    && state.time != ""
-                ) {
-                    scope.launch {
-                        val resp = sendSurveyToApi(
-                            SurveyPackage(
-                                state.question,
-                                state.answers,
-                                "${state.date}T${state.time}"
+        div {
+            button(type = ButtonType.button) {
+                +"Submit Survey"
+                attrs.onClickFunction = {
+                    if (state.question.length > 3
+                        && state.answers.size >= 2
+                        && state.date != ""
+                        && state.time != ""
+                    ) {
+                        scope.launch {
+                            val resp = sendSurveyToApi(
+                                SurveyPackage(
+                                    state.question,
+                                    state.answers,
+                                    "${state.date}T${state.time}"
+                                )
                             )
-                        )
-                        setState {
-                            surveyHash = resp
+                            setState {
+                                surveyHash = resp
+                            }
                         }
+                    }
+                }
+            }
+            button(type = ButtonType.button) {
+                +"Reset/New Survey"
+                attrs.onClickFunction = {
+                    setState {
+                        question = ""
+                        answers = mutableListOf()
+                        surveyHash = ""
+                        date = ""
+                        time = ""
                     }
                 }
             }
         }
 
-
-        button(type = ButtonType.button) {
-            +"Reset/New Survey"
-            attrs.onClickFunction = {
-                setState {
-                    question = ""
-                    answers = mutableListOf()
-                    surveyHash = ""
-                    date = ""
-                    time = ""
+        div {
+            if (state.surveyHash != "") {
+                p {
+                    +"your hash/id is: ${state.surveyHash}"
+                    br {}
+                    +"click the link below to go to your survey, share this link with future participants"
+                }
+                a("/#${props.basepath}/${state.surveyHash}/r", target = "_blank") {
+                    attrs.rel = "noopener noreferrer"
+                    +"localhost:8080/#${props.basepath}/${state.surveyHash}/r"
+                }
+            } else {
+                p {
+                    +"Please enter a question, at least two answers and a complete Expiration Date."
                 }
             }
         }
 
-        if (state.surveyHash != "") {
-            p {
-                +"your hash/id is: ${state.surveyHash}"
-                br {}
-                +"click the link below to go to your survey, share this link with future participants"
-            }
-            a("/#/${state.surveyHash}/r", target = "_blank") {
-                attrs.rel = "noopener noreferrer"
-                +"localhost:8080/#/${state.surveyHash}/r"
-            }
-        } else {
-            p {
-                +"Please enter a question, at least two answers and a complete Expiration Date."
-            }
-        }
-
-        println("Survey is: \nQuestion: " + state.question
-                + "\nAnswers: " + state.answers
-                + "\nDate and Time: ${state.date} | ${state.time}"
+        println(
+            "Survey is: \nQuestion: " + state.question
+                    + "\nAnswers: " + state.answers
+                    + "\nDate and Time: ${state.date} | ${state.time}"
         )
     }
+}
 
-
+fun RBuilder.createSurvey(handler: MainProps.() -> Unit): ReactElement {
+    return child(CreateSurvey::class) {
+        this.attrs(handler)
+    }
 }
 
 interface CreateSurveyState : RState {

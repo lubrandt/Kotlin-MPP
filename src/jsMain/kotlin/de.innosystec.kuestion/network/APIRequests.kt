@@ -22,7 +22,7 @@ suspend fun sendClickedAnswerToApi(pair: StringPair): String {
         body = pair
     }
 }
-//todo: api in common, android app, sevrer to server, aufschreiben obs funktioniert
+
 suspend fun getAllSurveys(): List<StringPair> {
     return client.get("$jvmBackend/allSurveys")
 }

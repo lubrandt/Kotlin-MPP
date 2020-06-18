@@ -19,10 +19,18 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
     }
 
     private suspend fun updateSurvey() {
-        val response = getResultFromApi(props.id)
-        setState {
-            receivedSurvey = response
+        var response = SurveyPackage()
+        try {
+            response = getResultFromApi(props.id)
+            setState {
+                receivedSurvey = response
+            }
+            //todo: how to elevate exeption, Exception vs Error? ErrorBoundary doesn't normally handle async errors
+        } catch (e: Exception) {
+//            throw Exception("I got caught: $e")
+            throw Error("I AM AN ERRRROOOOORRRR")
         }
+
     }
 
     override fun componentDidMount() {

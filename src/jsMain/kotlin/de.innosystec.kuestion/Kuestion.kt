@@ -18,42 +18,68 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                 response = getResponse
             }
         }
+        isLoggedIn = false
+    }
+
+    fun RBuilder.checkLoginStatus(element: ReactElement): ReactElement {
+        return if (state.isLoggedIn) {
+            element
+        } else {
+            redirect("", "/login") // path weitergeben? match.path? route has props -> history?
+        }
     }
 
     override fun RBuilder.render() {
+        // hashrouter vs browserrouter???
+        // https://stackoverflow.com/questions/51974369/hashrouter-vs-browserrouter
         hashRouter {
+
             div {
-                h1 {
-                    +"Kuestion First Blood"
-                }
-                p {
-                    +"You have received the test response: ${state.response}"
-                }
+                h3 { +"NavBar" }
                 ul("header") {
                     li {
                         navLink("/", exact = true) {
-                            +"HomeCreateApp"
+                            +"Home"
                         }
                     }
                     li {
-                        navLink("/allSurveys", exact = true) {
-                            +"Display all Created surveys"
+                        navLink("/login") {
+                            +"Login"
+                        }
+                    }
+                    li {
+                        navLink("/surveys") {
+                            +"Survey Stuff"
                         }
                     }
                 }
+                p {
+                    +"You are logged in: ${state.isLoggedIn}"
+                }
 
                 div("content") {
-                    //login //autoredirect
-                    route("/", CreateSurvey::class, exact = true)
-                    route("/allSurveys", SurveysList::class, exact = true)
-                    route<IdProps>("/:id/edit") { props ->
-                        updateSurvey {
-                            id = props.match.params.id
+                    // move protected routes to protected route with own hashrouter?
+                    switch {
+                        route("/", exact = true) {
+                            openMain {
+                                isLoggedIn = state.isLoggedIn
+                                response = state.response
+                            }
                         }
-                    }
-                    route<IdProps>("/:id/r") { props ->
-                        displaySurvey {
-                            id = props.match.params.id
+                        route("/login") {
+                            loginPage {
+                                loginFunction = { input ->
+                                    setState {
+                                        isLoggedIn = input
+                                    }
+                                }
+                            }
+                        }
+                        route<MainProps>("/surveys") { props ->
+                            checkLoginStatus(protectedMain {basepath = "/surveys" })
+                        }
+                        route("") {
+                            h1 { +"not found" }
                         }
                     }
                     //redirect("","") todo: prio: auth, editierung todo: Antwort hat ja schon survey hash, kein survey hash schicken, chartslicedata umbauen
@@ -65,6 +91,7 @@ class Kuestion : RComponent<RProps, KuestionState>() {
 
 interface KuestionState : RState {
     var response: String?
+    var isLoggedIn: Boolean
 }
 
 interface IdProps : RProps {

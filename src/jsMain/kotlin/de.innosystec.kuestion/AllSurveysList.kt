@@ -7,7 +7,7 @@ import react.*
 import react.dom.*
 import react.router.dom.navLink
 
-class SurveysList : RComponent<RProps, SurveysListState>() {
+class SurveysList : RComponent<MainProps, SurveysListState>() {
 
     override fun SurveysListState.init() {
         surveys = emptyList()
@@ -30,16 +30,16 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
 
         div {
             h3 {
-                +"List of Mock Surveys"
+                +"List of Mock Surveys (not working)"
             }
             ul {
                 li {
-                    navLink("/mockSu/r", exact = true) {
+                    navLink("${props.basepath}/mockSu/r", exact = true) {
                         +"mockSurvey"
                     }
                 }
                 li {
-                    navLink("/0123456/r", exact = true) {
+                    navLink("${props.basepath}/0123456/r", exact = true) {
                         +"tooLongSurvey"
                     }
                 }
@@ -53,16 +53,22 @@ class SurveysList : RComponent<RProps, SurveysListState>() {
             ul {
                 state.surveys.forEach { item ->
                     li {
-                        navLink("/${item.second}/r", exact = true) {
+                        navLink("${props.basepath}/${item.second}/r", exact = true) {
                             +item.first
                         }
-                        navLink("/${item.second}/edit") {
+                        navLink("${props.basepath}/${item.second}/edit") {
                             +"EditSurvey"
                         }
                     }
                 }
             }
         }
+    }
+}
+
+fun RBuilder.surveysList(handler: MainProps.() -> Unit): ReactElement {
+    return child(SurveysList::class) {
+        this.attrs(handler)
     }
 }
 
