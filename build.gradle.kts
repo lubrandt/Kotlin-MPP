@@ -124,9 +124,6 @@ kotlin {
                 implementation(npm("bufferutil"))
                 implementation(npm("fs"))
 
-                // handson
-                implementation(npm("react-player"))
-                implementation(npm("react-share"))
             }
         }
         val jsTest by getting {

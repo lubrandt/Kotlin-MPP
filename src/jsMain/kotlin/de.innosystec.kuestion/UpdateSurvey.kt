@@ -187,6 +187,8 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                 }
             }
         }
+        br{}
+        br {}
 
         println("Survey is: \nQuestion: " + state.question
                 + "\nAnswers: " + state.answers

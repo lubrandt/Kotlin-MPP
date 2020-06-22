@@ -16,6 +16,7 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 
     override fun DisplaySurveyState.init() {
         receivedSurvey = SurveyPackage()
+        hasError = false
     }
 
     private suspend fun updateSurvey() {
@@ -27,8 +28,10 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
             }
             //todo: how to elevate exeption, Exception vs Error? ErrorBoundary doesn't normally handle async errors
         } catch (e: Exception) {
-//            throw Exception("I got caught: $e")
-            throw Error("I AM AN ERRRROOOOORRRR")
+            println("Oh no! Something happend: $e")
+            setState {
+                hasError = true
+            }
         }
 
     }
@@ -49,51 +52,60 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
     }
 
     override fun RBuilder.render() {
-        h3 {
-            +"Displaying Survey for ID [${props.id}]:"
-        }
-        div {
-            p {
-                +"Might take some time to load (indicator pending)"
-                br {}
-                +"Question: ${state.receivedSurvey.question}"
-                br {}
-                +"List of Answers: ${state.receivedSurvey.answers}"
-                br {}
-                +"ExpirationDate: ${state.receivedSurvey.expirationTime}"
+        if (state.hasError) {
+            h1 {
+                +"This Survey doesn't exist!"
             }
-        }
-        styledDiv {
-            css {
-                +ComponentStyles.chartStyle
+            p { +"something went wrong..." }
+        } else {
+            h3 {
+                +"Displaying Survey for ID [${props.id}]:"
             }
-            ReactPieChart {
-                attrs.data = createChartSliceArray(state.receivedSurvey.answers)
+            div {
+                p {
+                    +"Might take some time to load (indicator pending)"
+                    br {}
+                    +"Question: ${state.receivedSurvey.question}"
+                    br {}
+                    +"List of Answers: ${state.receivedSurvey.answers}"
+                    br {}
+                    +"ExpirationDate: ${state.receivedSurvey.expirationTime}"
+                }
             }
-        }
-        ul {
-            state.receivedSurvey.answers.forEach { item ->
-                li {
-                    +"[${item.counts} Stimme(n)] ${item.text}"
-                    attrs.onClickFunction = {
-                        scope.launch {
-                            sendClickedAnswerToApi(
-                                StringPair(
-                                    props.id,
-                                    item.text
+            styledDiv {
+                css {
+                    +ComponentStyles.chartStyle
+                }
+                ReactPieChart {
+                    attrs.data = createChartSliceArray(state.receivedSurvey.answers)
+                }
+            }
+            ul {
+                state.receivedSurvey.answers.forEach { item ->
+                    li {
+                        +"[${item.counts} Stimme(n)] ${item.text}"
+                        attrs.onClickFunction = {
+                            scope.launch {
+                                sendClickedAnswerToApi(
+                                    StringPair(
+                                        props.id,
+                                        item.text
+                                    )
                                 )
-                            )
-                            updateSurvey()
+                                updateSurvey()
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 }
 
 interface DisplaySurveyState : RState {
     var receivedSurvey: SurveyPackage
+    var hasError: Boolean
 }
 
 /**

@@ -170,7 +170,7 @@ class CreateSurvey : RComponent<MainProps, CreateSurveyState>() {
                     br {}
                     +"click the link below to go to your survey, share this link with future participants"
                 }
-                a("/#${props.basepath}/${state.surveyHash}/r", target = "_blank") {
+                a("/#${props.basepath}/${state.surveyHash}/r", target = "_self") {
                     attrs.rel = "noopener noreferrer"
                     +"localhost:8080/#${props.basepath}/${state.surveyHash}/r"
                 }
