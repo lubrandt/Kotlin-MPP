@@ -33,4 +33,5 @@ interface MainProps:RProps {
     var response : String?
     var isLoggedIn: Boolean
     var basepath: String
+    var errorfunc: (Exception) -> Unit
 }

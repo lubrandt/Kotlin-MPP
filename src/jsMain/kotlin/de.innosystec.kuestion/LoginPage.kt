@@ -24,21 +24,23 @@ class LoginPage : RComponent<LoginProps, LoginState>() {
         }
     }
 
+    private fun handleFormSubmit() {
+        localStorage.setItem("user", state.user)
+        localStorage.setItem("password", state.password)
+    }
+
     override fun RBuilder.render() {
         div {
             h1 {
                 +"Welcome to the LoginPage"
             }
             div {
-                if (!checkLoginStatus()) p { +"wrong password or username" }
+                if (!checkLoginStatus()) p { +"wrong password or username" } else redirect("/login", "/surveys")
             }
         }
         // https://github.com/JetBrains/kotlin-wrappers/issues/35
         div {
-            fun handleFormSubmit() {
-                localStorage.setItem("user", state.user)
-                localStorage.setItem("password", state.password)
-            }
+
             form {
                 attrs.onSubmitFunction = { handleFormSubmit() }
                 label {
@@ -72,19 +74,9 @@ class LoginPage : RComponent<LoginProps, LoginState>() {
 
                     }
                 }
-                label {
-                    button(type = ButtonType.reset) {
-                        +"Sign Out"
-                        attrs.onClickFunction = {
-                            localStorage.clear()
-                        }
-                    }
-                }
             }
         }
-
     }
-
 }
 
 interface LoginProps : RProps {

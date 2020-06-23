@@ -41,19 +41,18 @@ class ProtectedMainPage : RComponent<MainProps, RState>() {
                 route<IdProps>("${props.basepath}/:id/edit") { props ->
                     updateSurvey {
                         id = props.match.params.id
+
                     }
 
                 }
                 route<IdProps>("${props.basepath}/:id/r") { props ->
-                    errorBoundary {
-                        child = displaySurvey {
-                            id = props.match.params.id
-                        }
-                        childList.add(
-                            displaySurvey {
-                                id = props.match.params.id
-                            }
-                        )
+                    displaySurvey {
+                        id = props.match.params.id
+//                            errorfunc = {e ->
+//                                setState {
+//                                    throw e
+//                                }
+//                            }
                     }
                 }
             }

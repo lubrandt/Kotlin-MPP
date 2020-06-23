@@ -5,6 +5,7 @@ import de.innosystec.kuestion.network.jvmBackend
 import de.innosystec.kuestion.utility.Auth
 import io.ktor.client.request.get
 import kotlinx.coroutines.*
+import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import react.router.dom.*
@@ -56,6 +57,16 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                         }
                     }
                 }
+                div {
+                    button {
+                        +"Logout"
+                        attrs.onClickFunction = {
+                            localStorage.clear()
+                            setState{} // force update
+                        }
+
+                    }
+                }
                 p {
                     +"You are logged in: ${checkLoginStatus()}"
                 }
@@ -100,10 +111,10 @@ fun checkLoginStatus(): Boolean {
     val user = localStorage.getItem("user")
     val password = localStorage.getItem(("password"))
     return if (user.isNullOrEmpty()){
-        println("$user <- null or empty")
+        println("user: $user <- null or empty")
         false
     } else if (password.isNullOrEmpty()){
-        println("$password <- null or empty")
+        println("pw: $password <- null or empty")
         false
     } else if (user == password) {
         println("$user == $password, logged in")
