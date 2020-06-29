@@ -1,7 +1,5 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.utility.Auth
-import de.innosystec.kuestion.utility.buttonLink
 import kotlinext.js.jsObject
 import kotlinx.html.*
 import kotlinx.html.js.onChangeFunction
