@@ -2,8 +2,8 @@ package de.innosystec.kuestion
 
 import de.innosystec.kuestion.network.client
 import de.innosystec.kuestion.network.jvmBackend
-import de.innosystec.kuestion.utility.Auth
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import kotlinx.coroutines.*
 import kotlinx.html.js.onClickFunction
 import react.*
@@ -16,7 +16,9 @@ class Kuestion : RComponent<RProps, KuestionState>() {
     override fun KuestionState.init() {
         val mainScope = MainScope()
         mainScope.launch {
-            val getResponse = client.get<String>("$jvmBackend/")
+            val getResponse = client.get<String>("$jvmBackend/") {
+//                header("Authorization","Basic bHVrYXM6bHVrYXM=") //Lukas:Lukas
+            }
             setState {
                 response = getResponse
             }

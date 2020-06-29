@@ -11,6 +11,7 @@ internal fun Routing.counter() {
     route("/inc") {
         post {
             val incAnswer = call.receive<StringPair>()
+            //todo: move time check to frontend? reduce data bandwith?
             addAnswerCount(incAnswer)
             call.respond(HttpStatusCode.OK)
         }

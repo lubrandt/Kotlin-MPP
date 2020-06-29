@@ -5,10 +5,10 @@
 
 object Versions {
     // Library versions
-    val kotlinVersion = "1.3.70" //1.3.72 breaks Stuff
+    val kotlinVersion = "1.3.72" //1.3.72 breaks Stuff
     val ktorVersion = "1.3.2"
     val logback = "1.2.3"
-    val mainLibVersion = "0.20.0"
+    val mainLibVersion = "0.20.0" // serialization
     val kotlinExposedVersion = "0.23.1"
     val h2Version = "1.4.200"
     val coroutineVersion = "1.3.5"

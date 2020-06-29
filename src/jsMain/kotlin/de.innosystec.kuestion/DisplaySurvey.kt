@@ -20,7 +20,7 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
     }
 
     private suspend fun updateSurvey() {
-        var response = SurveyPackage()
+        val response: SurveyPackage
         try {
             response = getResultFromApi(props.id)
             setState {
@@ -76,6 +76,7 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                 css {
                     +ComponentStyles.chartStyle
                 }
+                //todo: Standardfarben? ~200?
                 ReactPieChart {
                     attrs.data = createChartSliceArray(state.receivedSurvey.answers)
                 }
@@ -92,6 +93,7 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                                         item.text
                                     )
                                 )
+                                //todo: feedback if abgelaufen, im Backend und Frontend auf Datum prüfen
                                 updateSurvey()
                             }
                         }

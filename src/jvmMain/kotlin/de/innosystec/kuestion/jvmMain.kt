@@ -11,6 +11,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.locations.Location
+import io.ktor.locations.Locations
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
@@ -44,13 +46,18 @@ internal fun Application.module() {
 
     install(DefaultHeaders)
     install(CallLogging)
+    install(Locations)
 
     install(CORS) {
         method(HttpMethod.Get)
         method(HttpMethod.Post)
         method(HttpMethod.Delete)
+        method(HttpMethod.Options)
         header(HttpHeaders.AccessControlAllowOrigin)
         header(HttpHeaders.AccessControlAllowHeaders)
+        header(HttpHeaders.AccessControlAllowCredentials)
+        header(HttpHeaders.WWWAuthenticate)
+        header(HttpHeaders.Authorization)
         anyHost()
         allowCredentials = true
         allowNonSimpleContentTypes = true
@@ -66,16 +73,13 @@ internal fun Application.module() {
     }
 
     install(Authentication) {
-        basic("basicAuth") {
+        basic("basic") {
             realm = "Ktor Server"
             validate { credentials ->
-//                if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
-                UserIdPrincipal("DukeNukem")
+                if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
             }
         }
     }
-
-    install(Routing)
 
 //    Database.connect("jdbc:h2:file:C:/data/sample;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
     Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")

@@ -3,17 +3,18 @@ package de.innosystec.kuestion
 import de.innosystec.kuestion.exposed.*
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
+import io.ktor.locations.*
 import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.delete
-import io.ktor.routing.get
-import io.ktor.routing.route
+import io.ktor.routing.*
 
+@KtorExperimentalLocationsAPI
+@Location("/{questionId}") class question(val questionId: String?)
+
+@KtorExperimentalLocationsAPI
 internal fun Routing.getSurvey() {
-    route("/{questionId}") {
 
-        get {
-            val hash = call.parameters["questionId"]
+        get<question> {question ->
+            val hash = question.questionId
             if (hash != null) {
                 if (hash.length != 6) {
                     call.respond(HttpStatusCode.BadRequest)
@@ -33,8 +34,8 @@ internal fun Routing.getSurvey() {
             }
         }
 
-        delete {
-            val hash = call.parameters["questionId"]
+        delete<question> {question ->
+            val hash = question.questionId
             if (hash == null) {
                 call.respond(HttpStatusCode.BadRequest)
             } else {
@@ -43,5 +44,4 @@ internal fun Routing.getSurvey() {
             }
         }
     }
-}
 
