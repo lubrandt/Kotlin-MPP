@@ -103,8 +103,8 @@ kotlin {
 
                 //Kotlin Styled, sometimes not found?
                 implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
-//                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.99-kotlin-1.3.72")
-                implementation(npm("styled-components", "5.1.0"))
+//                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.109-kotlin-1.3.72")
+                implementation(npm("styled-components", "5.1.1"))
                 implementation(npm("react-is", "16.13.0"))
                 implementation(npm("inline-style-prefixer", "6.0.0"))
 
@@ -114,7 +114,7 @@ kotlin {
 
                 // React packages/modules
                 // nimmt ohne versionsangabe die aktuellste
-                implementation(npm("react-minimal-pie-chart", "7.3.1")) // piechart, 8.0.0 doesn't work
+                implementation(npm("react-minimal-pie-chart", "7.3.1")) // piechart, versions > 7.3.1 don't work
 
                 // fix abort-controller & text-encoding modules not found
                 // weird dependency hell to get rid of warnings

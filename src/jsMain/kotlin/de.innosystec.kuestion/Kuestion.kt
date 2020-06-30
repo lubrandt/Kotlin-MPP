@@ -2,6 +2,8 @@ package de.innosystec.kuestion
 
 import de.innosystec.kuestion.network.client
 import de.innosystec.kuestion.network.jvmBackend
+import de.innosystec.kuestion.utility.ComponentStyles
+import de.innosystec.kuestion.utility.styles
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import kotlinx.coroutines.*
@@ -9,6 +11,10 @@ import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import react.router.dom.*
+import styled.StyledComponents
+import styled.css
+import styled.injectGlobal
+import styled.styledDiv
 import kotlin.browser.localStorage
 
 class Kuestion : RComponent<RProps, KuestionState>() {
@@ -36,16 +42,35 @@ class Kuestion : RComponent<RProps, KuestionState>() {
 
 
     override fun RBuilder.render() {
+        StyledComponents.injectGlobal(styles.toString())
         // hashrouter vs browserrouter???
         // https://stackoverflow.com/questions/51974369/hashrouter-vs-browserrouter
         hashRouter {
 
             div {
-                h3 { +"NavBar" }
-                ul("header") {
+                styledDiv {
+                    h1 {
+                        +"Kuestion"
+                    }
+                    p {
+                        +"A Survey Tool"
+                    }
+                    css {
+                        +ComponentStyles.headline
+                    }
+                }
+                styledDiv {
+                    css {
+                        +ComponentStyles.navbar
+                    }
                     li {
                         navLink("/", exact = true) {
                             +"Home"
+                        }
+                    }
+                    li {
+                        navLink("/surveys") {
+                            +"Survey Stuff"
                         }
                     }
                     li {
@@ -54,21 +79,16 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                         }
                     }
                     li {
-                        navLink("/surveys") {
-                            +"Survey Stuff"
+                        a() {
+                            +"Logout"
+                            attrs.onClickFunction = {
+                                localStorage.clear()
+                                setState{} // force update
+                            }
                         }
                     }
                 }
-                div {
-                    button {
-                        +"Logout"
-                        attrs.onClickFunction = {
-                            localStorage.clear()
-                            setState{} // force update
-                        }
 
-                    }
-                }
                 p {
                     +"You are logged in: ${checkLoginStatus()}"
                 }

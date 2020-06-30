@@ -8,9 +8,8 @@ import react.router.dom.switch
 
 class ProtectedMainPage : RComponent<MainProps, RState>() {
     override fun RBuilder.render() {
-        h1 {
+        h2 {
             +"Survey Overview"
-            br {}
         }
         div {
             ul {
