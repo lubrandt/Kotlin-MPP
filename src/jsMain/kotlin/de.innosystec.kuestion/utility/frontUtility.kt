@@ -25,6 +25,7 @@ data class ChartSlice(
 
 fun createChartSliceArray(answers: MutableList<Answer>): Array<ChartSlice> {
     val chartList = mutableListOf<ChartSlice>()
+    val colorList = mutableListOf<String>()
     answers.forEach {
         chartList.add(ChartSlice(it.text,it.counts, randHexColor())) // todo: consistent color?
     }

@@ -4,6 +4,7 @@ import de.innosystec.kuestion.network.changedSurvey
 import de.innosystec.kuestion.network.deleteSurvey
 import de.innosystec.kuestion.network.endSurvey
 import de.innosystec.kuestion.network.getResultFromApi
+import de.innosystec.kuestion.utility.ComponentStyles
 import de.innosystec.kuestion.utility.scope
 import kotlinext.js.jsObject
 import kotlinx.coroutines.launch
@@ -11,6 +12,8 @@ import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
+import styled.css
+import styled.styledDiv
 
 class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
 
@@ -43,157 +46,194 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
 
     //todo: redirect from this component if the survey doesn't exist anymore?
     override fun RBuilder.render() {
-        h3 {
-            +"Editing Survey for ID [${props.id}]:"
-        }
-
         div {
-            p {
-                +"Question:"
-                br {}
-                +state.question
+            div {
+                h3 {
+                    +"Editing your Survey here:"
+                }
             }
-            p {
-                +"Answers: "
-//                +state.complSurvey.answers.size.toString()
-            }
-            ul {
-                state.answers.forEach { item ->
-                    li {
-                        key = item.text
-                        attrs.onClickFunction = {
-                            setState {
-                                state.answers.remove(item)
+            div {
+                styledDiv {
+                    css {
+                        +ComponentStyles.displaySurveyInfo
+                    }
+                    styledDiv {
+                        css {
+                            +ComponentStyles.Surveyinfo
+                        }
+                        table {
+                            tbody {
+
+                                tr {
+                                    td {
+                                        +"Question:"
+                                    }
+                                    td {
+                                        +state.question
+                                    }
+                                }
+                                tr {
+                                    td {
+                                        +"Answers:"
+
+                                    }
+                                    td {
+                                        ul {
+                                            state.answers.forEach { item ->
+                                                li {
+                                                    key = item.text
+                                                    attrs.onClickFunction = {
+                                                        setState {
+                                                            state.answers.remove(item)
+                                                        }
+                                                    }
+                                                    +item.text
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                tr {
+                                    td {
+                                        +"Expiration Date:"
+                                    }
+                                    td {
+                                        val pattern = "dd-mm-yyyy"
+                                        +state.date
+                                    }
+                                }
+                                tr {
+                                    td {
+                                        +"Time:"
+
+                                    }
+                                    td {
+                                        +state.time
+                                    }
+                                }
                             }
                         }
-                        +item.text
-                    }
-                }
-            }
-            p {
-                +"ExpirationDate:"
-                br {}
-                +"${state.date} | ${state.time}"
-            }
-        }
 
-        // Question
-        div {
-            child(
-                functionalComponent = inputComponent,
-                props = jsObject {
-                    onSubmit = { input ->
-                        setState {
-                            question = input
+                    }
+
+                    styledDiv {
+                        css {
+                            +ComponentStyles.inputFields
                         }
-                    }
-                    inputType = InputType.text
-                    inputPlaceholder = "Question?"
-                }
-            )
-        }
-
-
-        // Answers
-        div {
-            child(functionalComponent = inputComponent,
-                props = jsObject {
-                    onSubmit = { input ->
-                        val newAnswer = Answer(text = input)
-                        setState {
-                            if (!answers.contains(newAnswer)) {
-                                answers.add(newAnswer)
-                            }
-                        }
-                    }
-                    inputType = InputType.text
-                    inputPlaceholder = "Answer?"
-                }
-            )
-        }
-
-        // Date
-        div {
-            //todo: no submit on both
-            //Datum
-            child(functionalComponent = inputComponent,
-                props = jsObject {
-                    onChange = { input ->
-                        setState {
-                            date = input
-                        }
-                    }
-                    inputPlaceholder = ""
-                    inputType = InputType.date
-                }
-
-            )
-
-            //Zeit
-            child(functionalComponent = inputComponent,
-                props = jsObject {
-                    onChange = { input ->
-                        setState {
-                            time = input
-                        }
-                    }
-                    inputPlaceholder = ""
-                    inputType = InputType.time
-                }
-            )
-        }
-
-        div {
-            button {
-                +"End Survey"
-                attrs.onClickFunction = {
-                    scope.launch {
-                        endSurvey(props.id)
-                    }
-                    updateSurvey()
-                }
-            }
-            button {
-                +"Delete Survey"
-                attrs.onClickFunction = {
-                    scope.launch {
-                        deleteSurvey(props.id)
-                    }
-                    updateSurvey()
-                }
-            }
-            button {
-                +"Change Survey"
-                //todo: what if survey was deleted?
-                attrs.onClickFunction = {
-                    scope.launch {
-                        changedSurvey(
-                            props.id, SurveyPackage(
-                                state.question,
-                                state.answers,
-                                "${state.date}T${state.time}"
+                        div {
+                            child(
+                                functionalComponent = inputComponent,
+                                props = jsObject {
+                                    onSubmit = { input ->
+                                        setState {
+                                            if (input.length in 1..25) {
+                                                question = input
+                                            }
+                                        }
+                                    }
+                                    inputType = InputType.text
+                                    inputPlaceholder = "Question?"
+                                }
                             )
-                        )
-                        val response = getResultFromApi(props.id)
-                        setState {
-                            receivedSurvey = response
-                            question = receivedSurvey.question
-                            answers = receivedSurvey.answers
-                            surveyHash = props.id
-                            date = receivedSurvey.expirationTime.substring(0,10)
-                            time = receivedSurvey.expirationTime.substring(11)
+                        }
+                        div {
+                            child(functionalComponent = inputComponent,
+                                props = jsObject {
+                                    onSubmit = { input ->
+                                        val newAnswer = Answer(text = input)
+                                        setState {
+                                            if (!answers.contains(newAnswer) && input.length in 1..50) {
+                                                answers.add(newAnswer)
+                                            }
+                                        }
+                                    }
+                                    inputType = InputType.text
+                                    inputPlaceholder = "Answer?"
+                                }
+                            )
+                        }
+                        div {
+                            child(functionalComponent = inputComponent,
+                                props = jsObject {
+                                    onChange = { input ->
+                                        setState {
+                                            date = input
+                                        }
+                                    }
+                                    inputPlaceholder = ""
+                                    inputType = InputType.date
+                                }
+
+                            )
+
+                            child(functionalComponent = inputComponent,
+                                props = jsObject {
+                                    onChange = { input ->
+                                        setState {
+                                            time = input
+                                        }
+                                    }
+                                    inputPlaceholder = ""
+                                    inputType = InputType.time
+                                }
+                            )
+                        }
+                    }
+                }
+                styledDiv {
+                    css {
+                        +ComponentStyles.buttons
+                    }
+                    button {
+                        +"End Survey"
+                        attrs.onClickFunction = {
+                            scope.launch {
+                                endSurvey(props.id)
+                            }
+                            updateSurvey()
+                        }
+                    }
+                    button {
+                        +"Delete Survey"
+                        attrs.onClickFunction = {
+                            scope.launch {
+                                deleteSurvey(props.id)
+                            }
+                            updateSurvey()
+                        }
+                    }
+                    button {
+                        +"Change Survey"
+                        //todo: what if survey was deleted?
+                        attrs.onClickFunction = {
+                            scope.launch {
+                                changedSurvey(
+                                    props.id, SurveyPackage(
+                                        state.question,
+                                        state.answers,
+                                        "${state.date}T${state.time}"
+                                    )
+                                )
+                                val response = getResultFromApi(props.id)
+                                setState {
+                                    receivedSurvey = response
+                                    question = receivedSurvey.question
+                                    answers = receivedSurvey.answers
+                                    surveyHash = props.id
+                                    date = receivedSurvey.expirationTime.substring(0,10)
+                                    time = receivedSurvey.expirationTime.substring(11)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        br{}
-        br {}
 
-        println("Survey is: \nQuestion: " + state.question
-                + "\nAnswers: " + state.answers
-                + "\nDate and Time: ${state.date} | ${state.time}"
-        )
+//        println("Survey is: \nQuestion: " + state.question
+//                + "\nAnswers: " + state.answers
+//                + "\nDate and Time: ${state.date} | ${state.time}"
+//        )
     }
 }
 

@@ -2,11 +2,9 @@ package de.innosystec.kuestion
 
 import de.innosystec.kuestion.network.getResultFromApi
 import de.innosystec.kuestion.network.sendClickedAnswerToApi
-import de.innosystec.kuestion.utility.ReactPieChart
-import de.innosystec.kuestion.utility.ComponentStyles
-import de.innosystec.kuestion.utility.createChartSliceArray
-import de.innosystec.kuestion.utility.scope
+import de.innosystec.kuestion.utility.*
 import kotlinx.coroutines.launch
+import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
@@ -54,47 +52,59 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
     override fun RBuilder.render() {
         if (state.hasError) {
             h1 {
-                +"This Survey doesn't exist!"
+                +"This Survey doesn't exist! (DisplaySurveyComponent)"
             }
             p { +"something went wrong..." }
         } else {
-            h3 {
-                +"Displaying Survey for ID [${props.id}]:"
-            }
             div {
-                p {
-                    +"Might take some time to load (indicator pending)"
-                    br {}
+                h4 {
                     +"Question: ${state.receivedSurvey.question}"
-                    br {}
-                    +"List of Answers: ${state.receivedSurvey.answers}"
-                    br {}
+                }
+                p {
                     +"ExpirationDate: ${state.receivedSurvey.expirationTime}"
+                }
+                p {
+                    +"Time:"
                 }
             }
             styledDiv {
                 css {
-                    +ComponentStyles.chartStyle
+                    display = Display.flex
+                    flexDirection = FlexDirection.row
+                    width = 80.pct
                 }
-                //todo: Standardfarben? ~200?
-                ReactPieChart {
-                    attrs.data = createChartSliceArray(state.receivedSurvey.answers)
+                styledDiv {
+                    css {
+                        +ComponentStyles.chartStyle
+                        flex(flexBasis = 50.pct)
+                    }
+                    //todo: Standardfarben? ~200?
+                    ReactPieChart {
+                        attrs.data = createChartSliceArray(state.receivedSurvey.answers)
+                    }
                 }
-            }
-            ul {
-                state.receivedSurvey.answers.forEach { item ->
-                    li {
-                        +"[${item.counts} Stimme(n)] ${item.text}"
-                        attrs.onClickFunction = {
-                            scope.launch {
-                                sendClickedAnswerToApi(
-                                    StringPair(
-                                        props.id,
-                                        item.text
-                                    )
-                                )
-                                //todo: feedback if abgelaufen, im Backend und Frontend auf Datum prüfen
-                                updateSurvey()
+                styledDiv {
+                    css {
+                        textAlign = TextAlign.left
+                        flex(flexBasis = 50.pct)
+                    }
+                    ul {
+                        state.receivedSurvey.answers.forEach { item ->
+                            li {
+                                +"[${item.counts} Stimme(n)] ${item.text}"
+//                                +item.text
+                                attrs.onClickFunction = {
+                                    scope.launch {
+                                        sendClickedAnswerToApi(
+                                            StringPair(
+                                                props.id,
+                                                item.text
+                                            )
+                                        )
+                                        //todo: feedback if abgelaufen, im Backend und Frontend auf Datum prüfen
+                                        updateSurvey()
+                                    }
+                                }
                             }
                         }
                     }

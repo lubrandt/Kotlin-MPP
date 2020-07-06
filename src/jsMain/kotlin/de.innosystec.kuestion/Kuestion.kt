@@ -5,16 +5,13 @@ import de.innosystec.kuestion.network.jvmBackend
 import de.innosystec.kuestion.utility.ComponentStyles
 import de.innosystec.kuestion.utility.styles
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import kotlinx.coroutines.*
+import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import react.router.dom.*
-import styled.StyledComponents
-import styled.css
-import styled.injectGlobal
-import styled.styledDiv
+import styled.*
 import kotlin.browser.localStorage
 
 class Kuestion : RComponent<RProps, KuestionState>() {
@@ -46,7 +43,6 @@ class Kuestion : RComponent<RProps, KuestionState>() {
         // hashrouter vs browserrouter???
         // https://stackoverflow.com/questions/51974369/hashrouter-vs-browserrouter
         hashRouter {
-
             div {
                 styledDiv {
                     h1 {
@@ -63,34 +59,40 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                     css {
                         +ComponentStyles.navbar
                     }
-                    li {
-                        navLink("/", exact = true) {
-                            +"Home"
+                    ul {
+                        li {
+                            navLink("/", exact = true) {
+                                +"Home"
+                            }
                         }
-                    }
-                    li {
-                        navLink("/surveys") {
-                            +"Survey Stuff"
+                        li {
+                            navLink("/surveys") {
+                                +"Survey Stuff"
+                            }
                         }
-                    }
-                    li {
-                        navLink("/login") {
-                            +"Login"
+                        li {
+                            navLink("/login") {
+                                +"Login"
+                            }
                         }
-                    }
-                    li {
-                        a() {
-                            +"Logout"
-                            attrs.onClickFunction = {
-                                localStorage.clear()
-                                setState{} // force update
+                        li {
+                            a {
+                                +"Logout"
+                                attrs.onClickFunction = {
+                                    localStorage.clear()
+                                    setState {} // force update
+                                }
                             }
                         }
                     }
                 }
-
-                p {
-                    +"You are logged in: ${checkLoginStatus()}"
+                styledDiv {
+                    css {
+                        +ComponentStyles.loggedIn
+                    }
+                    p {
+                        +if (checkLoginStatus()) "Logged in as ${localStorage.getItem("user")}" else "Logged out"
+                    }
                 }
 
                 div("content") {
@@ -122,7 +124,6 @@ class Kuestion : RComponent<RProps, KuestionState>() {
                             h1 { +"Page not found" }
                         }
                     }
-                    //redirect("","") todo: prio: auth, editierung todo: Antwort hat ja schon survey hash, kein survey hash schicken, chartslicedata umbauen
                 }
             }
         }
@@ -131,20 +132,10 @@ class Kuestion : RComponent<RProps, KuestionState>() {
 
 fun checkLoginStatus(): Boolean {
     val user = localStorage.getItem("user")
-    val password = localStorage.getItem(("password"))
-    return if (user.isNullOrEmpty()){
-        println("user: $user <- null or empty")
+    val password = localStorage.getItem("password")
+    return if (user.isNullOrEmpty() || password.isNullOrEmpty()) {
         false
-    } else if (password.isNullOrEmpty()){
-        println("pw: $password <- null or empty")
-        false
-    } else if (user == password) {
-        println("$user == $password, logged in")
-        true
-    } else {
-        println("$user != $password")
-        false
-    }
+    } else user == password
 }
 
 interface KuestionState : RState {

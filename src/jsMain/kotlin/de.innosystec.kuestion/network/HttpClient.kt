@@ -18,7 +18,7 @@ val client = HttpClient {
             username = localStorage.getItem("user") ?: "peters"
             password = localStorage.getItem("password") ?: "lilie"
             realm = "Ktor Server"
-            sendWithoutRequest = true // todo: update ktor to 1.3.5 and set to false?
+            sendWithoutRequest = true
         }
     }
     install(Logging) {
