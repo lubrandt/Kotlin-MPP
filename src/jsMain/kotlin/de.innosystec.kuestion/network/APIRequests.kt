@@ -34,7 +34,6 @@ suspend fun deleteSurvey(id: String) {
 suspend fun endSurvey(id:String) {
     return client.post("$jvmBackend/endSurvey") {
         contentType(ContentType.Application.Json)
-//        header("Authorisation","username:username".encodeBase64()) // internalAPI....
         body = id
     }
 }

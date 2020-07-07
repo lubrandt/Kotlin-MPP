@@ -10,7 +10,6 @@ import react.dom.form
 import react.dom.input
 import react.functionalComponent
 import react.useState
-import kotlin.js.Date
 
 val inputComponent = functionalComponent<InputProps> { props ->
     val (input, setInput) = useState("")

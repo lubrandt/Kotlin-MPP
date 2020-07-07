@@ -1,21 +1,19 @@
 package de.innosystec.kuestion
 
 import de.innosystec.kuestion.utility.ComponentStyles
-import kotlinext.js.jsObject
 import kotlinx.css.Color
 import kotlinx.css.backgroundColor
 import kotlinx.css.color
-import kotlinx.html.*
+import kotlinx.html.ButtonType
+import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
-import react.router.dom.navLink
 import react.router.dom.redirect
-import styled.*
+import styled.css
+import styled.styledDiv
 import kotlin.browser.localStorage
 
 class LoginPage : RComponent<LoginProps, LoginState>() {
@@ -51,7 +49,6 @@ class LoginPage : RComponent<LoginProps, LoginState>() {
                     if (!checkLoginStatus()) p { +"wrong password or username" } else redirect("/login", "/surveys")
                 }
             }
-            // https://github.com/JetBrains/kotlin-wrappers/issues/35
             styledDiv {
                 css {
                     +ComponentStyles.loginPage
@@ -109,7 +106,6 @@ class LoginPage : RComponent<LoginProps, LoginState>() {
 
 interface LoginProps : RProps {
     var loginFunction: (Boolean) -> Unit
-    var path: String
 }
 
 interface LoginState : RState {
@@ -122,5 +118,3 @@ fun RBuilder.loginPage(handler: LoginProps.() -> Unit): ReactElement {
         this.attrs(handler)
     }
 }
-
-// landingState mit loginstatus? alle anderen Seiten als Kinder? childList?

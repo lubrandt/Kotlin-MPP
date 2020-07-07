@@ -116,6 +116,7 @@ kotlin {
                 // nimmt ohne versionsangabe die aktuellste
                 implementation(npm("react-minimal-pie-chart", "7.3.1")) // piechart, versions > 7.3.1 don't work
 
+
                 // fix abort-controller & text-encoding modules not found
                 // weird dependency hell to get rid of warnings
                 // even the official handson from kotlin has these

@@ -7,12 +7,12 @@ import io.ktor.locations.*
 import io.ktor.response.respond
 import io.ktor.routing.*
 
+// not a "real" class
 @KtorExperimentalLocationsAPI
 @Location("/{questionId}") class question(val questionId: String?)
 
 @KtorExperimentalLocationsAPI
 internal fun Routing.getSurvey() {
-
         get<question> {question ->
             val hash = question.questionId
             if (hash != null) {

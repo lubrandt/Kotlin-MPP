@@ -5,8 +5,6 @@ import de.innosystec.kuestion.utility.ComponentStyles
 import de.innosystec.kuestion.utility.scope
 import kotlinext.js.jsObject
 import kotlinx.coroutines.launch
-import kotlinx.css.margin
-import kotlinx.css.px
 import kotlinx.html.ButtonType
 import kotlinx.html.InputType
 import kotlinx.html.js.*
@@ -78,7 +76,6 @@ class CreateSurvey : RComponent<MainProps, CreateSurveyState>() {
                                         +"Expiration Date:"
                                     }
                                     td {
-                                        val pattern = "dd-mm-yyyy"
                                         +state.date
                                     }
                                 }

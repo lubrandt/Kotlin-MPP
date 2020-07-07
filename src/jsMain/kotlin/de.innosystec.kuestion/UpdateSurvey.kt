@@ -19,11 +19,7 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
 
     override fun UpdateSurveyState.init() {
         receivedSurvey = SurveyPackage()
-//        question = ""
         answers = mutableListOf()
-//        surveyHash = ""
-//        date = ""
-//        time = ""
     }
 
     private fun updateSurvey() {
@@ -98,7 +94,6 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                                         +"Expiration Date:"
                                     }
                                     td {
-                                        val pattern = "dd-mm-yyyy"
                                         +state.date
                                     }
                                 }

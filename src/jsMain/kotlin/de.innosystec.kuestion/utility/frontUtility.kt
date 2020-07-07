@@ -18,14 +18,13 @@ internal fun randHexColor(): String {
 }
 
 data class ChartSlice(
-    val title: String, //standard init
+    val title: String,
     val value: Int,
     val color: String
 )
 
 fun createChartSliceArray(answers: MutableList<Answer>): Array<ChartSlice> {
     val chartList = mutableListOf<ChartSlice>()
-    val colorList = mutableListOf<String>()
     answers.forEach {
         chartList.add(ChartSlice(it.text,it.counts, randHexColor())) // todo: consistent color?
     }

@@ -13,6 +13,7 @@ import kotlin.browser.localStorage
 const val jvmBackend = "http://$jvmHost:$jvmPort"
 
 val client = HttpClient {
+
     install(Auth) {
         basic {
             username = localStorage.getItem("user") ?: "peters"
@@ -21,31 +22,14 @@ val client = HttpClient {
             sendWithoutRequest = true
         }
     }
+
     install(Logging) {
+        // logs to browser console
         logger = Logger.DEFAULT
         level = LogLevel.HEADERS
     }
+
     install(JsonFeature) {
         serializer = KotlinxSerializer()
     }
-
-//    HttpResponseValidator {
-//        validateResponse {response: HttpResponse ->
-//            val statuscode = response.status.value
-//            when (statuscode) {
-////                in 300..399 -> throw RedirectResponseException(response)
-////                in 400..499 -> throw ClientRequestException(response)
-////                in 500..599 -> throw ServerResponseException(response)
-//            }
-//
-//            if (statuscode >= 600) {
-//                throw ResponseException(response)
-//            }
-//
-//        }
-//        handleResponseException {cause: Throwable ->
-//            println("cause: $cause")
-//
-//        }
-//    }
 }

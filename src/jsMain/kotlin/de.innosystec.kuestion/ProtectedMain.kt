@@ -3,9 +3,7 @@ package de.innosystec.kuestion
 import de.innosystec.kuestion.utility.ComponentStyles
 import react.*
 import react.dom.*
-import react.router.dom.navLink
-import react.router.dom.route
-import react.router.dom.switch
+import react.router.dom.*
 import styled.*
 
 class ProtectedMainPage : RComponent<MainProps, RState>() {

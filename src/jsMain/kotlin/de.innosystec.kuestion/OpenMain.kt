@@ -2,10 +2,7 @@ package de.innosystec.kuestion
 
 import de.innosystec.kuestion.utility.ComponentStyles
 import react.*
-import react.dom.div
-import react.dom.h1
-import react.dom.p
-import react.router.dom.RouteResultMatch
+import react.dom.*
 import styled.*
 
 class OpenMain : RComponent<MainProps, RState>() {
@@ -16,9 +13,6 @@ class OpenMain : RComponent<MainProps, RState>() {
             }
             h1 {
                 +"LandingPage"
-            }
-            p {
-                +"Could connect to Server: ${props.response != null}"
             }
             p {
                 +"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "
@@ -43,8 +37,6 @@ fun RBuilder.openMain(handler: MainProps.() -> Unit): ReactElement {
 }
 
 interface MainProps : RProps {
-    var response: String?
     var isLoggedIn: Boolean
     var basepath: String
-    var errorfunc: (Exception) -> Unit
 }

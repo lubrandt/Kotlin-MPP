@@ -19,12 +19,13 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 
     private suspend fun updateSurvey() {
         val response: SurveyPackage
+        //todo: ErrorBoundary?
         try {
             response = getResultFromApi(props.id)
             setState {
                 receivedSurvey = response
             }
-            //todo: how to elevate exeption, Exception vs Error? ErrorBoundary doesn't normally handle async errors
+
         } catch (e: Exception) {
             println("Oh no! Something happend: $e")
             setState {
@@ -39,7 +40,6 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
             updateSurvey()
         }
     }
-
 
     override fun componentDidUpdate(prevProps: IdProps, prevState: DisplaySurveyState, snapshot: Any) {
         if (props.id != prevProps.id) {
@@ -92,7 +92,6 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                         state.receivedSurvey.answers.forEach { item ->
                             li {
                                 +"[${item.counts} Stimme(n)] ${item.text}"
-//                                +item.text
                                 attrs.onClickFunction = {
                                     scope.launch {
                                         sendClickedAnswerToApi(
@@ -111,7 +110,6 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                 }
             }
         }
-
     }
 }
 

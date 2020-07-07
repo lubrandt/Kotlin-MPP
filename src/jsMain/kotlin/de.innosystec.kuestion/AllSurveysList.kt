@@ -86,10 +86,7 @@ class SurveysList : RComponent<MainProps, SurveysListState>() {
                             }
                         }
                     }
-                }//todo: visual feedback for buttons
-                //todo: react bootsrtrap?
-                //https://react-bootstrap.github.io/
-                //https://getbootstrap.com/docs/4.1/getting-started/introduction/
+                }
             }
         }
     }

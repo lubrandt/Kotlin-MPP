@@ -3,7 +3,6 @@ package de.innosystec.kuestion.exposed
 import de.innosystec.kuestion.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.SurveyTable
-import de.innosystec.kuestion.exposed.db.UserTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.lang.StringBuilder
@@ -13,8 +12,6 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 
 data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
-
-data class User(val username: String, val password: String, val identifier: String)
 
 fun createSurvey(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
@@ -123,7 +120,7 @@ fun getAnswers(hash: String): List<Answer> {
 }
 
 fun getQuestion(hash: String): String {
-    var question: String = ""
+    var question = ""
     transaction {
         question = SurveyTable.select { SurveyTable.hash eq hash }.map { mapToSurvey(it) }.first().question
     }
@@ -133,7 +130,7 @@ fun getQuestion(hash: String): String {
 fun getExpirationTime(hash: String): String {
     var time = ""
     transaction {
-        time = SurveyTable.select { SurveyTable.hash eq hash.toString() }
+        time = SurveyTable.select { SurveyTable.hash eq hash }
             .map { mapToSurvey(it) }
             .first().expirationTime.toString()
     }
@@ -141,7 +138,6 @@ fun getExpirationTime(hash: String): String {
 }
 
 fun includeSurveyChanges(hash: String, changes: SurveyPackage) {
-
     transaction {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable, SurveyTable)
@@ -155,7 +151,30 @@ fun includeSurveyChanges(hash: String, changes: SurveyPackage) {
     changes.answers.forEach {
         insertChangedAnswer(hash, it.text, it.counts)
     }
+}
 
+fun getAllCreatedSurveys(): MutableList<StringPair> {
+    val listOfSurveys = mutableListOf<StringPair>()
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(SurveyTable)
+        SurveyTable.selectAll()
+            .map { mapToSurvey(it) }
+            .forEach { listOfSurveys.add(StringPair(it.question, it.hash)) }
+    }
+    return listOfSurveys
+}
+
+fun createSurvey(survey: SurveyPackage): String {
+    var hash = ""
+    transaction {
+        SchemaUtils.create(SurveyTable, AnswerTable)
+        hash = createSurvey(survey.question, createDate(survey.expirationTime))
+        survey.answers.forEach {
+            insertNewAnswer(hash, it.text)
+        }
+    }
+    return hash
 }
 
 fun mapToSurvey(it: ResultRow) = Survey(
@@ -169,12 +188,6 @@ fun mapToAnswer(it: ResultRow) = Answer(
     text = it[AnswerTable.text],
     counts = it[AnswerTable.counts]
 )
-
-//fun mapUser(it: ResultRow) = User(
-//    it[UserTable.username],
-//    it[UserTable.password],
-//    it[UserTable.identifier]
-//)
 
 /**
  * https://www.samclarke.com/kotlin-hash-strings/

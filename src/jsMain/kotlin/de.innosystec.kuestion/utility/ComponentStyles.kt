@@ -1,10 +1,7 @@
 package de.innosystec.kuestion.utility
 
 import kotlinx.css.*
-import kotlinx.css.properties.LineHeight
 import kotlinx.css.properties.TextDecoration
-import kotlinx.css.properties.border
-import kotlinx.html.InputType
 import styled.StyleSheet
 
 /**
@@ -36,6 +33,9 @@ val styles = CSSBuilder().apply {
 
 }
 
+/**
+ * Individual css instructions per val
+ */
 object ComponentStyles : StyleSheet("ComponentStyle") {
     val chartStyle by css {
         height = 150.px
