@@ -24,3 +24,10 @@ data class StringPair(
     val first: String, //survey, question
     val second: String //answer, hash
 )
+
+object Zeiten
+
+expect class Zeit {
+}
+
+expect fun Zeiten.checkDate(z: Zeit): Boolean

@@ -9,6 +9,7 @@ import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import styled.*
+import kotlin.js.Date
 
 class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 
@@ -93,15 +94,18 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                             li {
                                 +"[${item.counts} Stimme(n)] ${item.text}"
                                 attrs.onClickFunction = {
-                                    scope.launch {
-                                        sendClickedAnswerToApi(
-                                            StringPair(
-                                                props.id,
-                                                item.text
+                                    // commonMain Usecase
+                                    if (Zeiten.checkDate(Zeit(state.receivedSurvey.expirationTime))) {
+                                        scope.launch {
+                                            sendClickedAnswerToApi(
+                                                StringPair(
+                                                    props.id,
+                                                    item.text
+                                                )
                                             )
-                                        )
-                                        //todo: feedback if abgelaufen, im Backend und Frontend auf Datum prüfen
-                                        updateSurvey()
+                                            //todo: feedback wenn abgelaufen ?
+                                            updateSurvey()
+                                        }
                                     }
                                 }
                             }

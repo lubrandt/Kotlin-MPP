@@ -12,7 +12,6 @@ internal fun Routing.counter() {
     authenticate("basic") {
         route("/inc") {
             post {
-                //todo: move time check to frontend? reduce data bandwith?
                 addAnswerCount(call.receive())
                 call.respond(HttpStatusCode.OK)
             }

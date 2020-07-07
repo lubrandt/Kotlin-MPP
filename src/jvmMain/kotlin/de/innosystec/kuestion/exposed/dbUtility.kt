@@ -71,7 +71,8 @@ fun addAnswerCount(answer: StringPair) {
         SchemaUtils.create(SurveyTable, AnswerTable)
         val date =
             SurveyTable.select { SurveyTable.hash eq answer.first }.map { mapToSurvey(it) }.first().expirationTime
-        if (LocalDateTime.now() > date) return@transaction //todo: move datecheck to commonCode, survey expired func?
+        // commonMain Usecase
+        if (Zeiten.checkDate(date)) return@transaction
         AnswerTable.update({ (AnswerTable.survey eq answer.first) and (AnswerTable.text eq answer.second) }) {
             with(SqlExpressionBuilder) {
                 it[counts] = counts + 1
