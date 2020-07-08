@@ -20,7 +20,7 @@ fun main(args: Array<String>) = EngineMain.main(args)
 
 @KtorExperimentalLocationsAPI
 @KtorExperimentalAPI
-internal fun Application.module() {
+internal fun Application.module(testing: Boolean = false) {
     install(ContentNegotiation) {
         json()
     }
