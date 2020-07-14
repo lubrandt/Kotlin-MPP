@@ -25,9 +25,9 @@ data class StringPair(
     val second: String //answer, hash
 )
 
-object Zeiten
+object CommonDateUtil
 
-expect class Zeit {
-}
+expect class CommonDate
 
-expect fun Zeiten.checkDate(z: Zeit): Boolean
+expect fun CommonDateUtil.checkDate(z: CommonDate): Boolean
+// todo: ist diese funktion testbar in commonTest? wird eine implementation benötigt? shared test for expected values

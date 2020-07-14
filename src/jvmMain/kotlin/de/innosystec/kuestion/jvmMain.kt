@@ -1,5 +1,8 @@
 package de.innosystec.kuestion
 
+import de.innosystec.kuestion.exposed.db.AnswerTable
+import de.innosystec.kuestion.exposed.db.DatabaseSettings
+import de.innosystec.kuestion.exposed.db.SurveyTable
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.*
@@ -14,13 +17,15 @@ import io.ktor.serialization.json
 import io.ktor.server.netty.EngineMain
 import io.ktor.util.KtorExperimentalAPI
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDateTime
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
 
 @KtorExperimentalLocationsAPI
 @KtorExperimentalAPI
-internal fun Application.module(testing: Boolean = false) {
+internal fun Application.module() {
     install(ContentNegotiation) {
         json()
     }
@@ -61,9 +66,6 @@ internal fun Application.module(testing: Boolean = false) {
             }
         }
     }
-
-//    Database.connect("jdbc:h2:file:C:/data/sample;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
-    Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1;", "org.h2.Driver")
 
     routing {
         home()

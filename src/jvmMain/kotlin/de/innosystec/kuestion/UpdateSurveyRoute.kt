@@ -1,6 +1,7 @@
 package de.innosystec.kuestion
 
 import de.innosystec.kuestion.exposed.includeSurveyChanges
+import de.innosystec.kuestion.exposed.surveyExists
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
@@ -12,13 +13,19 @@ internal fun Routing.updateSurvey() {
     authenticate("basic") {
         route("/{questionId}/update") {
             post {
-                val changes = call.receive<SurveyPackage>() // modified version of survey
-                val hash = call.parameters["questionId"]
-                if (hash == null) {
+                // modified version of survey, when no correct json is send, server throws 500
+                val changes: SurveyPackage? = call.receive()
+
+                val hash: String? = call.parameters["questionId"]
+
+                if (hash == null || changes == null) {
                     call.respond(HttpStatusCode.BadRequest)
                 } else {
-                    includeSurveyChanges(hash, changes)
-                    call.respond(HttpStatusCode.OK)
+                    if (includeSurveyChanges(hash, changes) && surveyExists(hash)) {
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        call.respond(HttpStatusCode.BadRequest)
+                    }
                 }
             }
         }

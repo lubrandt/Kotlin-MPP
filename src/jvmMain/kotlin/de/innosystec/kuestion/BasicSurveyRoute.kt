@@ -39,7 +39,7 @@ internal fun Routing.getSurvey() {
 
         delete<question> { question ->
             val hash = question.questionId
-            if (hash == null) {
+            if (hash == null || !surveyExists(hash)) {
                 call.respond(HttpStatusCode.BadRequest)
             } else {
                 deleteSurvey(hash)

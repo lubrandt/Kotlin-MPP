@@ -74,7 +74,8 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
+                implementation(kotlin("test-junit5"))
+                implementation("org.junit.jupiter:junit-jupiter:5.6.2")
                 implementation("io.ktor:ktor-server-test-host:$ktorVersion")
             }
         }
@@ -135,6 +136,13 @@ kotlin {
             }
         }
     }
+}
+
+/**
+ * https://github.com/kotest/kotest/issues/1105
+ */
+tasks.named<Test>("jvmTest") {
+    useJUnitPlatform()
 }
 
 val run by tasks.creating(JavaExec::class) {

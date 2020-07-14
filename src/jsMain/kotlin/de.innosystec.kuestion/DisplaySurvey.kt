@@ -9,7 +9,6 @@ import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
 import styled.*
-import kotlin.js.Date
 
 class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 
@@ -62,10 +61,10 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                     +"Question: ${state.receivedSurvey.question}"
                 }
                 p {
-                    +"ExpirationDate: ${state.receivedSurvey.expirationTime}"
+                    +"ExpirationDate: ${state.receivedSurvey.expirationTime.substring(0,10)}"
                 }
                 p {
-                    +"Time:"
+                    +"Time: ${state.receivedSurvey.expirationTime.substring(11)}"
                 }
             }
             styledDiv {
@@ -95,7 +94,7 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                                 +"[${item.counts} Stimme(n)] ${item.text}"
                                 attrs.onClickFunction = {
                                     // commonMain Usecase
-                                    if (Zeiten.checkDate(Zeit(state.receivedSurvey.expirationTime))) {
+                                    if (CommonDateUtil.checkDate(CommonDate(state.receivedSurvey.expirationTime))) {
                                         scope.launch {
                                             sendClickedAnswerToApi(
                                                 StringPair(

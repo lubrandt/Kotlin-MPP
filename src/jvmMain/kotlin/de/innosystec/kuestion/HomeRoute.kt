@@ -9,12 +9,12 @@ import io.ktor.routing.*
 
 internal fun Routing.home() {
     //todo: is authenticate here necessary?
-//    authenticate("basic") {
+    authenticate("basic") {
         route("/") {
             get {
                 call.respondText("Hello Ktor GET Home")
             }
-//        }
+        }
     }
     //todo: is this needed?
     static("/static") {

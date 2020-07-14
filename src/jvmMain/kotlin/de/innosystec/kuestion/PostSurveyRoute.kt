@@ -13,7 +13,8 @@ internal fun Routing.postSurvey() {
     authenticate("basic") {
         route("/postSurvey") {
             post {
-                call.respond(createSurvey(call.receive()))
+                //the hash inside the received answers is empty
+                    call.respond(createSurvey(call.receive()))
             }
         }
     }

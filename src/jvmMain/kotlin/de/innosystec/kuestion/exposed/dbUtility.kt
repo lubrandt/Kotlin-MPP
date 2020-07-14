@@ -2,20 +2,30 @@ package de.innosystec.kuestion.exposed
 
 import de.innosystec.kuestion.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
+import de.innosystec.kuestion.exposed.db.DatabaseSettings.db
 import de.innosystec.kuestion.exposed.db.SurveyTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.lang.StringBuilder
 import java.time.LocalDateTime
 import kotlin.random.Random
-import java.security.MessageDigest
-import java.security.SecureRandom
 
 data class Survey(val question: String, val hash: String, val expirationTime: LocalDateTime)
 
+fun createSurvey(survey: SurveyPackage): String {
+    var hash = ""
+    transaction(db) {
+        SchemaUtils.create(SurveyTable, AnswerTable)
+        hash = createSurvey(survey.question, createDate(survey.expirationTime))
+        survey.answers.forEach {
+            insertNewAnswer(hash, it.text)
+        }
+    }
+    return hash
+}
+
 fun createSurvey(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable)
         SurveyTable.insert {
@@ -43,7 +53,7 @@ fun createHash(): String {
 }
 
 fun insertNewAnswer(tmpSurvey: String, tmpAnswer: String) {
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)
         AnswerTable.insert {
@@ -54,7 +64,7 @@ fun insertNewAnswer(tmpSurvey: String, tmpAnswer: String) {
 }
 
 fun insertChangedAnswer(tmpSurvey: String, tmpAnswer: String, tmpCount: Int) {
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable)
         AnswerTable.insert {
@@ -66,13 +76,13 @@ fun insertChangedAnswer(tmpSurvey: String, tmpAnswer: String, tmpCount: Int) {
 }
 
 fun addAnswerCount(answer: StringPair) {
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable, AnswerTable)
         val date =
             SurveyTable.select { SurveyTable.hash eq answer.first }.map { mapToSurvey(it) }.first().expirationTime
         // commonMain Usecase
-        if (Zeiten.checkDate(date)) return@transaction
+        if (!CommonDateUtil.checkDate(date)) return@transaction
         AnswerTable.update({ (AnswerTable.survey eq answer.first) and (AnswerTable.text eq answer.second) }) {
             with(SqlExpressionBuilder) {
                 it[counts] = counts + 1
@@ -82,7 +92,7 @@ fun addAnswerCount(answer: StringPair) {
 }
 
 fun endSurvey(id: String) {
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable)
         SurveyTable.update({ SurveyTable.hash eq id }) {
@@ -93,7 +103,7 @@ fun endSurvey(id: String) {
 
 fun surveyExists(hash: String): Boolean {
     var exists = 0L
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable, AnswerTable)
         exists = SurveyTable.select { SurveyTable.hash eq hash }.count()
@@ -102,7 +112,7 @@ fun surveyExists(hash: String): Boolean {
 }
 
 fun deleteSurvey(hash: String) {
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable, AnswerTable)
         AnswerTable.deleteWhere { AnswerTable.survey eq hash }
@@ -112,7 +122,7 @@ fun deleteSurvey(hash: String) {
 
 fun getAnswers(hash: String): List<Answer> {
     var retval: List<Answer> = mutableListOf()
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(AnswerTable, SurveyTable)
         retval = AnswerTable.select { AnswerTable.survey eq hash }.map { mapToAnswer(it) }
@@ -122,7 +132,7 @@ fun getAnswers(hash: String): List<Answer> {
 
 fun getQuestion(hash: String): String {
     var question = ""
-    transaction {
+    transaction(db) {
         question = SurveyTable.select { SurveyTable.hash eq hash }.map { mapToSurvey(it) }.first().question
     }
     return question
@@ -130,7 +140,7 @@ fun getQuestion(hash: String): String {
 
 fun getExpirationTime(hash: String): String {
     var time = ""
-    transaction {
+    transaction(db) {
         time = SurveyTable.select { SurveyTable.hash eq hash }
             .map { mapToSurvey(it) }
             .first().expirationTime.toString()
@@ -138,25 +148,29 @@ fun getExpirationTime(hash: String): String {
     return time
 }
 
-fun includeSurveyChanges(hash: String, changes: SurveyPackage) {
-    transaction {
-        addLogger(StdOutSqlLogger)
-        SchemaUtils.create(AnswerTable, SurveyTable)
-        SurveyTable.update({ SurveyTable.hash eq hash }) {
-            it[question] = changes.question
-            it[expirationTime] = createDate(changes.expirationTime)
+fun includeSurveyChanges(hash: String, changes: SurveyPackage): Boolean {
+    if (surveyExists(hash)) {
+        transaction(db) {
+            addLogger(StdOutSqlLogger)
+            SchemaUtils.create(AnswerTable, SurveyTable)
+            SurveyTable.update({ SurveyTable.hash eq hash }) {
+                it[question] = changes.question
+                it[expirationTime] = createDate(changes.expirationTime)
+            }
+            AnswerTable.deleteWhere { AnswerTable.survey eq hash }
         }
-        AnswerTable.deleteWhere { AnswerTable.survey eq hash }
-    }
 
-    changes.answers.forEach {
-        insertChangedAnswer(hash, it.text, it.counts)
-    }
+        changes.answers.forEach {
+            insertChangedAnswer(hash, it.text, it.counts)
+        }
+        return true
+    } else return false
+
 }
 
 fun getAllCreatedSurveys(): MutableList<StringPair> {
     val listOfSurveys = mutableListOf<StringPair>()
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable)
         SurveyTable.selectAll()
@@ -166,17 +180,7 @@ fun getAllCreatedSurveys(): MutableList<StringPair> {
     return listOfSurveys
 }
 
-fun createSurvey(survey: SurveyPackage): String {
-    var hash = ""
-    transaction {
-        SchemaUtils.create(SurveyTable, AnswerTable)
-        hash = createSurvey(survey.question, createDate(survey.expirationTime))
-        survey.answers.forEach {
-            insertNewAnswer(hash, it.text)
-        }
-    }
-    return hash
-}
+
 
 fun mapToSurvey(it: ResultRow) = Survey(
     question = it[SurveyTable.question],
@@ -189,28 +193,3 @@ fun mapToAnswer(it: ResultRow) = Answer(
     text = it[AnswerTable.text],
     counts = it[AnswerTable.counts]
 )
-
-/**
- * https://www.samclarke.com/kotlin-hash-strings/
- * 19.05.2020 15:15
- * without the secureRandom things
- */
-object HashUtils {
-    fun ownsha1(username: String) = hashString("SHA1", username)
-
-    private fun hashString(algorithm: String, input: String): String {
-        val HEX_CHARS = "0123456789ABCDEF"
-        val secureRandom = SecureRandom()
-        val salt = secureRandom.nextInt(100) //is this really a salt?
-        val bytes = MessageDigest.getInstance(algorithm).digest((input + salt).toByteArray())
-        val result = StringBuilder(bytes.size * 2)
-
-        bytes.forEach {
-            val i = it.toInt()
-            result.append(HEX_CHARS[i shr 4 and 0x0f])
-            result.append(HEX_CHARS[i and 0x0f])
-        }
-
-        return result.toString()
-    }
-}
