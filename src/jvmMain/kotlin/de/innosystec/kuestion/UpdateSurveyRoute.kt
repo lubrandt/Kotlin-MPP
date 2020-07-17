@@ -21,6 +21,7 @@ internal fun Routing.updateSurvey() {
                 if (hash == null || changes == null) {
                     call.respond(HttpStatusCode.BadRequest)
                 } else {
+                    //TODO review: surveyExists wird in includeSurveyChanges gecheckt, kann alsoweg
                     if (includeSurveyChanges(hash, changes) && surveyExists(hash)) {
                         call.respond(HttpStatusCode.OK)
                     } else {

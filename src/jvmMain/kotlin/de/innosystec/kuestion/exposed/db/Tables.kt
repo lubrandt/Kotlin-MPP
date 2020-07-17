@@ -5,6 +5,7 @@ import org.jetbrains.exposed.sql.`java-time`.datetime
 
 object SurveyTable : IntIdTable() {
     val question = varchar("question", 25)
+    //TODO review: hash raus, stattdessen die ID verwenden (aus er IntIdTable oder UUIDTable verwenden)
     val hash = varchar("hash", 6).uniqueIndex()
     val expirationTime = datetime("expirationTime")
     //Anzahl an Antworten? Oder query

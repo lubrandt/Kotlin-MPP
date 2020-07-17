@@ -8,7 +8,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.*
 
 internal fun Routing.home() {
-    //todo: is authenticate here necessary?
+    //todo: is authenticate here necessary? öhm... nö?
     authenticate("basic") {
         route("/") {
             get {
@@ -16,7 +16,7 @@ internal fun Routing.home() {
             }
         }
     }
-    //todo: is this needed?
+    //todo: is this needed? vmtl ja
     static("/static") {
         resource("prod-dash.js")
     }

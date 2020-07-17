@@ -22,6 +22,7 @@ internal fun Routing.getSurvey() {
                 if (hash.length != 6) {
                     call.respond(HttpStatusCode.BadRequest)
                 } else {
+                    //TODO review: if rausziehen in eigene funktion(andere datei)- return type SurveyPackage
                     if (surveyExists(hash)) {
                         val data = SurveyPackage()
                         data.answers = getAnswers(hash).toMutableList()
@@ -39,6 +40,7 @@ internal fun Routing.getSurvey() {
 
         delete<question> { question ->
             val hash = question.questionId
+            //TODO review: !surveyExists ist kein BadRequest sondern wäre 404 bzw kann auch als 200 abgetan werden
             if (hash == null || !surveyExists(hash)) {
                 call.respond(HttpStatusCode.BadRequest)
             } else {

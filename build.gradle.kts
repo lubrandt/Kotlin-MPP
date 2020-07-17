@@ -93,6 +93,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging-js:$ktorVersion")
 
                 //React, React DOM + Wrappers
+                //TODO review: - version in variable ziehen für react
                 implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
 //                implementation("org.jetbrains:kotlin-react:16.13.0-pre.99-kotlin-1.3.72")
                 implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")

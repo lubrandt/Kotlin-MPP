@@ -1,5 +1,7 @@
 package de.innosystec.kuestion.exposed
+//TODO review: datei umbenennen in dbaccessor, surveyrepository, ...
 
+//TODO review: CRUD funktionen in interface sammeln + implementierung machen (evtl. als object)
 import de.innosystec.kuestion.*
 import de.innosystec.kuestion.exposed.db.AnswerTable
 import de.innosystec.kuestion.exposed.db.DatabaseSettings.db
@@ -25,7 +27,10 @@ fun createSurvey(survey: SurveyPackage): String {
 
 fun createSurvey(question: String, expirationTime: LocalDateTime): String {
     val tmpHash = createHash()
+    //TODO review: transaction aufmachen und logger added als eine funktion die hier immer benutzt werden kann
+    // ergebnis könnte sein: loggedTransaction(db, logger) {}
     transaction(db) {
+        //TODO review: Logger als konstante für besseres refactoring falls später gebraucht
         addLogger(StdOutSqlLogger)
         SchemaUtils.create(SurveyTable)
         SurveyTable.insert {
@@ -37,7 +42,9 @@ fun createSurvey(question: String, expirationTime: LocalDateTime): String {
     return tmpHash
 }
 
+//TODO review: private?
 fun createHash(): String {
+    //TODO review: als java doc
     /**
      * not really a hash
      * should be a 6 character string to use with the link and ktor(questionId)
@@ -148,8 +155,10 @@ fun getExpirationTime(hash: String): String {
     return time
 }
 
+//TODO review: der boolean weg, wenn was auffe schnauze fliegt wird da schon ne exception geworfen
 fun includeSurveyChanges(hash: String, changes: SurveyPackage): Boolean {
     if (surveyExists(hash)) {
+        //TODO review: transaction aus if raus ziehen
         transaction(db) {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(AnswerTable, SurveyTable)
@@ -160,6 +169,7 @@ fun includeSurveyChanges(hash: String, changes: SurveyPackage): Boolean {
             AnswerTable.deleteWhere { AnswerTable.survey eq hash }
         }
 
+        //TODO review: in erste transaktion rein
         changes.answers.forEach {
             insertChangedAnswer(hash, it.text, it.counts)
         }
@@ -168,6 +178,7 @@ fun includeSurveyChanges(hash: String, changes: SurveyPackage): Boolean {
 
 }
 
+//TODO review: getAllSurveys ?
 fun getAllCreatedSurveys(): MutableList<StringPair> {
     val listOfSurveys = mutableListOf<StringPair>()
     transaction(db) {
@@ -181,7 +192,7 @@ fun getAllCreatedSurveys(): MutableList<StringPair> {
 }
 
 
-
+//TODO review: verschieben in evtl. "db-mapping.kt"
 fun mapToSurvey(it: ResultRow) = Survey(
     question = it[SurveyTable.question],
     hash = it[SurveyTable.hash],

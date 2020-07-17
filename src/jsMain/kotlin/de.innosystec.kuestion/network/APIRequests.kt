@@ -5,6 +5,8 @@ import io.ktor.client.request.*
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
+
+//TODO review: Interface draus machen (in common) eventuell sogar die impl? (je nachdem wie der client das mitmacht)
 suspend fun getResultFromApi(id: String): SurveyPackage {
     return client.get("$jvmBackend/${id}")
 }

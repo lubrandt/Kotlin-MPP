@@ -31,6 +31,7 @@ internal fun Application.module() {
     }
 
     install(DefaultHeaders)
+    //TODO review: vmtl raus oder eben nur in entwicklung
     install(CallLogging)
     install(Locations)
 
@@ -61,6 +62,7 @@ internal fun Application.module() {
     install(Authentication) {
         basic("basic") {
             realm = "Ktor Server"
+            //TODO review: validate logik rausziehen (andere datei, eigene funktion)
             validate { credentials ->
                 if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
             }
