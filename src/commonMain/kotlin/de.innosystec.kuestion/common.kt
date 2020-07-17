@@ -29,5 +29,13 @@ object CommonDateUtil
 
 expect class CommonDate
 
+//expect fun CommonDateUtil.now() :CommonDate
+
+expect val number: Int
+
 expect fun CommonDateUtil.checkDate(z: CommonDate): Boolean
 // todo: ist diese funktion testbar in commonTest? wird eine implementation benötigt? shared test for expected values
+
+fun goalescence(i: Int): Int {
+    return i * i
+}

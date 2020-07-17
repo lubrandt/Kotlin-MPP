@@ -24,7 +24,13 @@ repositories {
 kotlin {
     jvm()
     js {
-        browser()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefox()
+                }
+            }
+        }
     }
     sourceSets {
         val commonMain by getting {
@@ -37,13 +43,13 @@ kotlin {
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
 
-//                implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
             }
         }
         val commonTest by getting {
             dependencies {
-//                implementation(kotlin("test-common"))
-//                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+
             }
         }
         val jvmMain by getting {
@@ -133,6 +139,8 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
+//                implementation("org.jetbrains:kotlin-mocha:3.0.1-pre.110-kotlin-1.3.72")
+//                implementation(npm("mocha"))
             }
         }
     }
@@ -141,9 +149,16 @@ kotlin {
 /**
  * https://github.com/kotest/kotest/issues/1105
  */
-tasks.named<Test>("jvmTest") {
+val jvmTests by tasks.named<Test>("jvmTest") {
     useJUnitPlatform()
 }
+
+//val jsTests by tasks.named<Test>("jsTest") {
+////    install mocha?!
+//}
+
+
+
 
 val run by tasks.creating(JavaExec::class) {
     group = "application"
