@@ -4,6 +4,7 @@
  */
 
 object Versions {
+
     // Library versions
     val kotlinVersion = "1.3.72"
     val ktorVersion = "1.3.2"
@@ -12,6 +13,7 @@ object Versions {
     val kotlinExposedVersion = "0.23.1"
     val h2Version = "1.4.200"
     val coroutineVersion = "1.3.5"
+    val react = "16.13.0"
 
     // Plugin versions
     object Plugins {
