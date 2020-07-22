@@ -5,6 +5,7 @@ val serializationVersion = Versions.mainLibVersion
 val exposedVersion = Versions.kotlinExposedVersion
 val h2Version = Versions.h2Version
 val coroutineVersion = Versions.coroutineVersion
+val react = Versions.react
 
 plugins {
     kotlin("multiplatform") version Versions.Plugins.kotlin
@@ -93,15 +94,14 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging-js:$ktorVersion")
 
                 //React, React DOM + Wrappers
-                //TODO review: - version in variable ziehen für react
-                implementation("org.jetbrains:kotlin-react:16.13.0-pre.94-kotlin-1.3.70")
+                implementation("org.jetbrains:kotlin-react:$react-pre.94-kotlin-1.3.70")
 //                implementation("org.jetbrains:kotlin-react:16.13.0-pre.99-kotlin-1.3.72")
-                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.94-kotlin-1.3.70")
+                implementation("org.jetbrains:kotlin-react-dom:$react-pre.94-kotlin-1.3.70")
 //                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.99-kotlin-1.3.72")
                 implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.94-kotlin-1.3.70")
 //                implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.99-kotlin-1.3.72")
-                implementation(npm("react", "16.13.0"))
-                implementation(npm("react-dom", "16.13.0"))
+                implementation(npm("react", react))
+                implementation(npm("react-dom", react))
                 implementation(npm("react-router-dom"))
 
                 //Kotlin Styled, sometimes not found?
@@ -118,7 +118,6 @@ kotlin {
                 // React packages/modules
                 // nimmt ohne versionsangabe die aktuellste
                 implementation(npm("react-minimal-pie-chart", "7.3.1")) // piechart, versions > 7.3.1 don't work
-
 
                 // fix abort-controller & text-encoding modules not found
                 // weird dependency hell to get rid of warnings
