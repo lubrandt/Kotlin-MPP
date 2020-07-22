@@ -129,7 +129,7 @@ interface KuestionState : RState {
 }
 
 interface IdProps : RProps {
-    var id: String
+    var id: Int
 }
 
 

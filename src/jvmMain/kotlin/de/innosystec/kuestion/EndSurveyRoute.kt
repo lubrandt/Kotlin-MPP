@@ -1,6 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.exposed.endSurvey
+import de.innosystec.kuestion.exposed.dbAccessor
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
@@ -14,12 +14,11 @@ internal fun Routing.endSurvey() {
     authenticate("basic") {
         route("/endSurvey") {
             post {
-                // remove the quotation signs from start and end
-                val survey = call.receive<String>().drop(1).dropLast(1)
-                if (survey.length != 6) {
-                    call.respond(HttpStatusCode.BadRequest)
+                val survey = call.receive<Int>()
+                if (!dbAccessor.surveyExists(survey)) {
+                    call.respond(HttpStatusCode.NotFound)
                 } else {
-                    endSurvey(survey)
+                    dbAccessor.endSurvey(survey)
                     call.respond(HttpStatusCode.OK)
                 }
             }

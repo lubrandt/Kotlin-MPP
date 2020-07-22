@@ -1,4 +1,4 @@
-package de.innosystec.kuestion.exposed.db
+package de.innosystec.kuestion.exposed
 
 import org.jetbrains.exposed.sql.Database
 

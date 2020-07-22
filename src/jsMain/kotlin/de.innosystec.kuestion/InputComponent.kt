@@ -37,7 +37,7 @@ val inputComponent = functionalComponent<InputProps> { props ->
             attrs.value = input
             attrs.placeholder = props.inputPlaceholder
             if (props.inputType == InputType.date) {
-                attrs.min = dateOfToday
+                attrs.min = dateOfToday()
             }
         }
     }

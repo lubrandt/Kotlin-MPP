@@ -1,6 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.network.sendSurveyToApi
+import de.innosystec.kuestion.network.frontendAPI
 import de.innosystec.kuestion.utility.ComponentStyles
 import de.innosystec.kuestion.utility.scope
 import kotlinext.js.jsObject
@@ -18,7 +18,7 @@ class CreateSurvey : RComponent<MainProps, CreateSurveyState>() {
     override fun CreateSurveyState.init() {
         question = ""
         answers = mutableListOf()
-        surveyHash = ""
+        surveyHash = -1
         date = ""
         time = ""
     }
@@ -175,7 +175,7 @@ class CreateSurvey : RComponent<MainProps, CreateSurveyState>() {
                                     && state.time != ""
                                 ) {
                                     scope.launch {
-                                        val resp = sendSurveyToApi(
+                                        val resp = frontendAPI.sendSurveyToApi(
                                             SurveyPackage(
                                                 state.question,
                                                 state.answers,
@@ -195,7 +195,7 @@ class CreateSurvey : RComponent<MainProps, CreateSurveyState>() {
                                 setState {
                                     question = ""
                                     answers = mutableListOf()
-                                    surveyHash = ""
+                                    surveyHash = -1
                                     date = ""
                                     time = ""
                                 }
@@ -206,7 +206,7 @@ class CreateSurvey : RComponent<MainProps, CreateSurveyState>() {
                         css {
                             +ComponentStyles.flex100pct
                         }
-                        if (state.surveyHash != "") {
+                        if (state.surveyHash != -1) {
                             p {
                                 +"your hash/id is: ${state.surveyHash}"
                                 br {}
@@ -245,7 +245,7 @@ fun RBuilder.createSurvey(handler: MainProps.() -> Unit): ReactElement {
 interface CreateSurveyState : RState {
     var question: String
     var answers: MutableList<Answer>
-    var surveyHash: String
+    var surveyHash: Int
     var date: String
     var time: String
 }

@@ -1,9 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.network.changedSurvey
-import de.innosystec.kuestion.network.deleteSurvey
-import de.innosystec.kuestion.network.endSurvey
-import de.innosystec.kuestion.network.getResultFromApi
+import de.innosystec.kuestion.network.*
 import de.innosystec.kuestion.utility.ComponentStyles
 import de.innosystec.kuestion.utility.scope
 import kotlinext.js.jsObject
@@ -12,6 +9,7 @@ import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.*
 import react.dom.*
+import react.router.dom.redirect
 import styled.css
 import styled.styledDiv
 
@@ -20,11 +18,12 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
     override fun UpdateSurveyState.init() {
         receivedSurvey = SurveyPackage()
         answers = mutableListOf()
+        redirect = false
     }
 
     private fun updateSurvey() {
         scope.launch {
-            val response = getResultFromApi(props.id)
+            val response = frontendAPI.getSurveyFromApi(props.id)
             setState {
                 receivedSurvey = response
                 question = receivedSurvey.question
@@ -40,9 +39,11 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
         updateSurvey()
     }
 
-    //todo: redirect from this component if the survey doesn't exist anymore?
     override fun RBuilder.render() {
         div {
+            div {
+                if (state.redirect) redirect("/", "/surveys/allSurveys")
+            }
             div {
                 h3 {
                     +"Editing your Survey here:"
@@ -183,33 +184,41 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                         +"End Survey"
                         attrs.onClickFunction = {
                             scope.launch {
-                                endSurvey(props.id)
+                                frontendAPI.endSurvey(props.id)
                             }
                             updateSurvey()
+
                         }
                     }
                     button {
+                        /**
+                         * bug?
+                         * frontend sends a request to render the survey again
+                         * before the redirect happens causing a 400 cause the survey doen's exist anymore
+                         */
                         +"Delete Survey"
                         attrs.onClickFunction = {
                             scope.launch {
-                                deleteSurvey(props.id)
+                                frontendAPI.deleteSurvey(props.id)
                             }
                             updateSurvey()
+                            setState {
+                                redirect = true
+                            }
                         }
                     }
                     button {
                         +"Change Survey"
-                        //todo: what if survey was deleted?
                         attrs.onClickFunction = {
                             scope.launch {
-                                changedSurvey(
+                                frontendAPI.sendChangedSurvey(
                                     props.id, SurveyPackage(
                                         state.question,
                                         state.answers,
                                         "${state.date}T${state.time}"
                                     )
                                 )
-                                val response = getResultFromApi(props.id)
+                                val response = frontendAPI.getSurveyFromApi(props.id)
                                 setState {
                                     receivedSurvey = response
                                     question = receivedSurvey.question
@@ -224,11 +233,6 @@ class UpdateSurvey : RComponent<IdProps, UpdateSurveyState>() {
                 }
             }
         }
-
-//        println("Survey is: \nQuestion: " + state.question
-//                + "\nAnswers: " + state.answers
-//                + "\nDate and Time: ${state.date} | ${state.time}"
-//        )
     }
 }
 
@@ -246,7 +250,9 @@ interface UpdateSurveyState: RState {
     var receivedSurvey: SurveyPackage
     var question: String
     var answers: MutableList<Answer>
-    var surveyHash: String
+    var surveyHash: Int
     var date: String
     var time: String
+
+    var redirect: Boolean
 }
