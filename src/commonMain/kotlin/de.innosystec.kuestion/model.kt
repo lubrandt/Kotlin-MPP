@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Answer(
-    val survey: Int = 0,
+    val survey: Int = -1,
     val text: String = "",
     val counts: Int = 0
 )
