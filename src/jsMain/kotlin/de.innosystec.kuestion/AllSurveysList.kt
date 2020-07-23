@@ -1,6 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.network.getAllSurveys
+import de.innosystec.kuestion.network.frontendAPI
 import de.innosystec.kuestion.utility.ComponentStyles
 import de.innosystec.kuestion.utility.scope
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ class SurveysList : RComponent<MainProps, SurveysListState>() {
     }
 
     private suspend fun updateListOfSurveys() {
-        val resp = getAllSurveys()
+        val resp = frontendAPI.getAllSurveys()
         setState {
             surveys = resp
         }
@@ -75,12 +75,12 @@ class SurveysList : RComponent<MainProps, SurveysListState>() {
                         state.surveys.forEach { item ->
                             li {
                                 p {
-                                    +item.first
+                                    +item.question
                                 }
-                                navLink("${props.basepath}/${item.second}/r", exact = true) {
+                                navLink("${props.basepath}/${item.hash}/r", exact = true) {
                                     +"Display Survey"
                                 }
-                                navLink("${props.basepath}/${item.second}/edit") {
+                                navLink("${props.basepath}/${item.hash}/edit") {
                                     +"Edit Survey"
                                 }
                             }
@@ -99,5 +99,5 @@ fun RBuilder.surveysList(handler: MainProps.() -> Unit): ReactElement {
 }
 
 interface SurveysListState : RState {
-    var surveys: List<StringPair>
+    var surveys: List<HashQuestionPair>
 }

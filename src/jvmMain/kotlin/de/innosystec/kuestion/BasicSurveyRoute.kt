@@ -11,26 +11,24 @@ import io.ktor.routing.*
 // not a "real" class
 @KtorExperimentalLocationsAPI
 @Location("/{questionId}")
-class question(val questionId: String?)
+class question(val questionId: String)
 
 @KtorExperimentalLocationsAPI
 internal fun Routing.getSurvey() {
     authenticate("basic") {
         get<question> { question ->
-            val hash = question.questionId
+            val hash = question.questionId.toIntOrNull()
             if (hash != null) {
-                if (hash.length != 6) {
-                    call.respond(HttpStatusCode.BadRequest)
+                if (dbAccessor.surveyExists(hash)) {
+                    call.respond(
+                        SurveyPackage(
+                            dbAccessor.getQuestion(hash),
+                            dbAccessor.getAnswers(hash).toMutableList(),
+                            dbAccessor.getExpirationTime(hash)
+                        )
+                    )
                 } else {
-                    if (surveyExists(hash)) {
-                        val data = SurveyPackage()
-                        data.answers = getAnswers(hash).toMutableList()
-                        data.question = getQuestion(hash)
-                        data.expirationTime = getExpirationTime(hash)
-                        call.respond(data)
-                    } else {
-                        call.respond(HttpStatusCode.BadRequest)
-                    }
+                    call.respond(HttpStatusCode.BadRequest)
                 }
             } else {
                 call.respond(HttpStatusCode.BadRequest)
@@ -38,11 +36,11 @@ internal fun Routing.getSurvey() {
         }
 
         delete<question> { question ->
-            val hash = question.questionId
-            if (hash == null || !surveyExists(hash)) {
-                call.respond(HttpStatusCode.BadRequest)
+            val hash = question.questionId.toIntOrNull()
+            if (hash == null || !dbAccessor.surveyExists(hash)) {
+                call.respond(HttpStatusCode.NotFound)
             } else {
-                deleteSurvey(hash)
+                dbAccessor.deleteSurvey(hash)
                 call.respond(HttpStatusCode.OK)
             }
         }

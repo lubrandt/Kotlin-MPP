@@ -1,6 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.exposed.getAllCreatedSurveys
+import de.innosystec.kuestion.exposed.dbAccessor
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.response.respond
@@ -12,7 +12,7 @@ internal  fun Routing.allSurveys() {
     authenticate("basic") {
         route("/allSurveys") {
             get {
-                call.respond(getAllCreatedSurveys())
+                call.respond(dbAccessor.getAllSurveys())
             }
         }
     }

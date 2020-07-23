@@ -1,7 +1,5 @@
 package de.innosystec.kuestion.network
 
-import de.innosystec.kuestion.jvmHost
-import de.innosystec.kuestion.jvmPort
 import io.ktor.client.HttpClient
 import io.ktor.client.features.auth.Auth
 import io.ktor.client.features.auth.providers.basic
@@ -10,9 +8,7 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.features.logging.*
 import kotlin.browser.localStorage
 
-const val jvmBackend = "http://$jvmHost:$jvmPort"
-
-val client = HttpClient {
+actual val client = HttpClient {
 
     install(Auth) {
         basic {

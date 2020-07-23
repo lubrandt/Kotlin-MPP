@@ -1,7 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.exposed.includeSurveyChanges
-import de.innosystec.kuestion.exposed.surveyExists
+import de.innosystec.kuestion.exposed.dbAccessor
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpStatusCode
@@ -15,17 +14,13 @@ internal fun Routing.updateSurvey() {
             post {
                 // modified version of survey, when no correct json is send, server throws 500
                 val changes: SurveyPackage? = call.receive()
-
-                val hash: String? = call.parameters["questionId"]
+                val hash: Int? = call.parameters["questionId"]?.toInt()
 
                 if (hash == null || changes == null) {
                     call.respond(HttpStatusCode.BadRequest)
                 } else {
-                    if (includeSurveyChanges(hash, changes) && surveyExists(hash)) {
-                        call.respond(HttpStatusCode.OK)
-                    } else {
-                        call.respond(HttpStatusCode.BadRequest)
-                    }
+                    dbAccessor.includeSurveyChanges(hash, changes)
+                    call.respond(HttpStatusCode.OK)
                 }
             }
         }

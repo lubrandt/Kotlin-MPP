@@ -1,8 +1,8 @@
-package de.innosystec.kuestion
-
-import de.innosystec.kuestion.exposed.db.AnswerTable
-import de.innosystec.kuestion.exposed.db.DatabaseSettings.db
-import de.innosystec.kuestion.exposed.db.SurveyTable
+import de.innosystec.kuestion.createDate
+import de.innosystec.kuestion.exposed.AnswerTable
+import de.innosystec.kuestion.exposed.DatabaseSettings.db
+import de.innosystec.kuestion.exposed.SurveyTable
+import de.innosystec.kuestion.module
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -12,11 +12,11 @@ import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
 import io.ktor.util.KtorExperimentalAPI
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.deleteAll
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.Before
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -31,40 +31,47 @@ import kotlin.test.assertNotNull
 @KtorExperimentalLocationsAPI
 class JVMRouteTests {
 
+    private var mockHash:Int = 42
 
     @AfterEach
     fun after() {
         //purge db
         transaction(db) {
-            SchemaUtils.create(SurveyTable, AnswerTable)
+            SchemaUtils.create(
+                SurveyTable,
+                AnswerTable
+            )
             AnswerTable.deleteAll()
             SurveyTable.deleteAll()
         }
     }
 
     @BeforeEach
-
-    fun before() {
-
-        val mockHash = "abcdef"
+    fun beforeEach() {
         transaction(db) {
-            SchemaUtils.create(SurveyTable, AnswerTable)
-            SurveyTable.insert {
+            SchemaUtils.create(
+                SurveyTable,
+                AnswerTable
+            )
+            mockHash = SurveyTable.insertAndGetId {
                 it[question] = "JaNeinDoch"
-                it[hash] = mockHash
                 it[expirationTime] = createDate("2022-07-10T12:30")
-            }
+            }.value
+            assert(mockHash != 42)
+
             AnswerTable.insert {
                 it[survey] = mockHash
                 it[text] = "jap"
                 it[counts] = 5
             }
+
             AnswerTable.insert {
                 it[survey] = mockHash
                 it[text] = "nope"
                 it[counts] = 1
             }
         }
+
     }
 
     @Test
@@ -77,6 +84,7 @@ class JVMRouteTests {
         }
     }
 
+    //create a new Survey
     @Test
     fun testPostSurveyRoute(): Unit = withTestApplication({ module() }) {
 
@@ -90,21 +98,21 @@ class JVMRouteTests {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
             addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
             setBody(
-                """{"question":"Kuchen?","answers":[{"survey":"","text":"jap","counts":5},{"survey":"","text":"nope","counts":1}],"expirationTime":"2022-07-10T12:30"}"""
+                """{"question":"Kuchen mit Soße?","answers":[{"survey":42,"text":"japadapadu","counts":0},{"survey":42,"text":"nopenopenope","counts":0}],"expirationTime":"2022-07-10T12:30"}"""
             )
         }.apply {
-            //todo: returning hash is random
+            //returning hash is random
             assertNotNull(response.content)
         }
     }
 
     @Test
     fun testUpdateSurveyRoue(): Unit = withTestApplication({ module() }) {
-        handleRequest(HttpMethod.Post, "/abcdef/update") {
+        handleRequest(HttpMethod.Post, "/$mockHash/update") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
             addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
             setBody(
-                """{"question":"JaNeinDoch","answers":[{"survey":"abcdef","text":"jap","counts":5},{"survey":"abcdef","text":"nope","counts":1},{"survey":"abcdef","text":"japada","counts":6}],"expirationTime":"2022-12-05T12:30"}"""
+                """{"question":"JaNeinDoch","answers":[{"survey":$mockHash,"text":"jap","counts":5},{"survey":$mockHash,"text":"nope","counts":1},{"survey":$mockHash,"text":"japada","counts":6}],"expirationTime":"2022-12-05T12:30"}"""
             )
         }.apply {
             assertEquals(HttpStatusCode.OK, response.status())
@@ -116,45 +124,43 @@ class JVMRouteTests {
         handleRequest(HttpMethod.Post, "/inc") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
             addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            setBody("""{"first":"abcdef","second":"nope"}""")
+            setBody("""{"survey":$mockHash,"answer":"nope"}""")
         }.apply {
             assertEquals(HttpStatusCode.OK, response.status())
-//            assertEquals("""{"first":"abcdef","second":"nope"}""", response.content)
         }
     }
 
 
     @Test
     fun testBasicSurveyRoute(): Unit = withTestApplication({ module() }) {
-        //todo: each into their own function?
 
         // correct test
-        handleRequest(HttpMethod.Get, "/abcdef") {
+        handleRequest(HttpMethod.Get, "/$mockHash") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
         }.apply {
             assertEquals(HttpStatusCode.OK, response.status())
             assertEquals(
-                """{"question":"JaNeinDoch","answers":[{"survey":"abcdef","text":"jap","counts":5},{"survey":"abcdef","text":"nope","counts":1}],"expirationTime":"2022-07-10T12:30"}"""
+                """{"question":"JaNeinDoch","answers":[{"survey":$mockHash,"text":"jap","counts":5},{"survey":$mockHash,"text":"nope","counts":1}],"expirationTime":"2022-07-10T12:30"}"""
                 , response.content
             )
         }
 
         // delete test
-        handleRequest(HttpMethod.Delete, "/abcdef") {
+        handleRequest(HttpMethod.Delete, "/$mockHash") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
         }.apply {
             assertEquals(HttpStatusCode.OK, response.status())
         }
 
         // delete a non existing survey test
-        handleRequest(HttpMethod.Delete, "/gggggg") {
+        handleRequest(HttpMethod.Delete, "/42") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
         }.apply {
-            assertEquals(HttpStatusCode.BadRequest, response.status())
+            assertEquals(HttpStatusCode.NotFound, response.status())
         }
 
         // BadRequest after delete
-        handleRequest(HttpMethod.Get, "/abcdef") {
+        handleRequest(HttpMethod.Get, "/$mockHash") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
         }.apply {
             assertEquals(HttpStatusCode.BadRequest, response.status())
@@ -166,29 +172,24 @@ class JVMRouteTests {
         }.apply {
             assertEquals(HttpStatusCode.BadRequest, response.status())
         }
-
-        //hash length != 6
-        handleRequest(HttpMethod.Get, "/abcdef7") {
-            addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
-        }.apply {
-            assertEquals(HttpStatusCode.BadRequest, response.status())
-        }
     }
 
     @Test
     fun testEndSurveyRoute(): Unit = withTestApplication({ module() }) {
         handleRequest(HttpMethod.Post, "/endSurvey") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
-            setBody("\"abcdef\"")
+            addHeader(HttpHeaders.ContentType,ContentType.Application.Json.toString())
+            setBody("$mockHash")
         }.apply {
             assertEquals(HttpStatusCode.OK, response.status())
         }
 
         handleRequest(HttpMethod.Post, "/endSurvey") {
             addHeader(HttpHeaders.Authorization, "Basic cGV0ZXI6cGV0ZXI=") //peter:peter
-            setBody("\"abcdef7\"")
+            addHeader(HttpHeaders.ContentType,ContentType.Application.Json.toString())
+            setBody("42")
         }.apply {
-            assertEquals(HttpStatusCode.BadRequest, response.status())
+            assertEquals(HttpStatusCode.NotFound, response.status())
         }
     }
 

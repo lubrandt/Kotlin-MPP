@@ -1,6 +1,6 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.exposed.createSurvey
+import de.innosystec.kuestion.exposed.dbAccessor
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.request.receive
@@ -13,8 +13,7 @@ internal fun Routing.postSurvey() {
     authenticate("basic") {
         route("/postSurvey") {
             post {
-                //the hash inside the received answers is empty
-                    call.respond(createSurvey(call.receive()))
+                call.respond(dbAccessor.createSurvey(call.receive()))
             }
         }
     }

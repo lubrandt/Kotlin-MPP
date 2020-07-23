@@ -1,7 +1,9 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.network.getResultFromApi
-import de.innosystec.kuestion.network.sendClickedAnswerToApi
+import de.innosystec.kuestion.network.CommonDate
+import de.innosystec.kuestion.network.CommonDateUtil
+import de.innosystec.kuestion.network.frontendAPI
+import de.innosystec.kuestion.network.compareToCurrentDate
 import de.innosystec.kuestion.utility.*
 import kotlinx.coroutines.launch
 import kotlinx.css.*
@@ -19,9 +21,8 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
 
     private suspend fun updateSurvey() {
         val response: SurveyPackage
-        //todo: ErrorBoundary?
         try {
-            response = getResultFromApi(props.id)
+            response = frontendAPI.getSurveyFromApi(props.id)
             setState {
                 receivedSurvey = response
             }
@@ -78,9 +79,9 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                         +ComponentStyles.chartStyle
                         flex(flexBasis = 50.pct)
                     }
-                    //todo: Standardfarben? ~200?
                     ReactPieChart {
-                        attrs.data = createChartSliceArray(state.receivedSurvey.answers)
+//                        attrs.data = createChartSliceArray(state.receivedSurvey.answers)
+                        attrs.data = Answer.toChartSliceArray(state.receivedSurvey.answers)
                     }
                 }
                 styledDiv {
@@ -94,15 +95,18 @@ class DisplaySurvey : RComponent<IdProps, DisplaySurveyState>() {
                                 +"[${item.counts} Stimme(n)] ${item.text}"
                                 attrs.onClickFunction = {
                                     // commonMain Usecase
-                                    if (CommonDateUtil.checkDate(CommonDate(state.receivedSurvey.expirationTime))) {
+                                    if (CommonDateUtil.compareToCurrentDate(
+                                            CommonDate(
+                                                state.receivedSurvey.expirationTime
+                                            )
+                                        )) {
                                         scope.launch {
-                                            sendClickedAnswerToApi(
-                                                StringPair(
+                                            frontendAPI.sendClickedAnswerToApi(
+                                                SurveyAnswerPair(
                                                     props.id,
                                                     item.text
                                                 )
                                             )
-                                            //todo: feedback wenn abgelaufen ?
                                             updateSurvey()
                                         }
                                     }

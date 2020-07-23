@@ -1,8 +1,5 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.exposed.db.AnswerTable
-import de.innosystec.kuestion.exposed.db.DatabaseSettings
-import de.innosystec.kuestion.exposed.db.SurveyTable
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.*
@@ -16,12 +13,8 @@ import io.ktor.routing.routing
 import io.ktor.serialization.json
 import io.ktor.server.netty.EngineMain
 import io.ktor.util.KtorExperimentalAPI
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
 
 fun main(args: Array<String>) = EngineMain.main(args)
-
 
 @KtorExperimentalLocationsAPI
 @KtorExperimentalAPI
@@ -31,7 +24,6 @@ internal fun Application.module() {
     }
 
     install(DefaultHeaders)
-    install(CallLogging)
     install(Locations)
 
     install(CORS) {
@@ -62,7 +54,7 @@ internal fun Application.module() {
         basic("basic") {
             realm = "Ktor Server"
             validate { credentials ->
-                if (credentials.password == credentials.name) UserIdPrincipal(credentials.name) else null
+                validateCredentials(credentials)
             }
         }
     }
@@ -74,7 +66,7 @@ internal fun Application.module() {
         updateSurvey()
         allSurveys()
         postSurvey()
-        getSurvey()
+        getSurvey() // experimental Location
     }
 }
 
