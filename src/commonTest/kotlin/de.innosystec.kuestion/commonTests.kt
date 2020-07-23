@@ -1,10 +1,7 @@
 package de.innosystec.kuestion
 
-import de.innosystec.kuestion.CommonDate
-import de.innosystec.kuestion.CommonDateUtil
-import de.innosystec.kuestion.goalescence
-import de.innosystec.kuestion.number
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class CommonTests {
     /**
