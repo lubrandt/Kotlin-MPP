@@ -15,10 +15,8 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://dl.bintray.com/kotlin/ktor")
-//    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
     maven("https://plugins.gradle.org/m2/")
-//    maven("https://dl.bintray.com/korlibs/korlibs")
     jcenter()
 }
 
@@ -37,8 +35,6 @@ kotlin {
 
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-
-//                implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
             }
         }
         val commonTest by getting {
@@ -64,7 +60,6 @@ kotlin {
                 implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
                 implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
                 implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-//                implementation("org.jetbrains.exposed:exposed-jodatime:$exposedVersion")
                 implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
                 implementation("com.h2database:h2:$h2Version")
 
@@ -95,20 +90,16 @@ kotlin {
 
                 //React, React DOM + Wrappers
                 implementation("org.jetbrains:kotlin-react:$react-pre.94-kotlin-1.3.70")
-//                implementation("org.jetbrains:kotlin-react:16.13.0-pre.99-kotlin-1.3.72")
                 implementation("org.jetbrains:kotlin-react-dom:$react-pre.94-kotlin-1.3.70")
-//                implementation("org.jetbrains:kotlin-react-dom:16.13.0-pre.99-kotlin-1.3.72")
                 implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.94-kotlin-1.3.70")
-//                implementation("org.jetbrains:kotlin-react-router-dom:4.3.1-pre.99-kotlin-1.3.72")
                 implementation(npm("react", react))
                 implementation(npm("react-dom", react))
                 implementation(npm("react-router-dom"))
 
                 //Kotlin Styled, sometimes not found?
                 implementation("org.jetbrains:kotlin-styled:1.0.0-pre.94-kotlin-1.3.70")
-//                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.109-kotlin-1.3.72")
                 implementation(npm("styled-components", "5.1.1"))
-                implementation(npm("react-is", "16.13.0"))
+                implementation(npm("react-is", react))
                 implementation(npm("inline-style-prefixer", "6.0.0"))
 
                 //Coroutines
@@ -116,7 +107,6 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
 
                 // React packages/modules
-                // nimmt ohne versionsangabe die aktuellste
                 implementation(npm("react-minimal-pie-chart", "7.3.1")) // piechart, versions > 7.3.1 don't work
 
                 // fix abort-controller & text-encoding modules not found
