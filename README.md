@@ -45,7 +45,7 @@ This projects serves as a Proof of Concept for the Kotlin Multiplatform Project.
 ## Features
 
 * Basic Authorization with local Storage
-
+  
   * need to login before you can create a survey or vote
 
 * Create a Survey with
@@ -88,13 +88,13 @@ commonTest & jsTest are only availabile on the fb-tests Branch as they are not w
 
 #### Installation Feature
 
-`install(Feature){
+install(Feature){
     Configuration
-}`
+}
 
-`install(ContentNegotiation){
+install(ContentNegotiation){
     json()
-}`
+}
 
 Check the [Official Documentation](https://ktor.io/servers/features.html#installing) for availabile Features and their respective configuration.
 
@@ -104,17 +104,17 @@ Check the [Official Documentation](https://ktor.io/servers/features.html#install
 
 You install it the usual way and then you can define and configue as many authorizations as you like: 
 
-`install(Authentication) {
+install(Authentication) {
     basic("NAME") {}
     jwt("NAME2") {}
     oauth{}
-}`
+}
 
 you the use it like so:
 
-`authenticate("NAME"){
+authenticate("NAME"){
     Routes
-}`
+}
 
 #### Endpoints/Routing
 
@@ -124,17 +124,17 @@ With `route(Path){}` you define the path to your endpoint.
 
 Variants:
 
-`route("/hello/world"){
+route("/hello/world"){
     get{}
     post{}
-}` 
+}
 
 and
 
-`route("/hello"){
+route("/hello"){
     get("/world") {}
     post("/world") {}
-}`
+}
 
 are the same.
 
