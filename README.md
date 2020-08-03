@@ -7,12 +7,14 @@ an Online Survey System build with Full-Stack Kotlin
 * [Scope](#scope)
 
 * [Features](#features)
+  
   * [Project Structure](#project-structure)
   * [Ktor](#ktor)
   * [Kotlin Exposed](#kotlin-exposed)
   * [Kotlinx Serialization](#kotlinx-serialization)
 
 * [Starting Kuestion](#starting-kuestion)
+  
   * [Startup](#startup)
   * [Configuration](#configuration)
     * [BuildSrc](#buildsrc)
@@ -20,6 +22,7 @@ an Online Survey System build with Full-Stack Kotlin
     * [Mapping npm Modules](#mapping-npm-modules)
 
 * [Pitfalls during Development](#pitfalls-during-development)
+  
   * [common](#common)
   * [js](#js)
   * [jvm](#jvm)
@@ -27,6 +30,7 @@ an Online Survey System build with Full-Stack Kotlin
   * [Related Github Issues](#related-github-issues)
 
 * [Used Libraries](#used-libraries)
+  
   * [Frontend/UI/Browser](#frontenduibrowser)
   * [Backend/Server/Database](#backendserverdatabase)
 
@@ -34,13 +38,9 @@ an Online Survey System build with Full-Stack Kotlin
 
 * [Based on](#based-on)
 
-
-
 ## Scope
 
 This projects serves as a Proof of Concept for the Kotlin Multiplatform Project. It tries to use Kotlin wherever possible to determin the Maturity of its use in Server, Browser, Database Connectivity and the common Code Feature.
-
-
 
 ## Features
 
@@ -66,8 +66,6 @@ This projects serves as a Proof of Concept for the Kotlin Multiplatform Project.
 
 * Browser is on hotreload (run-config file, `--continuous` as Argument in the Run Configuration, `jsBrowserDevelopmentRun`)
 
-
-
 ### Project Structure
 
 commonTest & jsTest are only availabile on the fb-tests Branch as they are not working. There is probably a configuration mistake with Karma, not so easy to correct.
@@ -85,8 +83,6 @@ commonTest & jsTest are only availabile on the fb-tests Branch as they are not w
 + jvmMain - Ktor Server Endpoints, Exposed Database Connection
 
 + jvmTest - Working Endpoint testing
-
-
 
 ### Ktor
 
@@ -141,8 +137,6 @@ and
 }`
 
 are the same.
-
-
 
 #### Kotlin Exposed
 
@@ -200,8 +194,6 @@ Inside your calls you execute your `SQL` statements.
 
 Every Database Access in this App is found in the dbAccessor.kt File
 
-
-
 CRUD works as follows:
 
 `loggedSchemaUtilsTransaction(db, myTable) {
@@ -226,15 +218,11 @@ CRUD works as follows:
     myTable.deleteWhere {myTable.age = 43}
 }`
 
-
-
 #### Kotlinx Serialization
 
 Now, using Kotlinx.Serialization was rather easy. You import the needed packages for the specific platform and add the `@Serialization` Annotation to your data class in common Code. Your HttpClient needs the `ContentType: Application/Json` Header and with Ktor you install `ContentNegotiation` with `json` and you're good to go.
 
 The Datatypes/data classes you want to serialize need to have a Serializer, otherwise it won't work and you need to write your own.
-
-
 
 ## Starting Kuestion
 
@@ -265,8 +253,6 @@ To use new packages use the following syntax:
 To use npm modules you might have to write your own wrapper class if you can't find one.
 
 check react-minimal-pie-chart.kt or the fb-handson Branch (implementation of a Kotlin Handson & a SPA example) for examples.
-
-
 
 ## Pitfalls during Development
 
@@ -328,8 +314,6 @@ check react-minimal-pie-chart.kt or the fb-handson Branch (implementation of a K
 
 * `Warning: changing an uncontrolled Input`: related to kotlinx.html.
 
-
-
 ## Used Libraries
 
 ### Frontend/UI/Browser
@@ -348,8 +332,6 @@ check react-minimal-pie-chart.kt or the fb-handson Branch (implementation of a K
 - Exposed ([https://github.com/JetBrains/Exposed](https://github.com/JetBrains/Exposed))
 - Kotlinx Serialization ([https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines))
 
-
-
 ## Further Reading?
 
 Ausblick was es noch gibt, evtl. libraries zu nutzen. Möglichkeit android/ios App
@@ -357,8 +339,6 @@ Ausblick was es noch gibt, evtl. libraries zu nutzen. Möglichkeit android/ios A
 ### Android App
 
 Adding module in intelliJ IDEA?
-
-
 
 ## Based on
 
