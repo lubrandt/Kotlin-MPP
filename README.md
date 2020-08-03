@@ -34,7 +34,7 @@ an Online Survey System build with Full-Stack Kotlin
   * [Frontend/UI/Browser](#frontenduibrowser)
   * [Backend/Server/Database](#backendserverdatabase)
 
-* [Further Reading](#Further-Reading)
+* [Further Reading](#further-reading)
 
 * [Based on](#based-on)
 
@@ -88,6 +88,8 @@ commonTest & jsTest are only availabile on the fb-tests Branch as they are not w
 
 #### Installation Feature
 
+<pre>
+
 install(Feature){
     Configuration
 }
@@ -95,6 +97,8 @@ install(Feature){
 install(ContentNegotiation){
     json()
 }
+
+</pre>
 
 Check the [Official Documentation](https://ktor.io/servers/features.html#installing) for availabile Features and their respective configuration.
 
@@ -104,11 +108,13 @@ Check the [Official Documentation](https://ktor.io/servers/features.html#install
 
 You install it the usual way and then you can define and configue as many authorizations as you like: 
 
+<pre>
 install(Authentication) {
     basic("NAME") {}
     jwt("NAME2") {}
     oauth{}
 }
+</pre>
 
 you the use it like so:
 
@@ -124,17 +130,21 @@ With `route(Path){}` you define the path to your endpoint.
 
 Variants:
 
+<pre>
 route("/hello/world"){
     get{}
     post{}
 }
+</pre>
 
 and
 
+<pre>
 route("/hello"){
     get("/world") {}
     post("/world") {}
 }
+</pre>
 
 are the same.
 
@@ -154,11 +164,11 @@ The `DB_CLOSE_DELAY=-1` is need for the h2 db to keep it alive between transacti
 
 To setup your Tables you define an object with Type `Table`. There are a few Tables with predefined primary keys, IntIdTable, LongIdTable and UUIDTable or you define your own with a subclass of IdTable.
 
-`object myTable = IntIdTable(){
+<pre>object myTable = IntIdTable(){
     val name = varchar("name", 10)
     val age = integer("age").references(AnotherTable.years)
     val date = datetime("timestamp")
-}`
+}</pre>
 
 To work with your Table in Kotlin you need to map every Table it to its own data class
 
@@ -166,12 +176,12 @@ To work with your Table in Kotlin you need to map every Table it to its own data
 
 using a simple mapping function
 
-`fun mapToMyTable(it: ResultRow) = myTable(
+<pre>fun mapToMyTable(it: ResultRow) = myTable(
     it[myTable.id].value,
     it[myTable.name],
     it[myTable.age],
     it[myTable.date]
-)`
+)</pre>
 
 this is type safe.
 
@@ -179,7 +189,8 @@ this is type safe.
 
 To now use your database you connect via `transaction{}` calls. Since you can define a logger in every transaction i wrote a custom function where you need to define your logger just once.
 
-`fun <T, K : Table> loggedSchemaUtilsTransaction(  
+<pre>
+fun <T, K : Table> loggedSchemaUtilsTransaction(  
     db: Database? = null,  
   vararg tables: K,  
   statement: Transaction.() -> T  
@@ -188,7 +199,8 @@ To now use your database you connect via `transaction{}` calls. Since you can de
   SchemaUtils.create(*tables)  
         addLogger(stdLogger)  
         statement()  
-    }`
+    }
+</pre>
 
 Inside your calls you execute your `SQL` statements.
 
