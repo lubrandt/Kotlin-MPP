@@ -190,7 +190,7 @@ this is type safe.
 To now use your database you connect via `transaction{}` calls. Since you can define a logger in every transaction i wrote a custom function where you need to define your logger just once.
 
 <pre>
-fun <T, K : Table> loggedSchemaUtilsTransaction(  
+fun < T, K : Table> loggedSchemaUtilsTransaction(  
     db: Database? = null,  
   vararg tables: K,  
   statement: Transaction.() -> T  
@@ -207,8 +207,8 @@ Inside your calls you execute your `SQL` statements.
 Every Database Access in this App is found in the dbAccessor.kt File
 
 CRUD works as follows:
-
-`loggedSchemaUtilsTransaction(db, myTable) {
+<pre>
+loggedSchemaUtilsTransaction(db, myTable) {
 // Create
     val id = myTable.insertAndGetId {
             it[name] = Bratheringe
@@ -228,7 +228,8 @@ CRUD works as follows:
     }
 // Delete
     myTable.deleteWhere {myTable.age = 43}
-}`
+}
+</pre>
 
 #### Kotlinx Serialization
 
