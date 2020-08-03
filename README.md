@@ -45,7 +45,7 @@ This projects serves as a Proof of Concept for the Kotlin Multiplatform Project.
 ## Features
 
 * Basic Authorization with local Storage
-  
+
   * need to login before you can create a survey or vote
 
 * Create a Survey with
