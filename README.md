@@ -7,40 +7,29 @@ an Online Survey System build with Full-Stack Kotlin
 * [Scope](#scope)
 
 * [Features](#features)
-  
   * [Project Structure](#project-structure)
   * [Ktor](#ktor)
   * [Kotlin Exposed](#kotlin-exposed)
   * [Kotlinx Serialization](#kotlinx-serialization)
 
 * [Starting Kuestion](#starting-kuestion)
-  
   * [Startup](#startup)
-  
   * [Configuration](#configuration)
-    
     * [BuildSrc](#buildsrc)
-    
     * [gradle.build.kts](#gradlebuildkts)
-    
     * [Mapping npm Modules](#mapping-npm-modules)
 
 * [Pitfalls during Development](#pitfalls-during-development)
-  
   * [common](#common)
-  
   * [js](#js)
-  
   * [jvm](#jvm)
-  
   * [Other](#other)
-  
   * [Related Github Issues](#related-github-issues)
 
 * [Used Libraries](#used-libraries)
-  
   * [Frontend/UI/Browser](#frontenduibrowser)
   * [Backend/Server/Database](#backendserverdatabase)
+
 * [Further Reading](#Further-Reading)
 
 * [Based on](#based-on)
