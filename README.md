@@ -364,9 +364,12 @@ Ausblick was es noch gibt, evtl. libraries zu nutzen. Möglichkeit android/ios A
 + https://play.kotlinlang.org/hands-on/Building%20Web%20Applications%20with%20React%20and%20Kotlin%20JS/01_Introduction
 + https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html
 
-### Android App
+### Mobile App
 
-Adding module in intelliJ IDEA?
+See branch `fb-android` for a very simple "Hello World" App.
+Also check out the official [handson](https://play.kotlinlang.org/hands-on/Targeting%20iOS%20and%20Android%20with%20Kotlin%20Multiplatform/01_Introduction)
+As i do not have access to a  IOS System i did not try the IOS Portion of the tutorial.
+
 
 ## Based on
 
