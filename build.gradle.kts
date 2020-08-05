@@ -7,6 +7,16 @@ val h2Version = Versions.h2Version
 val coroutineVersion = Versions.coroutineVersion
 val react = Versions.react
 
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:3.6.4") // 4.0.0 causes abug
+    }
+}
+
 plugins {
     kotlin("multiplatform") version Versions.Plugins.kotlin
     kotlin("plugin.serialization") version Versions.Plugins.kotlin
@@ -17,6 +27,7 @@ repositories {
     maven("https://dl.bintray.com/kotlin/ktor")
     maven("https://kotlin.bintray.com/kotlin-js-wrappers/")
     maven("https://plugins.gradle.org/m2/")
+    google()
     jcenter()
 }
 
