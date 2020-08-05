@@ -68,7 +68,8 @@ This projects serves as a Proof of Concept for the Kotlin Multiplatform Project.
 
 ### Project Structure
 
-commonTest & jsTest are only availabile on the fb-tests Branch as they are not working. There is probably a configuration mistake with Karma, not so easy to correct.
+commonTest & jsTest are only availabile on the fb-tests Branch as they are not working. There is probably a configuration mistake with Karma, not easy to correct.
+I have no Idea how to fix that.
 
 + buildSrc - Versioning & Dependencies. See [buildSrc](#buildsrc)
 
@@ -89,7 +90,6 @@ commonTest & jsTest are only availabile on the fb-tests Branch as they are not w
 #### Installation Feature
 
 <pre>
-
 install(Feature){
     Configuration
 }
@@ -97,7 +97,6 @@ install(Feature){
 install(ContentNegotiation){
     json()
 }
-
 </pre>
 
 Check the [Official Documentation](https://ktor.io/servers/features.html#installing) for availabile Features and their respective configuration.
@@ -118,10 +117,11 @@ install(Authentication) {
 
 you the use it like so:
 
+<pre>
 authenticate("NAME"){
     Routes
 }
-
+</pre>
 #### Endpoints/Routing
 
 Endpoints are installed within the `routing{}` Lambda. Routing installs itself.
@@ -164,11 +164,13 @@ The `DB_CLOSE_DELAY=-1` is need for the h2 db to keep it alive between transacti
 
 To setup your Tables you define an object with Type `Table`. There are a few Tables with predefined primary keys, IntIdTable, LongIdTable and UUIDTable or you define your own with a subclass of IdTable.
 
-<pre>object myTable = IntIdTable(){
+<pre>
+object myTable = IntIdTable(){
     val name = varchar("name", 10)
     val age = integer("age").references(AnotherTable.years)
     val date = datetime("timestamp")
-}</pre>
+}
+</pre>
 
 To work with your Table in Kotlin you need to map every Table it to its own data class
 
@@ -176,12 +178,14 @@ To work with your Table in Kotlin you need to map every Table it to its own data
 
 using a simple mapping function
 
-<pre>fun mapToMyTable(it: ResultRow) = myTable(
+<pre>
+fun mapToMyTable(it: ResultRow) = myTable(
     it[myTable.id].value,
     it[myTable.name],
     it[myTable.age],
     it[myTable.date]
-)</pre>
+)
+</pre>
 
 this is type safe.
 
@@ -207,6 +211,7 @@ Inside your calls you execute your `SQL` statements.
 Every Database Access in this App is found in the dbAccessor.kt File
 
 CRUD works as follows:
+
 <pre>
 loggedSchemaUtilsTransaction(db, myTable) {
 // Create
@@ -216,18 +221,18 @@ loggedSchemaUtilsTransaction(db, myTable) {
             it[date] = LocalDateTime.now()
         }
 // Read
-    myTable.select {myTable.age = 24}
+    myTable.select {myTable.age eq 24}
 // Update
-    myTable.update ({myTable.age = 42}) {
+    myTable.update ({myTable.age eq 42}) {
         it[myTable.name] = Bismarkheringe
     }
-    myTable.update ({myTable.date = DATE}) {
+    myTable.update ({myTable.date eq DATE}) {
         with(SqlExpressionBuilder) {
             it[myTable.age] = myTable.age + 1
         }
     }
 // Delete
-    myTable.deleteWhere {myTable.age = 43}
+    myTable.deleteWhere {myTable.age eq 43}
 }
 </pre>
 
@@ -298,7 +303,7 @@ check react-minimal-pie-chart.kt or the fb-handson Branch (implementation of a K
 
 * Sometimes you need to write your own wrapper for npm packages
 
-* Communicating between browser & server was rather complex. (Propably caused due to inexperience)
+* Communicating between a browser & server was rather complex. (Propably caused due to inexperience)
 
 ### jvm
 
@@ -321,7 +326,7 @@ check react-minimal-pie-chart.kt or the fb-handson Branch (implementation of a K
 * Search queries for kotlin result in a lot of android stuff, as long as no android is used.
 * Using the structure with vals as in this project results in IDEA complaining about unused variables
 
-### Related Gitthub Issues
+### Related Github Issues
 
 * `Module Not Found`: These Issues do even exist in the official examples, not much you can do here except implementing the needed packages.
 
@@ -345,9 +350,19 @@ check react-minimal-pie-chart.kt or the fb-handson Branch (implementation of a K
 - Exposed ([https://github.com/JetBrains/Exposed](https://github.com/JetBrains/Exposed))
 - Kotlinx Serialization ([https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines))
 
-## Further Reading?
+## Further Reading
 
 Ausblick was es noch gibt, evtl. libraries zu nutzen. Möglichkeit android/ios App
+
++ Kotlinx Flow (https://kotlinlang.org/docs/reference/coroutines/flow.html)
++ Kodein (https://github.com/Kodein-Framework/Kodein-DI)
++ Kotlin Redux (https://github.com/JetBrains/kotlin-wrappers/tree/master/kotlin-react-redux)
+
+### Articles
+
++ https://www.youtube.com/watch?v=JnmHqKLgYY4
++ https://play.kotlinlang.org/hands-on/Building%20Web%20Applications%20with%20React%20and%20Kotlin%20JS/01_Introduction
++ https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html
 
 ### Android App
 
