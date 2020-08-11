@@ -366,9 +366,9 @@ Ausblick was es noch gibt, evtl. libraries zu nutzen. Möglichkeit android/ios A
 
 ### Mobile App
 
-See branch `fb-android` for a very simple "Hello World" App.
+See branch `fb-android` for a very simple "Hello World" App. There is a run config.
 Also check out the official [handson](https://play.kotlinlang.org/hands-on/Targeting%20iOS%20and%20Android%20with%20Kotlin%20Multiplatform/01_Introduction)
-As i do not have access to a  IOS System i did not try the IOS Portion of the tutorial.
+As i do not have access to a IOS System i did not try the IOS Portion of the tutorial.
 
 
 ## Based on

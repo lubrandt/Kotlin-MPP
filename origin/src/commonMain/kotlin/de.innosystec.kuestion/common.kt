@@ -5,3 +5,4 @@ const val jvmHost = "127.0.0.1"
 const val jvmPort = 8081
 
 
+const val commonAndroid = "CommonAndroid"
