@@ -35,7 +35,7 @@ kotlin {
 }
 
  dependencies {
-    implementation(project(":origin"))
+    implementation(project(":common"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     //noinspection GradleCompatible

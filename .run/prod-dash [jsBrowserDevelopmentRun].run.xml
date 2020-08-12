@@ -2,7 +2,7 @@
   <configuration default="false" name="prod-dash [jsBrowserDevelopmentRun]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/origin" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/web" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="--continuous" />
       <option name="taskDescriptions">

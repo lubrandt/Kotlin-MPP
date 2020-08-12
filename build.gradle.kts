@@ -14,6 +14,9 @@ allprojects {
         google()
         mavenCentral()
     }
+//    dependencies {
+//        implementation(project(":common"))
+//    }
 }
 
 /**https://github.com/Kotlin/mpp-example/tree/master/greeting/src

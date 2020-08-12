@@ -22,9 +22,10 @@ pluginManagement {
     }
 }
 
-include(":prod-dash.android")
-include(":origin")
-include("common")
-include("web")
+//include(":origin")
+include(":common")
+include(":web")
+include(":server")
+include(":android")
 include("server")
-include("android")
+include("server")
