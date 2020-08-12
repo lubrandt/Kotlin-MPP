@@ -13,7 +13,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.6.4") // 4.0.0 causes abug
+        classpath("com.android.tools.build:gradle:4.0.1")
     }
 }
 
