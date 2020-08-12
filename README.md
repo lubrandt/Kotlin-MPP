@@ -18,7 +18,7 @@ an Online Survey System build with Full-Stack Kotlin
   * [Startup](#startup)
   * [Configuration](#configuration)
     * [BuildSrc](#buildsrc)
-    * [gradle.build.kts](#gradlebuildkts)
+    * [build.gradle.kts](#buildgradlekts)
     * [Mapping npm Modules](#mapping-npm-modules)
 
 * [Pitfalls during Development](#pitfalls-during-development)
