@@ -21,6 +21,7 @@ an Online Survey System build with Full-Stack Kotlin
   * [js](#js)
   * [jvm](#jvm)
   * [Other](#other)
+  * [Conclusion](#conclusion)
   * [Related Github Issues](#related-github-issues)
 * [Used Libraries](#used-libraries)
   * [Frontend/UI/Browser](#frontenduibrowser)
@@ -299,7 +300,7 @@ See [Kotlin Playground: Using packages from NPM](https://play.kotlinlang.org/han
 
 ## Pitfalls during Development
 
-AUSFÜHRLICHER!!!!!!!!
+
 
 ### common
 
@@ -309,30 +310,28 @@ AUSFÜHRLICHER!!!!!!!!
 
 #### The Bad
 
-* Actual/expect methods are limited in functionality or are not straight forward and need some abstraction. If for example you want to use a Time Datatype in a function you need to define an actual for both the function and the Datatype.
+* Actual/expect methods are limited in functionality or are not straight forward and need some abstraction. If for example you want to use a Time Datatype in a function you need to define an actual for both the function and the Datatype. This goes for all Datatypes that exist in each Module but have (obviosly) different implementations. 
 
 ### js
 
 #### The Good
 
-* Kotlin-wrappers so you can use kotlin dsl everywhere.
+* Kotlin-wrappers so you can use Kotlin DSL everywhere.
 * CSS aka styled Components (check ComponentStyles.kt) are easy to use, writing in Kotlin DSL might still cause some confusion as there are different ways to define the same property so `margin(5.px)` is the same as `margin = "5.px"`.
 
 #### The Bad
 
-* React to Kotlin DSL has almost no Documentation and just a few Examples which just show some functionalities. There is no whole React to Kotlin DSL Documentation and you need to know React and Kotlin to know how to translate from one to the other. 
+* React to Kotlin DSL has only the basic Documentation and just a few Examples which only show some functionalities. There is no whole React to Kotlin DSL Documentation and you need to know React and Kotlin to know how to translate from one to the other if you do not find it in the documentation. 
 
-* Some kotlin-wrappers are heavily out of date.
+* Some kotlin-wrappers are heavily out of date (e.g. Mocha is at 8.0.0 meanwhile the kotlin-mocha is at 3.0.1 and it says that the major versions match).
 
 * Some React functionalities need a more complicated approach (e.g. getDerivedStateFromProps, [here](https://github.com/JetBrains/kotlin-wrappers/tree/master/kotlin-react#declaring-static-fields-and-lifecycle-methods-contexttype-getderivedstatefromprops-etc)).
 
-* Error Handling with Error Boundaries from React. They do not (yet) catch async Errors. This is adressed in a experimental Feature in React. So every Component needs to do their own Error Handling for now. VON REACT ABSTRAHIEREN, WRAPPER MUSS react features unterstützen um das verwenden zu können doer selber machen, update von react version könnte dann für probleme sorgen
-
-* Communicating between a browser & server was rather complex.
+* Error Handling with Error Boundaries from React. They do not (yet) catch async Errors. This is adressed in a experimental Feature in React. So every Component needs to do their own Error Handling for now. A Big Problem is that you have to wait until the wrapper supports this (still experimental) React Feature or you have to write your own but then a React Update might cause Problems.
 
 * sometimes access to properties is direct and sometimes you need to use attrs.
 
-* tests are not that straight forward"§$%&/()SDFGHJKsfsfgdg$" ausführen? karma? mocha?, tried for sometime, didn't get it to work while i worked at it, 
+* Tests are not straight forward to configure as i spend quite some time trying to get it to work and didn't succeed. There seems to be a Problem with the configuration of Karma which KotlinJS uses to test browser functionality.
 
 ### jvm
 
@@ -345,35 +344,27 @@ AUSFÜHRLICHER!!!!!!!!
 
 + Exposed only supports java-time or joda-time(which is obsolete?) and no custom time library like e.g. klock.
 
-+ sending and receiving timestamps.
++ sending and receiving timestamps as there is no common denominator on it.
 
 ### Other
 
 #### The Good
 
 * Kotlin DSL everywhere, but you lose sight of where you are (frontend or backend).
-* Kotlin DSL has IDE Autocompletion support
+* Kotlin DSL has IDE Autocompletion support (IntelliJ IDEA at least) for the gradle.kts files.
 
 #### The Bad
 
 * Search queries for kotlin result in a lot of android stuff, that's a problem as long as no android is used.
-* Using the structure with vals as in this project results in IDEA complaining about unused variables.
-* No complete MPP Example with Android and ios App, js and jvm.
-* Kotlin DSL everywhere, NEED TO TRANSLATE to it everytime you use something
+* Defining the sourceSets with vals as in this project results in IDEA complaining about unused variables.
+* No complete MPP Example with Android and ios App, js and jvm. There is only either ios and Android or js and jvm but not both.
+* Kotlin DSL should be used everywhere but in order for that to be the case everything has to be converted to it, which is quite some work.
 
-## Resume/Fazit
+### Conclusion
 
-wie wars benutzen
+It was quite the ride but i would definetly do it again. I now feel rather confident regarding the jvm and common part but the js part feels like it needs a ton of work, especially the translation into Kotlin DSL and possible use of own implemented React Features. The tools used to combine the different Languages feel like WIP, which the whole Kotlin MPP actually is. This Project is nevertheless a good basis and teaching someone how it works should be doable within two months.
 
-nochmal machen würde?
-
-könnte man nem anderen Studenten zumuten innerhalb von 2 Monaten mithifle von mir aufs gleiche niveau bringen können?
-
-wie confident bin ich, dass man das produktiv einsetzen kann
-
-stimmungsbild, wie sicher fühlt man sich in dem Umfeld
-
-2,3,4, Sätze
+Overall i would say that you could really make something out of all of this iff someone dedicates himself to it.
 
 ### Related Github Issues
 
