@@ -26,7 +26,6 @@ an Online Survey System build with Full-Stack Kotlin
   * [Frontend/UI/Browser](#frontenduibrowser)
   * [Backend/Server/Database](#backendserverdatabase)
 * [Further Reading](#further-reading)
-* [Based on](#based-on)
 
 ## Scope
 
@@ -105,7 +104,7 @@ install(Authentication) {
 }
 </pre>
 
-you the use it like so:
+you then use it like so:
 
 <pre>
 authenticate("NAME"){
@@ -115,7 +114,7 @@ authenticate("NAME"){
 
 #### Endpoints/Routing
 
-Endpoints are installed within the `routing{}` Lambda. No need for Installation, Routing installs itself.
+Endpoints are implemented within the `routing{}` Lambda. No need for Installation, Routing installs itself.
 
 With `route(Path){}` you define the path to your endpoint.
 
@@ -168,7 +167,7 @@ class question(val questionId: String)
 get<question>{ question -> }
 </pre>
 
-The Path is define with a `@Location` Annotation and a path specific class which has all the variables as matching name properties. Inside the get Lambda you have access to them.
+The Path is define with a `@Location` Annotation and a path specific class which has all the variables with matching names as properties. Accessable through the lambda.
 
 #### Kotlin Exposed
 
@@ -184,7 +183,7 @@ The `DB_CLOSE_DELAY=-1` is need for the h2 db to keep it alive between transacti
 
 ##### Tables
 
-To setup your Tables you define an object with Type `Table`. There are a few Tables with predefined primary keys, IntIdTable, LongIdTable and UUIDTable or you define your own with a subclass of IdTable.
+To setup your Tables you define an object with Type `Table()`. There are a few Tables with predefined primary keys, IntIdTable, LongIdTable and UUIDTable or you define your own with a subclass of IdTable.
 
 <pre>
 object myTable = IntIdTable(){
@@ -196,7 +195,9 @@ object myTable = IntIdTable(){
 
 To work with your Table in Kotlin you need to map every Table it to its own data class
 
-`data class myTable(val primKey: Int, val name: String, val age: Int, val date: LocalDateTime)`
+<pre>
+data class myTable(val primKey: Int, val name: String, val age: Int, val date: LocalDateTime)
+</pre>
 
 using a simple mapping function
 
@@ -209,11 +210,11 @@ fun mapToMyTable(it: ResultRow) = myTable(
 )
 </pre>
 
-this is type safe.
+this is type-safe and intelliJ will complain if all three components don't line up.
 
 ##### Database Transactions
 
-To now use your database you connect via `transaction{}` calls. Since you can define a logger in every transaction i wrote a custom function where you need to define your logger just once. It also executes the `SchemaUtils` call to initialize the tables (I'm still not sure if it is needed every time, it's seems weird to have to use it in every transaction but without it, it doesn't work currently).
+To now use your database you connect via `transaction{}` calls. Since you can define a logger in every transaction i wrote a custom function where you need to define your logger just once. It also executes the `SchemaUtils` call to initialize the tables (I'm still not sure if it is needed every time, it's seems weird to have to use it in every transaction but without it, it currently doesn't work ).
 
 <pre>
 fun < T, K : Table> loggedSchemaUtilsTransaction(  
@@ -298,6 +299,8 @@ See [Kotlin Playground: Using packages from NPM](https://play.kotlinlang.org/han
 
 ## Pitfalls during Development
 
+AUSFÜHRLICHER!!!!!!!!
+
 ### common
 
 #### The Good
@@ -306,52 +309,71 @@ See [Kotlin Playground: Using packages from NPM](https://play.kotlinlang.org/han
 
 #### The Bad
 
-* Actual/expect methods are limited in functionality or are not straight forward and  need heavy abstraction.
+* Actual/expect methods are limited in functionality or are not straight forward and need some abstraction. If for example you want to use a Time Datatype in a function you need to define an actual for both the function and the Datatype.
 
 ### js
 
 #### The Good
 
-* Kotlin-wrappers so you can use kotlin dsl everywhere
-* CSS aka styled Components are easy to use, problem is again writing css in Kotlin DSL (ComponentStyles.kt).
+* Kotlin-wrappers so you can use kotlin dsl everywhere.
+* CSS aka styled Components (check ComponentStyles.kt) are easy to use, writing in Kotlin DSL might still cause some confusion as there are different ways to define the same property so `margin(5.px)` is the same as `margin = "5.px"`.
 
 #### The Bad
 
-* React to Kotlin DSL has almost no Documentation and just a few Examples which just show some functionalities. There is no whole React to Kotlin DSL Documentation and you need to know React to know what to do.  Auswikrungen, transitiv Leistung nötig ohne Doku
+* React to Kotlin DSL has almost no Documentation and just a few Examples which just show some functionalities. There is no whole React to Kotlin DSL Documentation and you need to know React and Kotlin to know how to translate from one to the other. 
 
-* Some kotlin-wrappers are heavily out of date
+* Some kotlin-wrappers are heavily out of date.
 
-* Some React functionalities need a more complicated approach (e.g. getDerivedStateFromProps)
+* Some React functionalities need a more complicated approach (e.g. getDerivedStateFromProps, [here](https://github.com/JetBrains/kotlin-wrappers/tree/master/kotlin-react#declaring-static-fields-and-lifecycle-methods-contexttype-getderivedstatefromprops-etc)).
 
-* Error Handling with Error Boundaries from React. They do not catch async Errors. This is adressed in a experimental Feature in React. So every Component needs to do their own Error Handling.
+* Error Handling with Error Boundaries from React. They do not (yet) catch async Errors. This is adressed in a experimental Feature in React. So every Component needs to do their own Error Handling for now. VON REACT ABSTRAHIEREN, WRAPPER MUSS react features unterstützen um das verwenden zu können doer selber machen, update von react version könnte dann für probleme sorgen
 
-* Sometimes you need to write your own wrapper for npm packages
+* Communicating between a browser & server was rather complex.
 
-* Communicating between a browser & server was rather complex. (Propably caused due to inexperience)
+* sometimes access to properties is direct and sometimes you need to use attrs.
 
-* sometimes acces to properties is direct and sometimes you need to use attrs (confusing).
+* tests are not that straight forward"§$%&/()SDFGHJKsfsfgdg$" ausführen? karma? mocha?, tried for sometime, didn't get it to work while i worked at it, 
 
 ### jvm
 
 #### The Good
 
-* Ktor has a very good documentation and quite some examples
-* Exposed has a good Documentation
+* Ktor has a very good documentation and quite some examples.
+* Exposed has a good Documentation.
 
 #### The Bad
+
++ Exposed only supports java-time or joda-time(which is obsolete?) and no custom time library like e.g. klock.
+
++ sending and receiving timestamps.
 
 ### Other
 
 #### The Good
 
-* Kotlin DSL everywhere.
-* "Plug and Play" of Kotlin Packages.
+* Kotlin DSL everywhere, but you lose sight of where you are (frontend or backend).
+* Kotlin DSL has IDE Autocompletion support
 
 #### The Bad
 
-* Search queries for kotlin result in a lot of android stuff, as long as no android is used.
+* Search queries for kotlin result in a lot of android stuff, that's a problem as long as no android is used.
 * Using the structure with vals as in this project results in IDEA complaining about unused variables.
-* No complete MPP Example with App, js and jvm
+* No complete MPP Example with Android and ios App, js and jvm.
+* Kotlin DSL everywhere, NEED TO TRANSLATE to it everytime you use something
+
+## Resume/Fazit
+
+wie wars benutzen
+
+nochmal machen würde?
+
+könnte man nem anderen Studenten zumuten innerhalb von 2 Monaten mithifle von mir aufs gleiche niveau bringen können?
+
+wie confident bin ich, dass man das produktiv einsetzen kann
+
+stimmungsbild, wie sicher fühlt man sich in dem Umfeld
+
+2,3,4, Sätze
 
 ### Related Github Issues
 
@@ -504,7 +526,3 @@ a list of talks/projects/blogposts used as reference in this project.
 + CORS
   
       https://avalanche123.com/blog/2011/10/10/cross-domain-javascript-lessons-learne
-
-## Based on
-
-[Wolfgang Wipp/prod-dash](http://gitlab.innosystec.site/wowipp/prod-dash)
